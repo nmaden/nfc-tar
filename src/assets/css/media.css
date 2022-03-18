@@ -1,0 +1,163 @@
+@media screen and (max-width: 3000px) {}
+
+@media screen and (max-width: 2000px) {}
+
+@media screen and (max-width: 1920px) {}
+
+@media screen and (max-width: 1880px) {}
+
+@media screen and (max-width: 1536px) {
+    .search__form input[type="text"] {
+        width: 500px;
+    }
+}
+
+@media screen and (max-width: 1366px) {
+    .search__form input[type="text"] {
+        width: 450px;
+    }
+    .header__right {
+        margin-left: 20px;
+    }
+    .header__leng {
+        margin-right: 30px;
+    }
+    .header__notification {
+        margin-right: 35px;
+    }
+    .header__logo {
+        margin-right: 30px;
+    }
+    .bank__info--name {
+        font-size: 20px;
+    }
+    .bank__miniinfo--item {
+        font-size: 16px;
+    }
+    .fullinfo--title {
+        font-size: 16px;
+    }
+    .fullinfo--block li {
+        margin-bottom: 15px;
+    }
+    .fullinfo--text {
+        font-size: 16px;
+    }
+    .table__block--content {
+        margin-top: 20px;
+    }
+    .section--bank__data {
+        padding: 35px 25px;
+    }
+    .table__block.table__block--contact {
+        padding: 0;
+    }
+    .contact__item {
+        padding: 30px 40px;
+    }
+}
+
+@media screen and (max-width: 1200px) {
+    .search__form input[type="text"] {
+        width: 350px;
+    }
+    .header__login--reletive {
+        width: 240px;
+    }
+    .header__login--absol {
+        width: 240px !important;
+        padding: 25px 20px;
+    }
+    .bank__info--name {
+        font-size: 18px;
+    }
+    .search__table {
+        width: 250px;
+    }
+    .table__top--status select {
+        width: 180px;
+    }
+    table.style__table {
+        line-height: 1.2;
+    }
+    .agreement__info--item {
+        margin-right: 60px;
+    }
+    .contact__item {
+        padding: 30px 20px;
+    }
+    .contact__item--name {
+        font-size: 16px;
+    }
+    .contact__item--line a {
+        font-size: 16px;
+    }
+}
+
+@media screen and (max-width: 1024px) {
+    .section__line {
+        margin-bottom: 30px;
+    }
+    .section--bank__info {
+        padding: 35px 25px;
+    }
+    .section--table {
+        padding: 60px 25px;
+    }
+    .section__top--btn .link__btn--white {
+        margin: 0 5px;
+    }
+    .login__header--logo {
+        margin-bottom: 30px;
+    }
+    .login__header--lang {
+        margin-bottom: 30px;
+    }
+}
+
+@media screen and (max-width: 992px) {}
+
+@media screen and (max-width: 768px) {
+    .document_preview--title {
+        font-size: 18px;
+    }
+    .document_preview--body {
+        margin: 0 -25px;
+        padding: 20px 10px;
+    }
+    .document_preview--stasus {
+        font-size: 14px;
+    }
+}
+
+@media screen and (max-width: 640px) {
+    .document_preview--top {
+        flex-direction: column;
+    }
+    .document_preview--stasus {
+        margin-left: 0;
+        margin-top: 25px;
+    }
+    .document_preview--title {
+        font-size: 18px;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .section--bank__info {
+        padding: 35px 15px;
+    }
+    .document_preview--info {
+        font-size: 14px;
+        flex-wrap: wrap;
+        margin-bottom: 10px;
+    }
+    .document_preview--title {
+        font-size: 16px;
+        line-height: 1.2;
+    }
+    .document_preview--body {
+        margin: 0 -15px;
+        height: 450px;
+    }
+}
