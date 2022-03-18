@@ -38,7 +38,7 @@ Vue.use(VueToast);
 
 Vue.prototype.$API_VERSION = process.env.VUE_APP_API_VERSION;
 Vue.prototype.$API_VERSION_2 = process.env.VUE_APP_API_VERSION_2;
-Vue.prototype.$API_URL = 'http://127.0.0.1:8003/api/';
+Vue.prototype.$API_URL = 'http://127.0.0.1:8004/api/';
 Vue.prototype.$API_MAIN = process.env.VUE_APP_API;
 
 // Vue.prototype.$API_VERSION = 'v1/';

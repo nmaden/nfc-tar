@@ -65,6 +65,8 @@
                 </v-btn>
             </div>
 
+            <v-divider></v-divider>
+
         </div>
 
 

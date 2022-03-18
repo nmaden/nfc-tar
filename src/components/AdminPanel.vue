@@ -28,7 +28,7 @@
 
                 <img src="http://127.0.0.1:8000/storage/news/sd.png" alt="">
                         
-                        <div class="item__row item__ac" v-bind:class="{'active':$route.path=='/document'}">
+                        <div class="item__row item__ac" v-bind:class="{'active':$route.path=='/users'}">
                             <i class="mdi mdi-label-variant mr-2"></i>
                             <p class="pointer mb-0" @click="$router.push('/users')">Пользователи</p>
                         </div>
@@ -52,9 +52,9 @@
                         </div>
 
 
-                        <div class="item__row item__ac" v-bind:class="{'active':$route.path=='/document'}">
+                        <div class="item__row item__ac" v-bind:class="{'active':$route.path=='/logs'}">
                             <i class="mdi mdi-label-variant mr-2"></i>
-                            <p class="pointer mb-0" @click="$router.push('/document')">Логи</p>
+                            <p class="pointer mb-0" @click="$router.push('/logs')">Журналирования событий</p>
                         </div>
                         
                         

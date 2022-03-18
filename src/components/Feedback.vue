@@ -4,7 +4,6 @@
           <div  v-for="(feed,index) in feeds" :key="index">
 
               <p>{{feed.name}}</p>
-
               <div class="item__row item__ac">
                 <i class="mdi mdi-phone mr-2"></i>
                 <a class="" :href="'tel:'+feed.phone"> {{feed.phone}}</a>
@@ -23,7 +22,7 @@
                 <p class="mb-0">{{formatDate(feed.created_at)}}</p>
 
               </div>
-              
+              <v-divider></v-divider>
           </div>
 
 

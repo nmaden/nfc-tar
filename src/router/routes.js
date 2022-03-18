@@ -32,6 +32,11 @@ export const routes = [
           component: () => import("../components/User.vue"),
           beforeEnter:guard,
         },
+        {
+          path: "/logs",
+          component: () => import("../components/Logs.vue"),
+          beforeEnter:guard,
+        },
       ]
     },
 
