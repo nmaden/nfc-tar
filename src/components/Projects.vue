@@ -4,7 +4,7 @@
 
         <div class="item__row item__ac">
 
-            <h2>Новости</h2>
+            <h2>Наши проекты</h2>
 
             <v-btn
                 small
@@ -187,7 +187,7 @@ export default {
             contractForm.append("title", this.title);
             contractForm.append("description", this.description);
             this.$axios
-                .post(this.$API_URL + this.$API_VERSION + "news", contractForm, {
+                .post(this.$API_URL + this.$API_VERSION + "projects", contractForm, {
                 headers: {
                     Authorization: `Bearer ${localStorage.getItem("access_token")}`,
                     "Content-Type": "multipart/form-data",
@@ -227,7 +227,7 @@ export default {
             url:
                 this.$API_URL +
                 this.$API_VERSION +
-                "news/"+id,
+                "projects/"+id,
                 headers: {
                     Authorization: `Bearer ${localStorage.getItem("access_token")}`,
                 },
@@ -248,7 +248,7 @@ export default {
             url:
                 this.$API_URL +
                 this.$API_VERSION +
-                "news/"+id,
+                "projects/"+id,
                 headers: {
                     Authorization: `Bearer ${localStorage.getItem("access_token")}`,
                 },
@@ -264,7 +264,7 @@ export default {
         },
         update() {
             this.$axios
-                .put(this.$API_URL + this.$API_VERSION + "news/"+this.newsId, 
+                .put(this.$API_URL + this.$API_VERSION + "projects/"+this.newsId, 
                 {
                     title: this.title,
                     description: this.description
@@ -306,7 +306,7 @@ export default {
           url:
             this.$API_URL +
             this.$API_VERSION +
-            "news",
+            "projects",
             headers: {
                 Authorization: `Bearer ${localStorage.getItem("access_token")}`,
             },

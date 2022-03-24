@@ -36,6 +36,22 @@ export const routes = [
           path: "/logs",
           component: () => import("../components/Logs.vue"),
         },
+        {
+          path: "/team",
+          component: () => import("../components/Team.vue"),
+        },
+        {
+          path: "/partners",
+          component: () => import("../components/Partners.vue"),
+        },
+        {
+          path: "/projects",
+          component: () => import("../components/Projects.vue"),
+        },
+        {
+          path: "/gallery",
+          component: () => import("../components/Gallery.vue"),
+        },
       ]
     },
 

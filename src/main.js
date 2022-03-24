@@ -4,7 +4,7 @@ import axios from "axios";
 import vuetify from "./plugins/vuetify";
 import store from "./store";
 import router from "./router";
-import 'vue-toast-notification/dist/theme-default.css'
+
 import VueToast from 'vue-toast-notification'
 Vue.config.productionTip = false;
 Vue.prototype.$axios = axios;

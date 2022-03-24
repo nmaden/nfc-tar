@@ -299,8 +299,9 @@ export default {
             for (var i = 0; i < this.files.length; i++) {
                 contractForm.append("images[]", this.files[i]);
             }
+            contractForm.append("id", this.newsId);
             this.$axios
-                .post(this.$API_URL + this.$API_VERSION + "document/file", contractForm, {
+                .post(this.$API_URL + this.$API_VERSION + "document/files/"+this.newsId, contractForm, {
                 headers: {
                     Authorization: `Bearer ${localStorage.getItem("access_token")}`,
                     "Content-Type": "multipart/form-data",

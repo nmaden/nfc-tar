@@ -10,25 +10,23 @@
             class="sign__page__block"
         >
             <v-text-field
-            v-model="login"
-            label="Логин"
-            required
-            outlined
-            class="input"
-            :rules="loginRules"
+                v-model="login"
+                label="Логин"
+                required
+                outlined
+                class="input"
+                :rules="loginRules"
             
             ></v-text-field>
 
             <v-text-field
-            :rules="passwordRules"
-            v-model="password"
-            label="Пароль"
-            required
-            outlined
-            class="input"
+                :rules="passwordRules"
+                v-model="password"
+                label="Пароль"
+                required
+                outlined
+                class="input"
             ></v-text-field>
-
-        
 
             <v-btn
             type="submit"
@@ -157,9 +155,9 @@
       .sign__page__block {
         display: flex;
         flex-direction: column;
-        width: 50%;
+        width: 30%;
         input {
-          width: 300px;
+          width: 100px;
           padding: 20px;
           margin-bottom: 20px;
           border: 1px solid #ccc;
