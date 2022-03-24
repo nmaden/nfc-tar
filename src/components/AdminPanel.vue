@@ -11,9 +11,16 @@
 
                 <v-spacer></v-spacer>
 
+                <div class="item__column header__user">
+                    <h3 class="mb-0">{{me.name}}</h3>
+                    <p class="mb-0">{{me.role.name_rus}}</p>
+                </div>
+
+
                 <v-btn icon @click="logout()">
                     <v-icon >mdi-logout</v-icon>
                 </v-btn>
+
             </v-toolbar>
 
           <v-row>
@@ -26,33 +33,31 @@
                     tile
                     >
 
-                <img src="http://127.0.0.1:8000/storage/news/sd.png" alt="">
-                        
-                        <div class="item__row item__ac" v-bind:class="{'active':$route.path=='/users'}">
+                        <div class="mb-2 item__row item__ac" v-bind:class="{'active':$route.path=='/users'}">
                             <i class="mdi mdi-label-variant mr-2"></i>
                             <p class="pointer mb-0" @click="$router.push('/users')">Пользователи</p>
                         </div>
                         
-                        <div class="item__row item__ac" v-bind:class="{'active':$route.path=='/admin'}">
+                        <div class="mb-2 item__row item__ac" v-bind:class="{'active':$route.path=='/admin'}">
                             <i class="mdi mdi-label-variant mr-2"></i>
                             <p class="pointer mb-0" @click="$router.push('/admin')">Новости</p>
                         </div>
 
-                        <div class="item__row item__ac" v-bind:class="{'active':$route.path=='/feedback'}">
+                        <div class="mb-2 item__row item__ac" v-bind:class="{'active':$route.path=='/feedback'}">
                             <i class="mdi mdi-label-variant mr-2"></i>
                             <p class="pointer mb-0" @click="$router.push('/feedback')">Feedback</p>
 
 
                         </div>
 
-                        <div class="item__row item__ac" v-bind:class="{'active':$route.path=='/document'}">
+                        <div class="mb-2 item__row item__ac" v-bind:class="{'active':$route.path=='/document'}">
                             <i class="mdi mdi-label-variant mr-2"></i>
                             <p class="pointer mb-0" @click="$router.push('/document')">Документы</p>
 
                         </div>
 
 
-                        <div class="item__row item__ac" v-bind:class="{'active':$route.path=='/logs'}">
+                        <div class="mb-2 item__row item__ac" v-bind:class="{'active':$route.path=='/logs'}">
                             <i class="mdi mdi-label-variant mr-2"></i>
                             <p class="pointer mb-0" @click="$router.push('/logs')">Журналирования событий</p>
                         </div>
@@ -83,18 +88,33 @@
 
 <script>
 export default {
- 
-  name: "AdminPanel",
   data() {
     return {
-   
+        me: ''
     };
   },
   methods: {
-      logout() {
-          
-            localStorage.clear();
-          this.$router.push('/login');
+    getUser() {
+           this.$axios({
+            method: "get",
+            url:
+            this.$API_URL +
+            this.$API_VERSION +
+            "me",
+            headers: {
+            Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+            },
+        })
+        .then((response) => {
+            this.me = response.data;
+        })
+        .catch((error) => {
+        console.warn(error);
+        });
+    },
+      logout() {  
+        localStorage.clear();
+        this.$router.push('/');
       },
     formatDate(date) {  
       let d = date.split('T')[0].split('-');
@@ -103,7 +123,7 @@ export default {
     },
   },
   mounted() {
-  
+      this.getUser();
   },
   beforeMount() {
 
@@ -118,6 +138,12 @@ export default {
 }
 .active {
     color: #AF9778;
+}
+
+.header__user {
+    p {
+        font-size: 12px;
+    }
 }
 
 </style>

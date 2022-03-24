@@ -3,9 +3,9 @@
       <div>
 
         <div class="item__row item__ac">
-       
-            <h2>Пользователи</h2>
             
+            <h2>Пользователи</h2>
+          
             <v-btn
                 small
                 class="mx-2"
@@ -47,7 +47,7 @@
                       @click="openEditModal(item)"
                       v-bind="attrs"
                       v-on="on"
-                      v-if="me.role.role == 'admin'"
+                      v-if="me && me.role.role == 'admin'"
                     ></i>
                   </template>
                   <span>Редактировать</span>
@@ -60,7 +60,7 @@
                       @click="openDeleteModal(item)"
                       v-bind="attrs"
                       v-on="on"
-                      v-if="me.role.role == 'admin'"
+                      v-if="me && me.role.role == 'admin'"
                     ></i>
                   </template>
                   <span>Удалить</span>
@@ -101,6 +101,7 @@
 
                 <h3 class="mb-4" v-if="type==1">Создать пользователя</h3>
                 <h3 class="mb-4" v-else>Редактирование пользователя</h3>
+
                 <div class="item__column">
                     <v-text-field
                         v-model="name"
@@ -122,8 +123,22 @@
                         :rules="nameRules"
                     ></v-text-field>
                 </div>
+                <v-select
+                    v-if="me && me.role.role == 'admin'"
+                    :items="roles"
+                    outlined
+                    :hide-details="true"
+                    :flat="true"
+                    item-text="name_rus"
+                    item-value="id"
+                    item-color="#000"
+                    dense
+                    v-model="role"
+                    required
+                    class="mb-5"
+                ></v-select>
 
-                 <div class="item__column">
+                <div class="item__column" v-if="type==1">
                     <v-text-field
                         v-model="password"
                         label="Пароль"
@@ -133,13 +148,25 @@
                         :rules="nameRules"
                     ></v-text-field>
                 </div>
+                <div class="item__column" v-else>
+                    <v-text-field
+                        v-model="password"
+                        label="Пароль"
+                        required
+                        outlined
+                        class="input"
+                    ></v-text-field>
+                </div>
+
+
+                
 
                  <v-btn
                     type="submit"
                     depressed
                     color="primary"
                     >
-                    Создать
+                    Отправить
                 </v-btn>
 
                 </v-form>
@@ -156,9 +183,10 @@
 <script>
 
 export default {
-  name: "News",
+  name: "User",
   data() {
     return {
+        user: null,
         headers: [
             {
             text: "№",
@@ -192,7 +220,7 @@ export default {
         loading: true,
         page: 0,
         options: {
-            itemsPerPage: 2,
+            itemsPerPage: 5,
             page: 1,
         },
         me: [],
@@ -200,16 +228,65 @@ export default {
         email: null,
         password: null,
         destroyModal: false,
-        selectedUser: null
+        selectedUser: null,
+        roles: [],
+        role: null,
     };
   },
   methods: {
+    getProfile() {
+         this.$axios({
+            method: "get",
+            url:
+            this.$API_URL +
+            this.$API_VERSION +
+            "me",
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+            },
+        })
+        .then((response) => {
+            this.user = response.data;
+        })
+        .catch((error) => {
+            console.warn(error);
+        });
+    },
+    getRoles() {
+        this.$axios({
+            method: "get",
+            url:
+            this.$API_URL +
+            this.$API_VERSION +
+            "role",
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+            },
+        })
+        .then((response) => {
+            this.roles = response.data;
+        })
+        .catch((error) => {
+            console.warn(error);
+        });
+    },
     formatDate(date) {  
       let d = date.split('T')[0].split('-');
       let time = date.split('T')[1].split(':');
       return d[2]+'-'+d[1]+'-'+d[0]+' '+time[0]+':'+time[1];
     },
     openEditModal(item) {
+
+    
+        this.roles.forEach(element => {
+               if(element.id==item.role.id) {
+                   this.role = element;
+               }
+        });
+
+       
+
+
         this.selectedUser = item;
         this.newsModal=true;
         this.name = item.name;
@@ -220,7 +297,7 @@ export default {
         this.selectedUser = item;
     },
     getUser() {
-           this.$axios({
+        this.$axios({
             method: "get",
             url:
             this.$API_URL +
@@ -234,7 +311,7 @@ export default {
             this.me = response.data;
         })
         .catch((error) => {
-        console.warn(error);
+            console.warn(error);
         });
     },
     fetch() {
@@ -247,8 +324,7 @@ export default {
             url:
             this.$API_URL +
             this.$API_VERSION +
-            "user?per_age=" +
-            this.options.page,
+            "user?per_page="+this.options.itemsPerPage+'&page='+this.options.page,
             headers: {
             Authorization: `Bearer ${localStorage.getItem("access_token")}`,
             },
@@ -257,6 +333,7 @@ export default {
                 this.loading = false;
                 this.numberOfPages = response.data.total;
                 this.totalPage = response.data.total;
+
                 this.users = response.data.data;
 
 
@@ -288,7 +365,7 @@ export default {
             .then((response) => {
                 console.log(response);
                 this.$toast.open({
-                    message: "Успешно создано",
+                    message: response.data.message,
                     type: "success",
                     position: "bottom",
                     duration: 4000,
@@ -360,16 +437,16 @@ export default {
                 {
                     name: this.name,
                     email: this.email,
-                    password: this.password
+                    password: this.password,
+                    role: this.role
                 }, {
                 headers: {
                     Authorization: `Bearer ${localStorage.getItem("access_token")}`,
                 },
             })
             .then((response) => {
-                console.log(response);
                 this.$toast.open({
-                    message: "Успешно создано",
+                    message: response.data.message,
                     type: "success",
                     position: "bottom",
                     duration: 4000,
@@ -400,6 +477,7 @@ export default {
   mounted() {
       this.getUser();
       this.fetch();
+      this.getRoles();
   },
   beforeMount() {
 

@@ -1,8 +1,8 @@
 
-import {guard} from './guard'
+
 export const routes = [
     {
-      path: '/login',
+      path: '/',
       name: "Login",
       component: () =>
             import ('../views/Auth.vue'),
@@ -10,32 +10,31 @@ export const routes = [
     {
       path: '/admin',
       component: () => import ('../components/AdminPanel.vue'),
-      beforeEnter:guard,
+    
       children: [
         {
           path: "/",
           component: () => import("../components/News.vue"),
-          beforeEnter:guard,
+          name: "Admin",
         },
         {
           path: "/feedback",
           component: () => import("../components/Feedback.vue"),
-          beforeEnter:guard,
+        
         },
         {
           path: "/document",
           component: () => import("../components/Document.vue"),
-          beforeEnter:guard,
+        
         },
         {
           path: "/users",
           component: () => import("../components/User.vue"),
-          beforeEnter:guard,
+          
         },
         {
           path: "/logs",
           component: () => import("../components/Logs.vue"),
-          beforeEnter:guard,
         },
       ]
     },

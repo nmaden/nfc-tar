@@ -21,11 +21,6 @@ export default {
 </script>
 
 <style>
-@import "./assets/css/bootstrap.min.css";
-@import "./assets/css/style.css";
-@import "./assets/css/media.css";
-@import "./assets/css/swiper.min.css";
-
 .agreement__lang {
 }
 

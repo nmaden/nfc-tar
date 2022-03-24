@@ -49,6 +49,7 @@
                 </v-btn>
 
                 <v-btn
+                    v-if="me && me.role.role == 'admin'"
                     small
                     class="mx-2 mr-2"
                     fab
@@ -148,10 +149,29 @@ export default {
             ],
         files: [],
         type: 0,
-        newsId:''
+        newsId:'',
+        me: null
     };
   },
   methods: {
+        getUser() {
+            this.$axios({
+                method: "get",
+                url:
+                this.$API_URL +
+                this.$API_VERSION +
+                "me",
+                headers: {
+                Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+                },
+            })
+            .then((response) => {
+                this.me = response.data;
+            })
+            .catch((error) => {
+                console.warn(error);
+            });
+        },
       chooseTypeFunction(type) {
           this.type = type;
           this.newsModal = true;
@@ -301,6 +321,7 @@ export default {
   },
   mounted() {
       this.fetch();
+      this.getUser();
   },
   beforeMount() {
 

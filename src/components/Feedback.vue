@@ -35,7 +35,8 @@ export default {
   name: "Feedback",
   data() {
     return {
-      feeds: []
+      feeds: [],
+      me: null
     };
   },
   methods: {

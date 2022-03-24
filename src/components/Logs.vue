@@ -3,22 +3,7 @@
       <div>
 
         <div class="item__row item__ac">
-       
             <h2>Журналирования событий</h2>
-            
-            <v-btn
-                small
-                class="mx-2"
-                fab
-                dark
-                color="indigo"
-                @click="chooseTypeFunction(1)"
-                >
-                <v-icon dark>
-                    mdi-plus
-                </v-icon>
-            </v-btn>
-
         </div>
 
 
@@ -244,8 +229,7 @@ export default {
             url:
             this.$API_URL +
             this.$API_VERSION +
-            "logs?per_age=" +
-            this.options.page,
+            "logs?per_page="+this.options.itemsPerPage+'&page='+this.options.page,
             headers: {
             Authorization: `Bearer ${localStorage.getItem("access_token")}`,
             },
