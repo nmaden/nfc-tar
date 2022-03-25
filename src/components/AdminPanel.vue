@@ -62,33 +62,33 @@
                         </div>
 
 
-                        <div class="mb-2 item__row item__ac" v-bind:class="{'active':$route.path=='/team'}">
+                        <!-- <div class="mb-2 item__row item__ac" v-bind:class="{'active':$route.path=='/team'}">
                             <i class="mdi mdi-label-variant mr-2"></i>
                             <p class="pointer mb-0" @click="$router.push('/team')">Наша команда</p>
-                        </div>
+                        </div> -->
 
-                        <div class="mb-2 item__row item__ac" v-bind:class="{'active':$route.path=='/partners'}">
+                        <!-- <div class="mb-2 item__row item__ac" v-bind:class="{'active':$route.path=='/partners'}">
                             <i class="mdi mdi-label-variant mr-2"></i>
                             <p class="pointer mb-0" @click="$router.push('/team')">Партнеры</p>
-                        </div>
-
+                        </div> -->
+                        
+                        <!-- 
                         <div class="mb-2 item__row item__ac" v-bind:class="{'active':$route.path=='/gallery'}">
                             <i class="mdi mdi-label-variant mr-2"></i>
                             <p class="pointer mb-0" @click="$router.push('/team')">Галерея</p>
-                        </div>
+                        </div> -->
 
-                        <div class="mb-2 item__row item__ac" v-bind:class="{'active':$route.path=='/about'}">
+                        <!-- <div class="mb-2 item__row item__ac" v-bind:class="{'active':$route.path=='/about'}">
                             <i class="mdi mdi-label-variant mr-2"></i>
                             <p class="pointer mb-0" @click="$router.push('/about')">О компании</p>
-                        </div>
-
+                        </div> -->
+                        <!-- 
                         <div class="mb-2 item__row item__ac" v-bind:class="{'active':$route.path=='/contacts'}">
                             <i class="mdi mdi-label-variant mr-2"></i>
                             <p class="pointer mb-0" @click="$router.push('/contacts')">Контакты</p>
-                        </div>
+                        </div> -->
                         
-                        
-
+                    
 
                         <div class="mb-2 item__row item__ac" v-bind:class="{'active':$route.path=='/logs'}">
                             <i class="mdi mdi-label-variant mr-2"></i>
