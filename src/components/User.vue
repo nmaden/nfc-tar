@@ -355,7 +355,8 @@ export default {
                 .post(this.$API_URL + this.$API_VERSION + "user", {
                     name: this.name,
                     email: this.email,
-                    password: this.password
+                    password: this.password,
+                    role: this.role
                 }, {
                 headers: {
                     Authorization: `Bearer ${localStorage.getItem("access_token")}`,
