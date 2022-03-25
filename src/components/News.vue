@@ -27,7 +27,7 @@
              
                 <div v-for="image in item.images"  :key="image.id" >
                   
-                    <img  :src="'http://127.0.0.1:8001/'+image.img_path" />
+                    <img  :src="'https://api.kazaerospace.crocos.kz/'+image.img_path" />
                 </div>
                 
                 
