@@ -10,7 +10,7 @@ export const routes = [
     {
       path: '/admin',
       component: () => import ('../components/AdminPanel.vue'),
-    
+
       children: [
         {
           path: "/",
@@ -20,17 +20,17 @@ export const routes = [
         {
           path: "/feedback",
           component: () => import("../components/Feedback.vue"),
-        
+
         },
         {
           path: "/document",
           component: () => import("../components/Document.vue"),
-        
+
         },
         {
           path: "/users",
           component: () => import("../components/User.vue"),
-          
+
         },
         {
           path: "/logs",
@@ -52,9 +52,13 @@ export const routes = [
           path: "/gallery",
           component: () => import("../components/Gallery.vue"),
         },
+        {
+          path: "/about",
+          component: () => import("../components/About.vue"),
+        },
       ]
     },
 
 
-    
+
 ]

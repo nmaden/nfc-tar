@@ -1,5 +1,5 @@
 <template>
-      <v-container>  
+      <v-container>
             <v-toolbar
                 color="cyan"
                 dark
@@ -24,7 +24,7 @@
             </v-toolbar>
 
           <v-row>
-             
+
               <v-col class="" sm="3">
 
                    <v-card
@@ -37,7 +37,7 @@
                             <i class="mdi mdi-label-variant mr-2"></i>
                             <p class="pointer mb-0" @click="$router.push('/users')">Пользователи</p>
                         </div>
-                        
+
                         <div class="mb-2 item__row item__ac" v-bind:class="{'active':$route.path=='/admin'}">
                             <i class="mdi mdi-label-variant mr-2"></i>
                             <p class="pointer mb-0" @click="$router.push('/admin')">Новости</p>
@@ -62,40 +62,40 @@
                         </div>
 
 
-                        <!-- <div class="mb-2 item__row item__ac" v-bind:class="{'active':$route.path=='/team'}">
+                        <div class="mb-2 item__row item__ac" v-bind:class="{'active':$route.path=='/team'}">
                             <i class="mdi mdi-label-variant mr-2"></i>
                             <p class="pointer mb-0" @click="$router.push('/team')">Наша команда</p>
-                        </div> -->
+                        </div>
 
-                        <!-- <div class="mb-2 item__row item__ac" v-bind:class="{'active':$route.path=='/partners'}">
+                        <div class="mb-2 item__row item__ac" v-bind:class="{'active':$route.path=='/partners'}">
                             <i class="mdi mdi-label-variant mr-2"></i>
-                            <p class="pointer mb-0" @click="$router.push('/team')">Партнеры</p>
-                        </div> -->
-                        
-                        <!-- 
+                            <p class="pointer mb-0" @click="$router.push('/partners')">Партнеры</p>
+                        </div>
+
+
                         <div class="mb-2 item__row item__ac" v-bind:class="{'active':$route.path=='/gallery'}">
                             <i class="mdi mdi-label-variant mr-2"></i>
-                            <p class="pointer mb-0" @click="$router.push('/team')">Галерея</p>
-                        </div> -->
+                            <p class="pointer mb-0" @click="$router.push('/gallery')">Галерея</p>
+                        </div>
 
-                        <!-- <div class="mb-2 item__row item__ac" v-bind:class="{'active':$route.path=='/about'}">
+                        <div class="mb-2 item__row item__ac" v-bind:class="{'active':$route.path=='/about'}">
                             <i class="mdi mdi-label-variant mr-2"></i>
                             <p class="pointer mb-0" @click="$router.push('/about')">О компании</p>
-                        </div> -->
-                        <!-- 
+                        </div>
+                        <!--
                         <div class="mb-2 item__row item__ac" v-bind:class="{'active':$route.path=='/contacts'}">
                             <i class="mdi mdi-label-variant mr-2"></i>
                             <p class="pointer mb-0" @click="$router.push('/contacts')">Контакты</p>
                         </div> -->
-                        
-                    
+
+
 
                         <div class="mb-2 item__row item__ac" v-bind:class="{'active':$route.path=='/logs'}">
                             <i class="mdi mdi-label-variant mr-2"></i>
                             <p class="pointer mb-0" @click="$router.push('/logs')">Журналирования событий</p>
                         </div>
-                        
-                        
+
+
 
                     </v-card>
               </v-col>
@@ -106,14 +106,14 @@
                     class="pa-5"
                     outlined
                     tile
-                    >  
+                    >
                         <router-view></router-view>
 
                     </v-card>
               </v-col>
 
 
-              
+
           </v-row>
       </v-container>
 
@@ -145,11 +145,11 @@ export default {
         console.warn(error);
         });
     },
-      logout() {  
+      logout() {
         localStorage.clear();
         this.$router.push('/');
       },
-    formatDate(date) {  
+    formatDate(date) {
       let d = date.split('T')[0].split('-');
       let time = date.split('T')[1].split(':');
       return d[2]+'-'+d[1]+'-'+d[0]+' '+time[0]+':'+time[1];

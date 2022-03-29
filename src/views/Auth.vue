@@ -1,8 +1,8 @@
 <!-- template -->
 <template>
         <div class="sign__page item__column item__ac">
-    
-      
+
+
         <p class="sign__page__title">Вход</p>
         <v-form
             @submit.prevent="login_sign"
@@ -16,7 +16,7 @@
                 outlined
                 class="input"
                 :rules="loginRules"
-            
+
             ></v-text-field>
 
             <v-text-field
@@ -37,9 +37,9 @@
             </v-btn>
 
 
-         
+
         </v-form>
-        </div>                   
+        </div>
 </template>
 
 <!-- scripts -->
@@ -76,7 +76,7 @@
             })
             .then((response) => {
                 this.questions = response.data
-            })  
+            })
             .catch((error) => {
                 console.log(error);
             });
@@ -85,12 +85,12 @@
             'SIGN_IN_USER',
         ]),
         login_sign() {
-         
+
             let obj = {
                 email: this.login,
                 password: this.password,
             }
-        
+
             this.$axios({
                 method: 'post',
                 url: this.$API_URL + this.$API_VERSION + 'login',
@@ -99,24 +99,24 @@
             .then((response) => {
                 localStorage.setItem('access_token',response.data.token)
                 this.$router.push('/admin');
-            })  
+            })
             .catch((error) => {
                 console.log(error);
             });
         },
-        get_profile() {   
+        get_profile() {
             this.$axios({
                 method: 'post',
                 url: this.$API_URL + this.$API_VERSION + 'get/user/me',
                 headers: {
-                    'Authorization': `Bearer `+localStorage.getItem('access_token') 
+                    'Authorization': `Bearer `+localStorage.getItem('access_token')
                 }
             })
             .then((response) => {
                 if(response.data) {
                     this.$router.push('/main');
                 }
-            })  
+            })
             .catch((error) => {
                 console.log(error);
             });
@@ -125,7 +125,7 @@
     }
 </script>
 
-<style scoped lang="scss"> 
+<style scoped lang="scss">
     .sign__page__top {
         align-self: center;
         text-align: center;
@@ -163,7 +163,7 @@
           border: 1px solid #ccc;
           @media only screen and (max-width: 764px) {
              width: 100%;
-             
+
           }
         }
         ::placeholder {
@@ -184,13 +184,13 @@
             color: white;
             font-weight: bold;
             margin-bottom: 0;
-            
+
           }
         }
         button:hover {
           background-color: #285bb6;
         }
       }
-      
+
     }
 </style>

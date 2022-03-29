@@ -1,5 +1,5 @@
 <template>
- 
+
       <div>
 
         <div class="item__row item__ac">
@@ -20,17 +20,17 @@
             </v-btn>
 
         </div>
-                
+
         <div class="item__column  pa-4 mb-2 news__list" v-for="item in items" :key="item.id">
 
             <div  class="item__row item__ac">
-             
+
                 <div v-for="image in item.images"  :key="image.id" >
-                  
+
                     <img  :src="'https://api.kazaerospace.crocos.kz/'+image.img_path" />
                 </div>
-                
-                
+
+
             </div>
             <p class="mb-2">{{ item.title }}</p>
                 <p>{{ item.description }}</p>
@@ -54,8 +54,8 @@
                     class="mx-2 mr-2"
                     fab
                     dark
+                    @click="openDeleteModal(item.id)"
                     color="indigo"
-                    @click="deleteItem(item.id)"
                     >
                     <v-icon dark>
                         mdi-trash-can-outline
@@ -66,7 +66,27 @@
             <v-divider></v-divider>
 
         </div>
+        <v-dialog v-model="destroyModal" width="500">
+          <v-card class="pa-6">
+            <h3 class="mb-4">Удалить запись</h3>
+            <v-btn
+                type="submit"
+                depressed
+                color="primary"
+                @click="deleteItem()"
+            >
+              Да
+            </v-btn>
 
+            <v-btn
+                depressed
+                color="default"
+                @click="destroyModal=false"
+            >
+              Отмена
+            </v-btn>
+          </v-card>
+        </v-dialog>
 
         <v-dialog v-model="newsModal" width="500">
             <v-card class="pa-6">
@@ -96,7 +116,7 @@
                         label="Описание"
 
                         :rules="descriptionRules"
-                        
+
                     ></v-textarea>
                 </div>
 
@@ -117,9 +137,16 @@
                     depressed
                     color="primary"
                     >
-                    Создать
+                   Сохранить изменения
                 </v-btn>
 
+                <v-btn
+                    depressed
+                    color="default"
+                    @click="newsModal=false"
+                >
+                  Отмена
+                </v-btn>
                 </v-form>
 
 
@@ -139,6 +166,7 @@ export default {
     return {
          items: [],
          newsModal: false,
+         destroyModal: false,
          title: '',
          description: '',
             nameRules: [
@@ -150,7 +178,8 @@ export default {
         files: [],
         type: 0,
         newsId:'',
-        me: null
+        me: null,
+        selectedUser: null,
     };
   },
   methods: {
@@ -184,6 +213,7 @@ export default {
             for (var i = 0; i < this.files.length; i++) {
                 contractForm.append("images[]", this.files[i]);
             }
+
             contractForm.append("title", this.title);
             contractForm.append("description", this.description);
             this.$axios
@@ -205,7 +235,9 @@ export default {
 
                 this.newsModal = false;
                 this.type = 0;
+                this.$refs.form.reset();
                 this.fetch();
+
             })
             .catch((error) => {
                 if (error.response && error.response.status == 422) {
@@ -216,7 +248,7 @@ export default {
                     duration: 4000,
                     queue: true,
                     });
-                
+
                 }
             });
         },
@@ -233,7 +265,7 @@ export default {
                 },
             })
             .then((response) => {
-                
+
                 this.newsModal = true;
                 this.title = response.data.title;
                 this.description = response.data.description;
@@ -242,13 +274,17 @@ export default {
             console.log(error);
             });
         },
-        deleteItem(id) {
+        openDeleteModal(item) {
+          this.destroyModal = true;
+          this.selectedUser = item;
+        },
+        deleteItem() {
             this.$axios({
             method: "delete",
             url:
                 this.$API_URL +
                 this.$API_VERSION +
-                "news/"+id,
+                "news/"+this.selectedUser,
                 headers: {
                     Authorization: `Bearer ${localStorage.getItem("access_token")}`,
                 },
@@ -257,6 +293,7 @@ export default {
                 this.title = response.data.title;
                 this.description = response.data.description;
                 this.fetch();
+                this.destroyModal = false
             })
             .catch((error) => {
             console.log(error);
@@ -264,7 +301,7 @@ export default {
         },
         update() {
             this.$axios
-                .put(this.$API_URL + this.$API_VERSION + "news/"+this.newsId, 
+                .put(this.$API_URL + this.$API_VERSION + "news/"+this.newsId,
                 {
                     title: this.title,
                     description: this.description
@@ -296,7 +333,7 @@ export default {
                     duration: 4000,
                     queue: true,
                     });
-                
+
                 }
             });
       },

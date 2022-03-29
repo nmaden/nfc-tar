@@ -1,11 +1,11 @@
 <template>
- 
+
       <div>
 
         <div class="item__row item__ac">
-            
+
             <h2>Пользователи</h2>
-          
+
             <v-btn
                 small
                 class="mx-2"
@@ -39,7 +39,7 @@
             {{formatDate(item.updated_at)}}
         </template>
           <template v-slot:item.action="{ item  }">
-               
+
                 <v-tooltip bottom>
                   <template v-slot:activator="{ on, attrs }">
                     <i
@@ -67,8 +67,8 @@
                 </v-tooltip>
 
               </template>
-        </v-data-table>        
-        
+        </v-data-table>
+
         <v-dialog v-model="destroyModal" width="500">
             <v-card class="pa-6">
                 <h3 class="mb-4">Удалить запись</h3>
@@ -79,10 +79,9 @@
                     @click="deleteItem()"
                     >
                     Да
-                </v-btn>    
+                </v-btn>
 
                  <v-btn
-                    type="submit"
                     depressed
                     color="default"
                     @click="destroyModal=false"
@@ -145,7 +144,7 @@
                         required
                         outlined
                         class="input"
-                        :rules="nameRules"
+                        :rules="passwordRules"
                     ></v-text-field>
                 </div>
                 <div class="item__column" v-else>
@@ -155,20 +154,35 @@
                         required
                         outlined
                         class="input"
+                        :rules="passwordRules"
                     ></v-text-field>
                 </div>
 
 
-                
+
 
                  <v-btn
                     type="submit"
                     depressed
                     color="primary"
-                    >
-                    Отправить
+                    v-if="type==1" >
+                    Создать
                 </v-btn>
+                  <v-btn
+                      type="submit"
+                      depressed
+                      color="primary"
+                      v-else>
+                    Редактировать
+                  </v-btn>
 
+                  <v-btn
+                      depressed
+                      color="default"
+                      @click="newsModal=false"
+                  >
+                    Отмена
+                  </v-btn>
                 </v-form>
 
 
@@ -203,13 +217,16 @@ export default {
         ],
          items: [],
          newsModal: false,
-       
+
          description: '',
             nameRules: [
                 v => !!v || 'Заполните поле'
             ],
             descriptionRules: [
                 v => !!v || 'Заполните поле'
+            ],
+            passwordRules: [
+              (value) => (value && value.length >= 6) || 'пароль должен содержать не менее 6',
             ],
         files: [],
         type: 0,
@@ -270,21 +287,21 @@ export default {
             console.warn(error);
         });
     },
-    formatDate(date) {  
+    formatDate(date) {
       let d = date.split('T')[0].split('-');
       let time = date.split('T')[1].split(':');
       return d[2]+'-'+d[1]+'-'+d[0]+' '+time[0]+':'+time[1];
     },
     openEditModal(item) {
 
-    
+
         this.roles.forEach(element => {
                if(element.id==item.role.id) {
                    this.role = element;
                }
         });
 
-       
+
 
 
         this.selectedUser = item;
@@ -350,7 +367,7 @@ export default {
           this.type==1?this.create():this.update();
       },
       create() {
-          
+
             this.$axios
                 .post(this.$API_URL + this.$API_VERSION + "user", {
                     name: this.name,
@@ -360,7 +377,7 @@ export default {
                 }, {
                 headers: {
                     Authorization: `Bearer ${localStorage.getItem("access_token")}`,
-                  
+
                 },
             })
             .then((response) => {
@@ -375,6 +392,7 @@ export default {
 
                 this.newsModal = false;
                 this.type = 0;
+                this.$refs.form.reset();
                 this.fetch();
             })
             .catch((error) => {
@@ -386,7 +404,7 @@ export default {
                     duration: 4000,
                     queue: true,
                     });
-                
+
                 }
             });
         },
@@ -403,7 +421,7 @@ export default {
                 },
             })
             .then((response) => {
-                
+
                 this.newsModal = true;
                 this.title = response.data.title;
                 this.description = response.data.description;
@@ -424,9 +442,15 @@ export default {
                 },
             })
             .then((response) => {
-                this.title = response.data.title;
-                this.description = response.data.description;
-                this.fetch();
+              this.$toast.open({
+                message: response.data.message,
+                type: "success",
+                position: "bottom",
+                duration: 4000,
+                queue: true,
+              });
+              this.fetch();
+              this.destroyModal = false;
             })
             .catch((error) => {
             console.log(error);
@@ -434,7 +458,7 @@ export default {
         },
         update() {
             this.$axios
-                .put(this.$API_URL + this.$API_VERSION + "user/"+this.selectedUser.id, 
+                .put(this.$API_URL + this.$API_VERSION + "user/"+this.selectedUser.id,
                 {
                     name: this.name,
                     email: this.email,
@@ -467,14 +491,14 @@ export default {
                     duration: 4000,
                     queue: true,
                     });
-                
+
                 }
             });
       },
 
   },
 
-  
+
   mounted() {
       this.getUser();
       this.fetch();
@@ -496,7 +520,7 @@ watch: {
     },
 
     deep: true,
- 
+
   },
 };
 </script>
