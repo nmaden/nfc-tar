@@ -22,13 +22,27 @@
     </div>
 
     <div class="item__column  pa-4 mb-2 news__list" v-for="item in items" :key="item.id">
-      <div  class="item__row item__ac">
-        <img  :src="'https://api.kazaerospace.crocos.kz/'+item.path" />
+      <div class="item__row item__ac">
+        <img :src="'https://api.kazaerospace.crocos.kz/'+item.path"/>
 
 
       </div>
       <v-divider></v-divider>
-
+      <div class="item__row item__ac">
+        <v-btn
+            v-if="me && me.role.role == 'admin'"
+            small
+            class="mx-2 mr-2"
+            fab
+            dark
+            @click="openDeleteModal(item.id)"
+            color="indigo"
+        >
+          <v-icon dark>
+            mdi-trash-can-outline
+          </v-icon>
+        </v-btn>
+      </div>
     </div>
     <v-dialog v-model="destroyModal" width="500">
       <v-card class="pa-6">
@@ -94,7 +108,6 @@
         </v-form>
 
 
-
       </v-card>
     </v-dialog>
 
@@ -121,7 +134,7 @@ export default {
       ],
       files: [],
       type: 0,
-      newsId:'',
+      idItem: '',
       me: null,
       selectedUser: null,
     };
@@ -150,7 +163,7 @@ export default {
       this.newsModal = true;
     },
     callFunction() {
-      this.type==1?this.create():this.update();
+      this.type == 1 ? this.create() : this.update();
     },
     create() {
       let contractForm = new FormData();
@@ -195,7 +208,7 @@ export default {
     },
     update() {
       this.$axios
-          .put(this.$API_URL + this.$API_VERSION + "news/"+this.newsId,
+          .put(this.$API_URL + this.$API_VERSION + "news/" + this.newsId,
               {
                 title: this.title,
                 description: this.description
@@ -249,7 +262,32 @@ export default {
           .catch((error) => {
             console.log(error);
           });
-    }
+    },
+    openDeleteModal(item) {
+      this.destroyModal = true;
+      this.idItem = item;
+    },
+    deleteItem() {
+      this.$axios({
+        method: "delete",
+        url:
+            this.$API_URL +
+            this.$API_VERSION +
+            "delete/gallery/"+this.idItem,
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+        },
+      })
+          .then((response) => {
+            this.title = response.data.title;
+            this.description = response.data.description;
+            this.fetch();
+            this.destroyModal = false
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+    },
   },
   mounted() {
     this.fetch();

@@ -4,7 +4,7 @@
 
     <div class="item__row item__ac">
 
-      <h2>Наша команда</h2>
+      <h2>История</h2>
 
       <v-btn
           small
@@ -22,18 +22,10 @@
     </div>
 
     <div class="item__column  pa-4 mb-2 news__list" v-for="item in items" :key="item.id">
+      <p class="mb-2">Год : {{ item.year }}</p>
+      <p>Описание : {{ item.description }}</p>
 
-      <div  class="item__row item__ac">
-
-        <div v-for="image in item.images"  :key="image.id" >
-
-          <img  :src="'https://api.kazaerospace.crocos.kz/'+image.path" />
-        </div>
-
-
-      </div>
-      <p class="mb-2">{{ item.name }}</p>
-      <p>{{ item.responsible }}</p>
+      <v-divider></v-divider>
       <div class="item__row item__ac">
         <v-btn
             small
@@ -62,9 +54,6 @@
           </v-icon>
         </v-btn>
       </div>
-
-      <v-divider></v-divider>
-
     </div>
     <v-dialog v-model="destroyModal" width="500">
       <v-card class="pa-6">
@@ -96,12 +85,12 @@
             class="sign__page__block"
         >
 
-          <h3 class="mb-4" v-if="type==1">Создать</h3>
-          <h3 class="mb-4" v-else>Редактировать </h3>
+          <h3 class="mb-4" v-if="type==1">Создать </h3>
+          <h3 class="mb-4" v-else>Редактировать</h3>
           <div class="item__column">
             <v-text-field
                 v-model="title"
-                label="Название"
+                label="Год"
                 required
                 outlined
                 class="input"
@@ -120,17 +109,6 @@
             ></v-textarea>
           </div>
 
-          <div>
-            <v-file-input
-                chips
-                counter
-                multiple
-                show-size
-                small-chips
-                truncate-length="15"
-                v-model="files"
-            ></v-file-input>
-          </div>
 
           <v-btn
               type="submit"
@@ -161,7 +139,7 @@
 <script>
 
 export default {
-  name: "Team",
+  name: "History",
   data() {
     return {
       items: [],
@@ -179,7 +157,6 @@ export default {
       type: 0,
       idItem:'',
       me: null,
-      selectedUser: null,
     };
   },
   methods: {
@@ -210,14 +187,10 @@ export default {
     },
     create() {
       let contractForm = new FormData();
-      for (var i = 0; i < this.files.length; i++) {
-        contractForm.append("images[]", this.files[i]);
-      }
-
-      contractForm.append("name", this.title);
-      contractForm.append("responsible", this.description);
+      contractForm.append("year", this.title);
+      contractForm.append("description", this.description);
       this.$axios
-          .post(this.$API_URL + this.$API_VERSION + "team/store", contractForm, {
+          .post(this.$API_URL + this.$API_VERSION + "store/history", contractForm, {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("access_token")}`,
               "Content-Type": "multipart/form-data",
@@ -252,59 +225,12 @@ export default {
             }
           });
     },
-    show(id) {
-      this.idItem = id;
-      this.$axios({
-        method: "get",
-        url:
-            this.$API_URL +
-            this.$API_VERSION +
-            "show/team/"+id,
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("access_token")}`,
-        },
-      })
-          .then((response) => {
-
-            this.newsModal = true;
-            this.title = response.data.name;
-            this.description = response.data.responsible;
-          })
-          .catch((error) => {
-            console.log(error);
-          });
-    },
-    openDeleteModal(item) {
-      this.destroyModal = true;
-      this.idItem = item;
-    },
-    deleteItem() {
-      this.$axios({
-        method: "delete",
-        url:
-            this.$API_URL +
-            this.$API_VERSION +
-            "delete/team/"+this.idItem,
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("access_token")}`,
-        },
-      })
-          .then((response) => {
-            this.title = response.data.title;
-            this.description = response.data.description;
-            this.fetch();
-            this.destroyModal = false
-          })
-          .catch((error) => {
-            console.log(error);
-          });
-    },
     update() {
       this.$axios
-          .put(this.$API_URL + this.$API_VERSION + "show/team/"+this.idItem,
+          .put(this.$API_URL + this.$API_VERSION + "history/show/"+this.idItem,
               {
-                name: this.title,
-                responsible: this.description
+                year: this.title,
+                description: this.description
               }, {
                 headers: {
                   Authorization: `Bearer ${localStorage.getItem("access_token")}`,
@@ -313,7 +239,7 @@ export default {
           .then((response) => {
             console.log(response);
             this.$toast.open({
-              message: "Успешно создано",
+              message: "Успешно обновлено",
               type: "success",
               position: "bottom",
               duration: 4000,
@@ -343,18 +269,66 @@ export default {
         url:
             this.$API_URL +
             this.$API_VERSION +
-            "team",
+            "history",
         headers: {
           Authorization: `Bearer ${localStorage.getItem("access_token")}`,
         },
       })
           .then((response) => {
             this.items = response.data;
+            console.log(this.items);
           })
           .catch((error) => {
             console.log(error);
           });
-    }
+    },
+    openDeleteModal(item) {
+      this.destroyModal = true;
+      this.idItem = item;
+    },
+    show(id) {
+      this.idItem = id;
+      this.$axios({
+        method: "get",
+        url:
+            this.$API_URL +
+            this.$API_VERSION +
+            "history/show/"+id,
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+        },
+      })
+          .then((response) => {
+
+            this.newsModal = true;
+            this.title = response.data.year;
+            this.description = response.data.description;
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+    },
+    deleteItem() {
+      this.$axios({
+        method: "delete",
+        url:
+            this.$API_URL +
+            this.$API_VERSION +
+            "delete/history/"+this.idItem,
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+        },
+      })
+          .then((response) => {
+            this.title = response.data.title;
+            this.description = response.data.description;
+            this.fetch();
+            this.destroyModal = false
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+    },
   },
   mounted() {
     this.fetch();
