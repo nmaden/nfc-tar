@@ -61,6 +61,16 @@ export const routes = [
           path: "/history",
           component: () => import("../components/History.vue"),
         },
+
+        {
+          path: "/structure",
+          component: () => import("../components/Structure.vue"),
+        },
+
+        {
+          path: "/tur",
+          component: () => import("../components/Tur.vue"),
+        },
       ]
     },
 
