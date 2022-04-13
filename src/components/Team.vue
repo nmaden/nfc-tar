@@ -101,7 +101,7 @@
           <div class="item__column">
             <v-text-field
                 v-model="title"
-                label="Название"
+                label="ФИО"
                 required
                 outlined
                 class="input"
@@ -113,7 +113,7 @@
                 v-model="description"
                 filled
                 name="input-7-4"
-                label="Описание"
+                label="Должность"
 
                 :rules="descriptionRules"
 

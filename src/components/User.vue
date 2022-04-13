@@ -38,12 +38,13 @@
 
             {{formatDate(item.updated_at)}}
         </template>
-          <template v-slot:item.action="{ item  }">
+          <template v-slot:item.action="{ item  }" >
 
                 <v-tooltip bottom>
                   <template v-slot:activator="{ on, attrs }">
                     <i
-                      class="mdi mdi-pencil"
+
+                      class="mdi mdi-pencil "
                       @click="openEditModal(item)"
                       v-bind="attrs"
                       v-on="on"
@@ -56,6 +57,7 @@
                  <v-tooltip bottom>
                   <template v-slot:activator="{ on, attrs }">
                     <i
+                        style="margin: 3px;"
                       class="mdi mdi-trash-can-outline"
                       @click="openDeleteModal(item)"
                       v-bind="attrs"
@@ -225,9 +227,7 @@ export default {
             descriptionRules: [
                 v => !!v || 'Заполните поле'
             ],
-            passwordRules: [
-              (value) => (value && value.length >= 6) || 'пароль должен содержать не менее 6',
-            ],
+
         files: [],
         type: 0,
         newsId:'',
