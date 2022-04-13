@@ -14,6 +14,7 @@ Vue.prototype.$API_VERSION_2 = process.env.VUE_APP_API_VERSION_2;
 Vue.prototype.$API_URL = 'https://api.kazaerospace.crocos.kz/api/';
 Vue.prototype.$API_MAIN = process.env.VUE_APP_API;
 Vue.use(VueToast);
+
 new Vue({
   store,
   vuetify,

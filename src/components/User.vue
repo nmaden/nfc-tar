@@ -57,7 +57,7 @@
                  <v-tooltip bottom>
                   <template v-slot:activator="{ on, attrs }">
                     <i
-                        style="margin: 3px;"
+                        style="margin: 7px;"
                       class="mdi mdi-trash-can-outline"
                       @click="openDeleteModal(item)"
                       v-bind="attrs"
