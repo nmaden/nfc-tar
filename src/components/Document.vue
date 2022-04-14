@@ -1,5 +1,5 @@
 <template>
- 
+
       <div>
 
         <div class="item__row item__ac">
@@ -20,12 +20,12 @@
             </v-btn>
 
         </div>
-                
+
         <div class="item__column  pa-4 mb-2 news__list" v-for="item in items" :key="item.id">
 
             <div  class="item__row item__ac">
                 <div v-for="image in item.images"  :key="image.id" >
-                  
+
                     <img  :src="'https://api.kazaerospace.crocos.kz/'+image.img_path" />
                 </div>
             </div>
@@ -34,7 +34,7 @@
             <p class="mb-2">{{ item.name }}</p>
 
 
-            <a  class="mb-10" v-for="file in item.files" :key="file.id" :href="'http://127.0.0.1:8000/'+file.document_path" target="_blank" download> {{file.document_path}} </a>
+            <a  class="mb-7" v-for="file in item.files" :key="file.id" :href="'https://api.kazaerospace.crocos.kz/'+file.document_path" target="_blank" download> Документы </a>
 
 
             <div class="item__row item__ac">
@@ -91,7 +91,7 @@
                         :rules="nameRules"
                     ></v-text-field>
                 </div>
-             
+
 
                 <div>
                      <v-file-input
@@ -174,11 +174,11 @@ export default {
       },
       create() {
             let contractForm = new FormData();
-            
+
             for (var i = 0; i < this.files.length; i++) {
                 contractForm.append("images[]", this.files[i]);
             }
-        
+
             contractForm.append("title", this.title);
             contractForm.append("description", this.description);
 
@@ -212,7 +212,7 @@ export default {
                     duration: 4000,
                     queue: true,
                     });
-                
+
                 }
             });
         },
@@ -258,7 +258,7 @@ export default {
         },
         update() {
             this.$axios
-                .put(this.$API_URL + this.$API_VERSION + "document/"+this.newsId, 
+                .put(this.$API_URL + this.$API_VERSION + "document/"+this.newsId,
                 {
                     title: this.title,
                     description: this.description
@@ -290,7 +290,7 @@ export default {
                     duration: 4000,
                     queue: true,
                     });
-                
+
                 }
             });
       },
@@ -309,7 +309,7 @@ export default {
             })
             .then((response) => {
                 console.log(response);
-             
+
                 this.files = [];
                 this.newsModal = false;
                 this.type = 0;
@@ -324,7 +324,7 @@ export default {
                     duration: 4000,
                     queue: true,
                     });
-                
+
                 }
             });
       },
