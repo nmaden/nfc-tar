@@ -300,16 +300,20 @@ export default {
           });
     },
     update() {
+      let contractForm = new FormData();
+      for (var i = 0; i < this.files.length; i++) {
+        contractForm.append("images[]", this.files[i]);
+      }
+
+      contractForm.append("name", this.title);
+      contractForm.append("responsible", this.description);
       this.$axios
-          .put(this.$API_URL + this.$API_VERSION + "show/team/"+this.idItem,
-              {
-                name: this.title,
-                responsible: this.description
-              }, {
-                headers: {
-                  Authorization: `Bearer ${localStorage.getItem("access_token")}`,
-                },
-              })
+          .post(this.$API_URL + this.$API_VERSION + "show/team/" + this.idItem, contractForm, {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+              "Content-Type": "multipart/form-data",
+            },
+          })
           .then((response) => {
             console.log(response);
             this.$toast.open({
