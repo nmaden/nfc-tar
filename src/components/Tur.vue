@@ -171,7 +171,7 @@ export default {
         contractForm.append("images[]", this.files[i]);
       }
       this.$axios
-          .post(this.$API_URL + this.$API_VERSION + "gallery/store", contractForm, {
+          .post(this.$API_URL + this.$API_VERSION + "tur/store", contractForm, {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("access_token")}`,
               "Content-Type": "multipart/form-data",
@@ -250,7 +250,7 @@ export default {
         url:
             this.$API_URL +
             this.$API_VERSION +
-            "gallery",
+            "tur",
         headers: {
           Authorization: `Bearer ${localStorage.getItem("access_token")}`,
         },
@@ -273,7 +273,7 @@ export default {
         url:
             this.$API_URL +
             this.$API_VERSION +
-            "delete/gallery/"+this.idItem,
+            "tur/"+this.idItem,
         headers: {
           Authorization: `Bearer ${localStorage.getItem("access_token")}`,
         },

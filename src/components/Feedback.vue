@@ -19,11 +19,14 @@
                 <i class="mdi mdi-email mr-2"></i>
                 <p class="mb-0">{{feed.email}}</p>
               </div>
-
+            <div class="item__row item__ac">
+              <i class="mdi mdi-email mr-2"></i>
+              <p class="mb-0">{{feed.message}}</p>
+            </div>
               <div class="item__row item__ac">
-                <i class="mdi mdi-email mr-2"></i>
+
                 <div  v-for="(getMessage,index) in feed.messages" :key="index">
-                      <p class="mb-0">Отвечен : {{getMessage.message}}</p>
+                      <p class="mb-0">Отвечен : {{ getMessage.message}}</p>
                 </div>
               </div>
 
