@@ -221,12 +221,7 @@ export default {
          newsModal: false,
 
          description: '',
-            nameRules: [
-                v => !!v || 'Заполните поле'
-            ],
-            descriptionRules: [
-                v => !!v || 'Заполните поле'
-            ],
+
 
         files: [],
         type: 0,

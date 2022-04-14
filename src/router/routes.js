@@ -71,6 +71,16 @@ export const routes = [
           path: "/tur",
           component: () => import("../components/Tur.vue"),
         },
+
+        {
+          path: "/contacts",
+          component: () => import("../components/Contacts.vue"),
+        },
+
+        {
+          path: "/address",
+          component: () => import("../components/Address.vue"),
+        },
       ]
     },
 

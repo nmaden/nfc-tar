@@ -4,7 +4,7 @@
 
     <div class="item__row item__ac">
 
-      <h2>Контакты</h2>
+      <h2>Адрес</h2>
 
       <v-btn
           small
@@ -22,8 +22,8 @@
     </div>
 
     <div class="item__column  pa-4 mb-2 news__list" v-for="item in items" :key="item.id">
-      <p class="mb-2">Номер телефона : {{ item.phone }}</p>
-      <p>Email адрес : {{ item.email }}</p>
+      <p class="mb-2">Город : {{ item.city }}</p>
+      <p>Адрес : {{ item.address }}</p>
 
       <v-divider></v-divider>
       <div class="item__row item__ac">
@@ -90,7 +90,7 @@
           <div class="item__column">
             <v-text-field
                 v-model="title"
-                label="Телефон"
+                label="Город"
                 required
                 outlined
                 class="input"
@@ -100,7 +100,7 @@
           <div class="item__column">
             <v-text-field
                 v-model="description"
-                label="Email"
+                label="Улица"
                 required
                 outlined
                 class="input"
@@ -196,10 +196,10 @@ export default {
         contractForm.append("file[]", this.files[i]);
       }
 
-      contractForm.append("phone", this.title);
-      contractForm.append("email", this.description);
+      contractForm.append("city", this.title);
+      contractForm.append("address", this.description);
       this.$axios
-          .post(this.$API_URL + this.$API_VERSION + "contact/store", contractForm, {
+          .post(this.$API_URL + this.$API_VERSION + "address/store", contractForm, {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("access_token")}`,
               "Content-Type": "multipart/form-data",
@@ -236,10 +236,10 @@ export default {
     },
     update() {
       this.$axios
-          .put(this.$API_URL + this.$API_VERSION + "contact/show/"+this.idItem,
+          .put(this.$API_URL + this.$API_VERSION + "address/show/"+this.idItem,
               {
-                phone: this.title,
-                email: this.description
+                city: this.title,
+                address: this.description
               }, {
                 headers: {
                   Authorization: `Bearer ${localStorage.getItem("access_token")}`,
@@ -278,7 +278,7 @@ export default {
         url:
             this.$API_URL +
             this.$API_VERSION +
-            "contacts",
+            "address",
         headers: {
           Authorization: `Bearer ${localStorage.getItem("access_token")}`,
         },
@@ -299,7 +299,7 @@ export default {
         url:
             this.$API_URL +
             this.$API_VERSION +
-            "contact/show/"+id,
+            "address/show/"+id,
         headers: {
           Authorization: `Bearer ${localStorage.getItem("access_token")}`,
         },
@@ -307,8 +307,8 @@ export default {
           .then((response) => {
 
             this.newsModal = true;
-            this.title = response.data.phone;
-            this.description = response.data.email;
+            this.title = response.data.city;
+            this.description = response.data.address;
           })
           .catch((error) => {
             console.log(error);
@@ -320,7 +320,7 @@ export default {
         url:
             this.$API_URL +
             this.$API_VERSION +
-            "contact/"+this.idItem,
+            "address/"+this.idItem,
         headers: {
           Authorization: `Bearer ${localStorage.getItem("access_token")}`,
         },

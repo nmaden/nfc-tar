@@ -97,6 +97,16 @@
                        <i class="mdi mdi-label-variant mr-2"></i>
                        <p class="pointer mb-0" @click="$router.push('/tur')">Тур 360</p>
                      </div>
+
+                     <div class="mb-2 item__row item__ac" v-bind:class="{'active':$route.path=='/contacts'}">
+                       <i class="mdi mdi-label-variant mr-2"></i>
+                       <p class="pointer mb-0" @click="$router.push('/contacts')">Контакты</p>
+                     </div>
+
+                     <div class="mb-2 item__row item__ac" v-bind:class="{'active':$route.path=='/address'}">
+                       <i class="mdi mdi-label-variant mr-2"></i>
+                       <p class="pointer mb-0" @click="$router.push('/address')">Адрес</p>
+                     </div>
                         <!--
                         <div class="mb-2 item__row item__ac" v-bind:class="{'active':$route.path=='/contacts'}">
                             <i class="mdi mdi-label-variant mr-2"></i>

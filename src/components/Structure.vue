@@ -270,7 +270,7 @@ export default {
         url:
             this.$API_URL +
             this.$API_VERSION +
-            "show/team/"+id,
+            "show/structure/"+id,
         headers: {
           Authorization: `Bearer ${localStorage.getItem("access_token")}`,
         },
@@ -279,7 +279,9 @@ export default {
 
             this.newsModal = true;
             this.title = response.data.name;
-            this.description = response.data.responsible;
+            this.responsible = response.data.responsible;
+
+            this.description = response.data.about;
           })
           .catch((error) => {
             console.log(error);
@@ -312,10 +314,11 @@ export default {
     },
     update() {
       this.$axios
-          .put(this.$API_URL + this.$API_VERSION + "show/team/"+this.idItem,
+          .put(this.$API_URL + this.$API_VERSION + "show/structure/"+this.idItem,
               {
                 name: this.title,
-                responsible: this.description
+                responsible: this.responsible,
+                about: this.description,
               }, {
                 headers: {
                   Authorization: `Bearer ${localStorage.getItem("access_token")}`,

@@ -31,6 +31,33 @@
       <p>Описание : {{ item.description }}</p>
 
       <v-divider></v-divider>
+      <div class="item__row item__ac">
+        <v-btn
+            small
+            class="mx-2 mr-2"
+            fab
+            dark
+            color="indigo"
+            @click="show(item.id)"
+        >
+          <v-icon dark>
+            mdi-pencil
+          </v-icon>
+        </v-btn>
+        <v-btn
+            v-if="me && me.role.role == 'admin'"
+            small
+            class="mx-2 mr-2"
+            fab
+            dark
+            @click="openDeleteModal(item.id)"
+            color="indigo"
+        >
+          <v-icon dark>
+            mdi-trash-can-outline
+          </v-icon>
+        </v-btn>
+      </div>
 
     </div>
     <v-dialog v-model="destroyModal" width="500">
@@ -63,8 +90,8 @@
             class="sign__page__block"
         >
 
-          <h3 class="mb-4" v-if="type==1">Создать новость</h3>
-          <h3 class="mb-4" v-else>Редактировать новость</h3>
+          <h3 class="mb-4" v-if="type==1">Создать </h3>
+          <h3 class="mb-4" v-else>Редактировать </h3>
           <div class="item__column">
             <v-text-field
                 v-model="title"
@@ -175,6 +202,10 @@ export default {
     callFunction() {
       this.type==1?this.create():this.update();
     },
+    openDeleteModal(item) {
+      this.destroyModal = true;
+      this.idItem = item;
+    },
     create() {
       let contractForm = new FormData();
       for (var i = 0; i < this.files.length; i++) {
@@ -221,7 +252,7 @@ export default {
     },
     update() {
       this.$axios
-          .put(this.$API_URL + this.$API_VERSION + "news/"+this.newsId,
+          .put(this.$API_URL + this.$API_VERSION + "about/show/"+this.idItem,
               {
                 title: this.title,
                 description: this.description
@@ -233,7 +264,7 @@ export default {
           .then((response) => {
             console.log(response);
             this.$toast.open({
-              message: "Успешно создано",
+              message: "Успешно обновлено",
               type: "success",
               position: "bottom",
               duration: 4000,
@@ -275,8 +306,53 @@ export default {
           .catch((error) => {
             console.log(error);
           });
-    }
+    },
+
+    show(id) {
+      this.idItem = id;
+      this.$axios({
+        method: "get",
+        url:
+            this.$API_URL +
+            this.$API_VERSION +
+            "about/show/"+id,
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+        },
+      })
+          .then((response) => {
+
+            this.newsModal = true;
+            this.title = response.data.title;
+            this.description = response.data.description;
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+    },
+    deleteItem() {
+      this.$axios({
+        method: "delete",
+        url:
+            this.$API_URL +
+            this.$API_VERSION +
+            "about/"+this.idItem,
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+        },
+      })
+          .then((response) => {
+            this.title = response.data.title;
+            this.description = response.data.description;
+            this.fetch();
+            this.destroyModal = false
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+    },
   },
+
   mounted() {
     this.fetch();
     this.getUser();
