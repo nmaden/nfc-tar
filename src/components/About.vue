@@ -251,16 +251,20 @@ export default {
           });
     },
     update() {
+      let contractForm = new FormData();
+      for (var i = 0; i < this.files.length; i++) {
+        contractForm.append("file[]", this.files[i]);
+      }
+
+      contractForm.append("title", this.title);
+      contractForm.append("description", this.description);
       this.$axios
-          .put(this.$API_URL + this.$API_VERSION + "about/show/"+this.idItem,
-              {
-                title: this.title,
-                description: this.description
-              }, {
-                headers: {
-                  Authorization: `Bearer ${localStorage.getItem("access_token")}`,
-                },
-              })
+          .post(this.$API_URL + this.$API_VERSION + "about/show/" + this.idItem, contractForm, {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+              "Content-Type": "multipart/form-data",
+            },
+          })
           .then((response) => {
             console.log(response);
             this.$toast.open({

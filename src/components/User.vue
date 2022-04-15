@@ -30,6 +30,20 @@
             :options.sync="options"
             :server-items-length="totalPage"
         >
+
+         <template v-slot:item.id="{ item,index  }">
+
+            {{index+1}}
+
+            
+        </template>
+
+        <template v-slot:item.role="{ item  }">
+
+            <p v-if="item.role">{{item.role}}</p>
+
+            
+        </template>
         <template v-slot:item.created_at="{ item  }">
 
             {{formatDate(item.created_at)}}
@@ -48,7 +62,7 @@
                       @click="openEditModal(item)"
                       v-bind="attrs"
                       v-on="on"
-                      v-if="me && me.role.role == 'admin'"
+                      v-if="me.role && me.role.role == 'admin'"
                     ></i>
                   </template>
                   <span>Редактировать</span>
@@ -62,7 +76,7 @@
                       @click="openDeleteModal(item)"
                       v-bind="attrs"
                       v-on="on"
-                      v-if="me && me.role.role == 'admin'"
+                      v-if="me.role && me.role.role == 'admin'"
                     ></i>
                   </template>
                   <span>Удалить</span>
@@ -125,7 +139,7 @@
                     ></v-text-field>
                 </div>
                 <v-select
-                    v-if="me && me.role.role == 'admin'"
+                    v-if="me.role && me.role.role == 'admin'"
                     :items="roles"
                     outlined
                     :hide-details="true"
@@ -202,6 +216,12 @@ export default {
   name: "User",
   data() {
     return {
+        nameRules: [
+            v => !!v || 'Заполните поле'
+        ],
+        passwordRules: [
+            v => !!v || 'Заполните поле'
+        ],
         user: null,
         headers: [
             {
@@ -212,7 +232,7 @@ export default {
             },
             { text: "ФИО", value: "name" },
             { text: "Email", value: "email" },
-            { text: "Роль", value: "role.name_rus", sortable: true },
+            { text: "Роль", value: "role", sortable: true },
             { text: "Дата создание", value: "created_at" },
             { text: "Дата редактирование", value: "updated_at" },
             { text: 'Действие', value: 'action' },

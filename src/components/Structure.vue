@@ -4,8 +4,8 @@
 
     <div class="item__row item__ac">
 
-      <h2>Структура</h2>
 
+      <h2>Структура</h2>
       <v-btn
           small
           class="mx-2"
@@ -21,17 +21,19 @@
 
     </div>
 
+
+   
+
     <div class="item__column  pa-4 mb-2 news__list" v-for="item in items" :key="item.id">
 
       <div  class="item__row item__ac">
-
         <img  :src="'https://api.kazaerospace.crocos.kz/'+item.image" />
-
-
       </div>
       <p class="mb-2">ФИО:{{ item.name }}</p>
       <p>Должность : {{ item.responsible }}</p>
       <p>Биография : {{ item.about }}</p>
+      <p>Дата создание : {{ formatDate(item.created_at) }}</p>
+      <p>Приоритет : {{ item.priority }}</p>
       <div class="item__row item__ac">
         <v-btn
             small
@@ -86,6 +88,9 @@
       </v-card>
     </v-dialog>
 
+   
+
+   
     <v-dialog v-model="newsModal" width="500">
       <v-card class="pa-6">
         <v-form
@@ -116,6 +121,8 @@
                 :rules="nameRules"
             ></v-text-field>
           </div>
+
+          
           <div class="item__column">
             <v-textarea
                 v-model="description"
@@ -128,6 +135,18 @@
             ></v-textarea>
           </div>
 
+          <div class="item__column">
+            <v-text-field
+                v-model="priority"
+                filled
+                name="input-7-4"
+                label="Приоритет"
+                type="number"
+            ></v-text-field>
+          </div>
+      
+          
+        
           <div>
             <v-file-input
                 chips
@@ -140,10 +159,12 @@
             ></v-file-input>
           </div>
 
+       
           <v-btn
               type="submit"
               depressed
               color="primary"
+              class="mr-2"
           >
             Сохранить изменения
           </v-btn>
@@ -172,12 +193,17 @@ export default {
   name: "Team",
   data() {
     return {
+      dateModal: false,
+      timeModal: false,
+      date: '',
+      picker: '',
       items: [],
       newsModal: false,
       destroyModal: false,
       title: '',
       description: '',
       responsible: '',
+      created_at: '',
       nameRules: [
         v => !!v || 'Заполните поле'
       ],
@@ -189,9 +215,24 @@ export default {
       idItem:'',
       me: null,
       selectedUser: null,
+      options: {
+        itemsPerPage: 2,
+        page: 1
+      },
+      priority: 0,
     };
   },
   methods: {
+    formatDate(date) {
+      let d = date.split('T')[0].split('-');
+      let time = date.split('T')[1].split(':');
+      return d[2]+'-'+d[1]+'-'+d[0]+' '+time[0]+':'+time[1];
+    },
+    formatDateSecond(date) {
+      let d = date.split('T')[0].split('-');
+      let time = date.split('T')[1].split(':');
+      return d[0]+'-'+d[1]+'-'+d[2]+' '+time[0]+':'+time[1];
+    },
     getUser() {
       this.$axios({
         method: "get",
@@ -280,8 +321,11 @@ export default {
             this.newsModal = true;
             this.title = response.data.name;
             this.responsible = response.data.responsible;
-
+            this.priority = response.data.priority;
             this.description = response.data.about;
+            // this.created_at = this.formatDateSecond(response.data.created_at);
+            // this.picker = this.created_at.split(' ')[1];
+            // this.date = this.created_at.split(' ')[0];
           })
           .catch((error) => {
             console.log(error);
@@ -313,17 +357,23 @@ export default {
           });
     },
     update() {
+      let contractForm = new FormData();
+      for (var i = 0; i < this.files.length; i++) {
+        contractForm.append("images[]", this.files[i]);
+      }
+
+      contractForm.append("name", this.title);
+      contractForm.append("about", this.description);
+      contractForm.append("responsible", this.responsible);
+      contractForm.append("priority", this.priority);
+
       this.$axios
-          .put(this.$API_URL + this.$API_VERSION + "show/structure/"+this.idItem,
-              {
-                name: this.title,
-                responsible: this.responsible,
-                about: this.description,
-              }, {
-                headers: {
-                  Authorization: `Bearer ${localStorage.getItem("access_token")}`,
-                },
-              })
+          .post(this.$API_URL + this.$API_VERSION + "show/structure/" + this.idItem, contractForm, {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+              "Content-Type": "multipart/form-data",
+            },
+          })
           .then((response) => {
             console.log(response);
             this.$toast.open({
@@ -363,7 +413,10 @@ export default {
         },
       })
           .then((response) => {
-            this.items = response.data;
+              this.items = response.data;
+              this.loading = false;
+              this.numberOfPages = response.data.total;
+              this.totalPage = response.data.total;
           })
           .catch((error) => {
             console.log(error);
@@ -377,7 +430,9 @@ export default {
   beforeMount() {
 
   },
-  watch: {},
+  watch: {
+
+  },
 };
 </script>
 
@@ -389,5 +444,13 @@ export default {
     height: 100px;
     object-fit: cover;
   }
+}
+
+.pointer {
+  cursor: pointer;
+}
+.pointer:hover {
+  opacity: 0.8;
+
 }
 </style>

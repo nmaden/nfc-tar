@@ -13,7 +13,7 @@
 
                 <div class="item__column header__user">
                     <h3 class="mb-0">{{me.name}}</h3>
-                    <p class="mb-0">{{me.role.name_rus}}</p>
+                    <p class="mb-0" v-if="me.role">{{me.role.name_rus}}</p>
                 </div>
 
 

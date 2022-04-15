@@ -14,6 +14,10 @@
             :loading="loading"
             :options.sync="options"
             :server-items-length="totalPage"
+            :sort-by.sync="sortBy"
+            :sort-desc.sync="sortDesc"
+            @update:sort-by="updateSort('by',$event)"
+            @update:sort-desc="updateSort('desc',$event)"
         >
         <template v-slot:item.created_at="{ item  }">
 
@@ -144,16 +148,18 @@ export default {
   name: "News",
   data() {
     return {
+        sortBy: ['id'],
+        sortDesc: [false],
         headers: [
             {
             text: "№",
             align: "start",
-            sortable: false,
+            sortable: true,
             value: "id",
             },
-            { text: "Инициатор", value: "user.name" },
-            { text: "Действие", value: "message" },
-            { text: "Дата создание", value: "created_at" }
+            { text: "Инициатор", value: "user.name",sortable:true },
+            { text: "Действие", value: "message",sortable:true },
+            { text: "Дата создание", value: "created_at",sortable:true }
         ],
          items: [],
          newsModal: false,
@@ -186,6 +192,13 @@ export default {
     };
   },
   methods: {
+    updateSort(byDesc,event) {
+        if(byDesc == 'by'){
+            this.sortBy = event
+        }else if(byDesc == 'desc'){
+            this.sortDesc = event
+        }
+    },
     formatDate(date) {  
       let d = date.split('T')[0].split('-');
       let time = date.split('T')[1].split(':');
@@ -229,7 +242,7 @@ export default {
             url:
             this.$API_URL +
             this.$API_VERSION +
-            "logs?per_page="+this.options.itemsPerPage+'&page='+this.options.page,
+            "logs?per_page="+this.options.itemsPerPage+'&page='+this.options.page+'&sortBy='+this.sortBy+'&sortDesc='+this.sortDesc,
             headers: {
             Authorization: `Bearer ${localStorage.getItem("access_token")}`,
             },
@@ -386,6 +399,14 @@ export default {
 
   },
 watch: {
+    sortDesc(val) {
+        if(!val) {
+            alert("there");
+            // this.sortDesc = false;
+            // this.sortBy = 'id';
+            // // this.fetch();
+        }
+    },
     options: {
       handler(val) {
         if (val.itemsPerPage < 0) {
