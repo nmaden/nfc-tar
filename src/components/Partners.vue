@@ -27,7 +27,7 @@
 
 
       </div>
-      <p class="mb-2">Название : {{ item.title }}</p>
+      <p class="mb-2">Гиперссылка : {{ item.title }}</p>
 
       <v-divider></v-divider>
       <div class="item__row item__ac">
@@ -81,7 +81,7 @@
           <div class="item__column">
             <v-text-field
                 v-model="title"
-                label="Название"
+                label="Гиперссылка"
                 required
                 outlined
                 class="input"

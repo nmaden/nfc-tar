@@ -27,7 +27,7 @@
              
                 <div v-for="image in item.images"  :key="image.id" >
                   
-                    <img  :src="'https://api.kazaerospace.crocos.kz/'+image.img_path" />
+                    <img  :src="'https://api.kazaerospace.crocos.kz/'+image.path" />
                 </div>
                 
                 
@@ -41,7 +41,7 @@
                     fab
                     dark
                     color="indigo"
-                    @click="show(item.id)"
+                    @click="show(item)"
                     >
                     <v-icon dark>
                         mdi-pencil
@@ -76,8 +76,8 @@
                     class="sign__page__block"
                 >
 
-                <h3 class="mb-4" v-if="type==1">Создать новость</h3>
-                <h3 class="mb-4" v-else>Редактировать новость</h3>
+                <h3 class="mb-4" v-if="type==1">Создать</h3>
+                <h3 class="mb-4" v-else>Редактировать</h3>
                 <div class="item__column">
                     <v-text-field
                         v-model="title"
@@ -137,10 +137,10 @@ export default {
   name: "News",
   data() {
     return {
-         items: [],
-         newsModal: false,
-         title: '',
-         description: '',
+        items: [],
+        newsModal: false,
+        title: '',
+        description: '',
             nameRules: [
                 v => !!v || 'Заполните поле'
             ],
@@ -150,7 +150,8 @@ export default {
         files: [],
         type: 0,
         newsId:'',
-        me: null
+        me: null,
+        id: null
     };
   },
   methods: {
@@ -186,8 +187,7 @@ export default {
             }
             contractForm.append("title", this.title);
             contractForm.append("description", this.description);
-            this.$axios
-                .post(this.$API_URL + this.$API_VERSION + "projects", contractForm, {
+            this.$axios.post(this.$API_URL + this.$API_VERSION + "projects", contractForm, {
                 headers: {
                     Authorization: `Bearer ${localStorage.getItem("access_token")}`,
                     "Content-Type": "multipart/form-data",
@@ -202,7 +202,7 @@ export default {
                     duration: 4000,
                     queue: true,
                 });
-
+                this.files = [];
                 this.newsModal = false;
                 this.type = 0;
                 this.fetch();
@@ -216,31 +216,14 @@ export default {
                     duration: 4000,
                     queue: true,
                     });
-                
                 }
             });
         },
-        show(id) {
-            this.newsId = id;
-            this.$axios({
-            method: "get",
-            url:
-                this.$API_URL +
-                this.$API_VERSION +
-                "projects/"+id,
-                headers: {
-                    Authorization: `Bearer ${localStorage.getItem("access_token")}`,
-                },
-            })
-            .then((response) => {
-                
-                this.newsModal = true;
-                this.title = response.data.title;
-                this.description = response.data.description;
-            })
-            .catch((error) => {
-            console.log(error);
-            });
+        show(item) {
+            this.newsModal = true;
+            this.title = item.title;
+            this.description = item.description;
+            this.id = item.id;
         },
         deleteItem(id) {
             this.$axios({
@@ -263,14 +246,17 @@ export default {
             });
         },
         update() {
-            this.$axios
-                .put(this.$API_URL + this.$API_VERSION + "projects/"+this.newsId, 
-                {
-                    title: this.title,
-                    description: this.description
-                }, {
+            let contractForm = new FormData();
+            for (var i = 0; i < this.files.length; i++) {
+                contractForm.append("images[]", this.files[i]);
+            }
+            contractForm.append("title", this.title);
+            contractForm.append("description", this.description);
+
+            this.$axios.post(this.$API_URL + this.$API_VERSION + "projects/"+this.id, contractForm,{
                 headers: {
                     Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+                    "Content-Type": "multipart/form-data",
                 },
             })
             .then((response) => {
@@ -282,9 +268,7 @@ export default {
                     duration: 4000,
                     queue: true,
                 });
-
                 this.newsModal = false;
-
                 this.fetch();
             })
             .catch((error) => {

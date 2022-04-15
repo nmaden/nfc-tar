@@ -24,9 +24,9 @@
     <div class="item__column  pa-4 mb-2 news__list" v-for="item in items" :key="item.id">
       <div class="item__row item__ac">
         <img :src="'https://api.kazaerospace.crocos.kz/'+item.path"/>
-
-
       </div>
+
+      <p>Приоритет: {{item.priority}}</p>
       <v-divider></v-divider>
       <div class="item__row item__ac">
         <v-btn
@@ -90,6 +90,15 @@
             ></v-file-input>
           </div>
 
+          <v-text-field
+              v-model="priority"
+              label="Приоритет"
+              required
+              outlined
+              class="input"
+              :rules="nameRules"
+          ></v-text-field>
+
           <v-btn
               type="submit"
               depressed
@@ -121,6 +130,7 @@ export default {
   name: "News",
   data() {
     return {
+      priority: null,
       items: [],
       newsModal: false,
       destroyModal: false,
@@ -170,6 +180,7 @@ export default {
       for (var i = 0; i < this.files.length; i++) {
         contractForm.append("images[]", this.files[i]);
       }
+      contractForm.append("priority", this.priority);
       this.$axios
           .post(this.$API_URL + this.$API_VERSION + "gallery/store", contractForm, {
             headers: {

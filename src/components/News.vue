@@ -319,9 +319,7 @@ export default {
                     duration: 4000,
                     queue: true,
                 });
-
                 this.newsModal = false;
-
                 this.fetch();
             })
             .catch((error) => {

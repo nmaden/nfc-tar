@@ -24,6 +24,7 @@
     <div class="item__column  pa-4 mb-2 news__list" v-for="item in items" :key="item.id">
       <p class="mb-2">Год : {{ item.year }}</p>
       <p>Описание : {{ item.description }}</p>
+      <p>Приоритет : {{ item.priority }}</p>
 
       <v-divider></v-divider>
       <div class="item__row item__ac">
@@ -109,11 +110,23 @@
             ></v-textarea>
           </div>
 
+          <div class="item__column">
+            <v-text-field
+                v-model="priority"
+                label="Приоритет"
+                required
+                outlined
+                class="input"
+            ></v-text-field>
+          </div>
+
+
 
           <v-btn
               type="submit"
               depressed
               color="primary"
+              class="mr-2"
           >
             Сохранить изменения
           </v-btn>
@@ -142,6 +155,7 @@ export default {
   name: "History",
   data() {
     return {
+      priority: 0,
       items: [],
       newsModal: false,
       destroyModal: false,
@@ -189,6 +203,7 @@ export default {
       let contractForm = new FormData();
       contractForm.append("year", this.title);
       contractForm.append("description", this.description);
+      contractForm.append("priority", this.priority);
       this.$axios
           .post(this.$API_URL + this.$API_VERSION + "store/history", contractForm, {
             headers: {

@@ -232,7 +232,7 @@ export default {
             },
             { text: "ФИО", value: "name" },
             { text: "Email", value: "email" },
-            { text: "Роль", value: "role", sortable: true },
+            { text: "Роль", value: "role.name_rus", sortable: true },
             { text: "Дата создание", value: "created_at" },
             { text: "Дата редактирование", value: "updated_at" },
             { text: 'Действие', value: 'action' },

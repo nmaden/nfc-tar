@@ -236,7 +236,7 @@ export default {
     },
     update() {
       this.$axios
-          .put(this.$API_URL + this.$API_VERSION + "contact/show/"+this.idItem,
+          .put(this.$API_URL + this.$API_VERSION + "contact/"+this.idItem,
               {
                 phone: this.title,
                 email: this.description

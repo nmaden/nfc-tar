@@ -105,7 +105,7 @@
                     ></v-file-input>
                 </div>
 
-                <div v-for="file in downloadFiles" :key="file.id" class="item__row item__ac pointer mb-3">
+                <div v-for="file in uploadedFiles" :key="file.id" class="item__row item__ac pointer mb-3">
                     <p class="mr-2 mb-0">{{file.document_path.split('/')[file.document_path.split('/').length-1]}}</p>
                     <i class="mdi mdi-trash-can-outline" @click="removeFile(file.id)"></i>
                 </div>
@@ -148,7 +148,8 @@ export default {
         files: [],
         type: 0,
         newsId:'',
-        me: null
+        me: null,
+        uploadedFiles: []
     };
   },
   methods: {
@@ -264,7 +265,7 @@ export default {
                 this.newsModal = true;
                 this.title = response.data.name;
                 
-                this.downloadFiles = response.data.files;
+                this.uploadedFiles = response.data.files;
                 
             })
             .catch((error) => {

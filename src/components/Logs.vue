@@ -6,7 +6,6 @@
             <h2>Журналирования событий</h2>
         </div>
 
-
         <v-data-table
             :headers="headers"
             :items="users"
@@ -20,7 +19,6 @@
             @update:sort-desc="updateSort('desc',$event)"
         >
         <template v-slot:item.created_at="{ item  }">
-
             {{formatDate(item.created_at)}}
         </template>
         <template v-slot:item.updated_at="{ item  }">
@@ -159,6 +157,7 @@ export default {
             },
             { text: "Инициатор", value: "user.name",sortable:true },
             { text: "Действие", value: "message",sortable:true },
+            { text: "IP адрес", value: "ip",sortable:true },
             { text: "Дата создание", value: "created_at",sortable:true }
         ],
          items: [],
@@ -180,7 +179,7 @@ export default {
         loading: true,
         page: 0,
         options: {
-            itemsPerPage: 2,
+            itemsPerPage: 10,
             page: 1,
         },
         me: [],
