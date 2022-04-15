@@ -34,7 +34,7 @@
             <p class="mb-2">{{ item.name }}</p>
 
 
-            <a  class="mb-7" v-for="file in item.files" :key="file.id" :href="'https://api.kazaerospace.crocos.kz/'+file.document_path" target="_blank" download> Документы </a>
+            <a  class="mb-7" v-for="file in item.files" :key="file.id" :href="'https://api.kazaerospace.crocos.kz/'+file.document_path" target="_blank" download>{{ file.document_path.split('/')[file.document_path.split('/').length-1] }} </a>
 
 
             <div class="item__row item__ac">
@@ -202,6 +202,7 @@ export default {
                 this.newsModal = false;
                 this.type = 0;
                 this.fetch();
+                this.files = [];
             })
             .catch((error) => {
                 if (error.response && error.response.status == 422) {
