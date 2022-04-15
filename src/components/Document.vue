@@ -105,6 +105,11 @@
                     ></v-file-input>
                 </div>
 
+                <div v-for="file in downloadFiles" :key="file.id" class="item__row item__ac pointer mb-3">
+                    <p class="mr-2 mb-0">{{file.document_path.split('/')[file.document_path.split('/').length-1]}}</p>
+                    <i class="mdi mdi-trash-can-outline" @click="removeFile(file.id)"></i>
+                </div>
+
                  <v-btn
                     type="submit"
                     depressed
@@ -147,6 +152,32 @@ export default {
     };
   },
   methods: {
+        removeFile(fileId) {
+            this.$axios({
+                method: "delete",
+                url:
+                this.$API_URL +
+                this.$API_VERSION +
+                "document/file/"+fileId,
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+                },
+            })
+            .then((response) => {
+                this.$toast.open({
+                    message: response.data.message,
+                    type: "success",
+                    position: "bottom",
+                    duration: 4000,
+                    queue: true,
+                });
+                this.fetch();
+                this.newsModal = false;
+            })
+            .catch((error) => {
+                console.warn(error);
+            });
+        },
         getUser() {
             this.$axios({
                 method: "get",
@@ -232,6 +263,9 @@ export default {
             .then((response) => {
                 this.newsModal = true;
                 this.title = response.data.name;
+                
+                this.downloadFiles = response.data.files;
+                
             })
             .catch((error) => {
             console.log(error);
