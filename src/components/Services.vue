@@ -4,7 +4,7 @@
 
         <div class="item__row item__ac">
 
-            <h2>Наши проекты</h2>
+            <h2>Услуги</h2>
 
             <v-btn
                 small
@@ -24,15 +24,11 @@
         <div class="item__column  pa-4 mb-2 news__list" v-for="item in items" :key="item.id">
 
             <div  class="item__row item__ac">
-             
                 <div v-for="image in item.images"  :key="image.id" >
-                  
                     <img  :src="'https://api.kazaerospace.crocos.kz/'+image.path" />
-                </div>
-                
-                
+                </div>  
             </div>
-            <p class="mb-2">{{ item.title }}</p>
+            <p class="mb-2">{{ item.name }}</p>
                 <p>{{ item.description }}</p>
             <div class="item__row item__ac">
                 <v-btn
@@ -81,23 +77,24 @@
                 <div class="item__column">
                     <v-text-field
                         v-model="title"
-                        label="Название"
+                        label="Наименование"
                         required
                         outlined
                         class="input"
                         :rules="nameRules"
                     ></v-text-field>
                 </div>
-                <div class="item__column">
-                     <v-textarea
-                         v-model="description"
-                        filled
-                        name="input-7-4"
-                        label="Описание"
 
-                        :rules="descriptionRules"
-                        
-                    ></v-textarea>
+
+                <div class="item__column">
+                    <v-text-field
+                        v-model="priority"
+                        label="Приоритет"
+                        required
+                        outlined
+                        class="input"
+                        :rules="nameRules"
+                    ></v-text-field>
                 </div>
 
                 <div>
@@ -111,7 +108,6 @@
                         v-model="files"
                     ></v-file-input>
                 </div>
-
                  <v-btn
                     type="submit"
                     depressed
@@ -119,11 +115,7 @@
                     >
                     Создать
                 </v-btn>
-
                 </v-form>
-
-
-
             </v-card>
         </v-dialog>
 
@@ -151,7 +143,8 @@ export default {
         type: 0,
         newsId:'',
         me: null,
-        id: null
+        id: null,
+        priority: 0
     };
   },
   methods: {
@@ -186,8 +179,8 @@ export default {
                 contractForm.append("images[]", this.files[i]);
             }
             contractForm.append("title", this.title);
-            contractForm.append("description", this.description);
-            this.$axios.post(this.$API_URL + this.$API_VERSION + "projects", contractForm, {
+            contractForm.append("priority", this.priority);
+            this.$axios.post(this.$API_URL + this.$API_VERSION + "services", contractForm, {
                 headers: {
                     Authorization: `Bearer ${localStorage.getItem("access_token")}`,
                     "Content-Type": "multipart/form-data",
@@ -221,8 +214,8 @@ export default {
         },
         show(item) {
             this.newsModal = true;
-            this.title = item.title;
-            this.description = item.description;
+            this.title = item.name;
+            this.priority = item.priority;
             this.id = item.id;
         },
         deleteItem(id) {
@@ -231,7 +224,7 @@ export default {
             url:
                 this.$API_URL +
                 this.$API_VERSION +
-                "projects/"+id,
+                "services/"+id,
                 headers: {
                     Authorization: `Bearer ${localStorage.getItem("access_token")}`,
                 },
@@ -245,23 +238,16 @@ export default {
             console.log(error);
             });
         },
-     
         update() {
-            let contractForm = new FormData();
-            for (var i = 0; i < this.files.length; i++) {
-                contractForm.append("images[]", this.files[i]);
-            }
-            contractForm.append("title", this.title);
-            contractForm.append("description", this.description);
-
-            this.$axios.post(this.$API_URL + this.$API_VERSION + "projects/"+this.id, contractForm,{
+            this.$axios.put(this.$API_URL + this.$API_VERSION + "services/"+this.id, {
+                name: this.title,
+                priority: this.priority
+            },{
                 headers: {
                     Authorization: `Bearer ${localStorage.getItem("access_token")}`,
-                    "Content-Type": "multipart/form-data",
                 },
             })
             .then((response) => {
-
                 console.log(response);
                 this.$toast.open({
                     message: "Успешно создано",
@@ -271,6 +257,9 @@ export default {
                     queue: true,
                 });
                 this.newsModal = false;
+
+                if(this.files.length>0)
+                    this.uploadFiles();
                 this.fetch();
             })
             .catch((error) => {
@@ -292,7 +281,7 @@ export default {
           url:
             this.$API_URL +
             this.$API_VERSION +
-            "projects",
+            "services",
             headers: {
                 Authorization: `Bearer ${localStorage.getItem("access_token")}`,
             },
@@ -303,7 +292,43 @@ export default {
         .catch((error) => {
           console.log(error);
         });
-      }
+      },
+      uploadFiles() {
+
+
+            let contractForm = new FormData();
+            for (var i = 0; i < this.files.length; i++) {
+                contractForm.append("images[]", this.files[i]);
+            }
+            contractForm.append("id", this.id);
+            this.$axios
+                .post(this.$API_URL + this.$API_VERSION + "services/files/"+this.id, contractForm, {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+                    "Content-Type": "multipart/form-data",
+                },
+            })
+            .then((response) => {
+                console.log(response);
+
+                this.files = [];
+                this.newsModal = false;
+                this.type = 0;
+                this.fetch();
+            })
+            .catch((error) => {
+                if (error.response && error.response.status == 422) {
+                    this.$toast.open({
+                    message: "Заполните все поля",
+                    type: "error",
+                    position: "bottom",
+                    duration: 4000,
+                    queue: true,
+                    });
+
+                }
+            });
+        },
   },
   mounted() {
       this.fetch();

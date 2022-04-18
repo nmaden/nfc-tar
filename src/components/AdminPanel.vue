@@ -107,6 +107,11 @@
                        <i class="mdi mdi-label-variant mr-2"></i>
                        <p class="pointer mb-0" @click="$router.push('/address')">Адрес</p>
                      </div>
+
+                     <div class="mb-2 item__row item__ac" v-bind:class="{'active':$route.path=='/services'}">
+                            <i class="mdi mdi-label-variant mr-2"></i>
+                            <p class="pointer mb-0" @click="$router.push('/services')">Услуги</p>
+                    </div>
                         <!--
                         <div class="mb-2 item__row item__ac" v-bind:class="{'active':$route.path=='/contacts'}">
                             <i class="mdi mdi-label-variant mr-2"></i>

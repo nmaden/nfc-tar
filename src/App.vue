@@ -20,7 +20,13 @@ export default {
 };
 </script>
 
-<style>
+<style lang="scss">
+
+.news__list {
+  .item__row {
+    margin-bottom: 20px;
+  }
+}
 .agreement__lang {
 }
 
