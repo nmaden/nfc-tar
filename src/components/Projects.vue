@@ -33,7 +33,10 @@
                 
             </div>
             <p class="mb-2">{{ item.title }}</p>
-                <p>{{ item.description }}</p>
+            <p class="mb-2">{{ item.description }}</p>
+            <p class="mb-2">{{ item.priority }}</p>
+
+
             <div class="item__row item__ac">
                 <v-btn
                     small
@@ -88,6 +91,17 @@
                         :rules="nameRules"
                     ></v-text-field>
                 </div>
+
+                <div class="item__column">
+                    <v-text-field
+                        v-model="priority"
+                        label="Приоритет"
+                        required
+                        outlined
+                        class="input"
+                        :rules="nameRules"
+                    ></v-text-field>
+                </div>
                 <div class="item__column">
                      <v-textarea
                          v-model="description"
@@ -111,6 +125,17 @@
                         v-model="files"
                     ></v-file-input>
                 </div>
+
+
+                <div class="item__column">
+                    <div v-for="file in uploadedFiles" :key="file.id" class="item__row item__ac pointer mb-3">
+                        <p class="mr-2 mb-0">{{file.path.split('/')[file.path.split('/').length-1]}}</p>
+                        <i class="mdi mdi-trash-can-outline" @click="removeFile(file.id)"></i>
+                    </div>
+                </div>
+
+
+                <div class="item__row item__ac"></div>
 
                  <v-btn
                     type="submit"
@@ -137,6 +162,7 @@ export default {
   name: "News",
   data() {
     return {
+        uploadedFiles: [],
         items: [],
         newsModal: false,
         title: '',
@@ -151,10 +177,37 @@ export default {
         type: 0,
         newsId:'',
         me: null,
-        id: null
+        id: null,
+        priority: 0
     };
   },
   methods: {
+        removeFile(fileId) {
+            this.$axios({
+                method: "delete",
+                url:
+                this.$API_URL +
+                this.$API_VERSION +
+                "projects/file/"+fileId,
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+                },
+            })
+            .then((response) => {
+                this.$toast.open({
+                    message: response.data.message,
+                    type: "success",
+                    position: "bottom",
+                    duration: 4000,
+                    queue: true,
+                });
+                this.fetch();
+                this.newsModal = false;
+            })
+            .catch((error) => {
+                console.warn(error);
+            });
+        },
         getUser() {
             this.$axios({
                 method: "get",
@@ -187,6 +240,8 @@ export default {
             }
             contractForm.append("title", this.title);
             contractForm.append("description", this.description);
+
+            contractForm.append("priority", this.priority);
             this.$axios.post(this.$API_URL + this.$API_VERSION + "projects", contractForm, {
                 headers: {
                     Authorization: `Bearer ${localStorage.getItem("access_token")}`,
@@ -220,10 +275,15 @@ export default {
             });
         },
         show(item) {
+
+            console.log(item);
             this.newsModal = true;
             this.title = item.title;
             this.description = item.description;
             this.id = item.id;
+
+
+            this.uploadedFiles = item.images;
         },
         deleteItem(id) {
             this.$axios({
@@ -253,6 +313,8 @@ export default {
             }
             contractForm.append("title", this.title);
             contractForm.append("description", this.description);
+            contractForm.append("priority", this.priority);
+
 
             this.$axios.post(this.$API_URL + this.$API_VERSION + "projects/"+this.id, contractForm,{
                 headers: {

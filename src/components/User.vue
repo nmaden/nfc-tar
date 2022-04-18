@@ -135,7 +135,7 @@
                         required
                         outlined
                         class="input"
-                        :rules="nameRules"
+                        :rules="emailRules"
                     ></v-text-field>
                 </div>
                 <v-select
@@ -151,6 +151,9 @@
                     v-model="role"
                     required
                     class="mb-5"
+                    label="Выберите роль"
+
+                        :rules="nameRules"
                 ></v-select>
 
                 <div class="item__column" v-if="type==1">
@@ -219,8 +222,12 @@ export default {
         nameRules: [
             v => !!v || 'Заполните поле'
         ],
+        emailRules: [
+            v => !!v || 'Заполните поле',
+            v => !v || /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(v) || 'Не правильный email'
+        ],
         passwordRules: [
-            v => !!v || 'Заполните поле'
+            v => v && v.length>6 || 'Длина пароля меньше от 6'
         ],
         user: null,
         headers: [
@@ -382,8 +389,8 @@ export default {
           this.type==1?this.create():this.update();
       },
       create() {
-
-            this.$axios
+             this.$refs.form.validate()
+            this.$axios 
                 .post(this.$API_URL + this.$API_VERSION + "user", {
                     name: this.name,
                     email: this.email,
@@ -404,6 +411,12 @@ export default {
                     duration: 4000,
                     queue: true,
                 });
+
+                this.name = '';
+                this.email = '';
+                this.password = '';
+                this.role = '';
+               
 
                 this.newsModal = false;
                 this.type = 0;

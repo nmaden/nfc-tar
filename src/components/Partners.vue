@@ -44,6 +44,19 @@
             mdi-trash-can-outline
           </v-icon>
         </v-btn>
+
+        <v-btn
+            small
+            class="mx-2 mr-2"
+            fab
+            dark
+            color="indigo"
+            @click="show(item)"
+        >
+          <v-icon dark>
+            mdi-pencil
+          </v-icon>
+        </v-btn>
       </div>
     </div>
     <v-dialog v-model="destroyModal" width="500">
@@ -148,9 +161,15 @@ export default {
       newsId:'',
       me: null,
       selectedUser: null,
+      id: null
     };
   },
   methods: {
+    show(item) {
+        this.newsModal = true;
+        this.title = item.title;
+        this.id = item.id;
+    },
     getUser() {
       this.$axios({
         method: "get",
@@ -220,20 +239,22 @@ export default {
           });
     },
     update() {
+      let contractForm = new FormData();
+      for (var i = 0; i < this.files.length; i++) {
+        contractForm.append("file[]", this.files[i]);
+      }
+      contractForm.append("title", this.title);
       this.$axios
-          .put(this.$API_URL + this.$API_VERSION + "news/"+this.newsId,
-              {
-                title: this.title,
-                description: this.description
-              }, {
-                headers: {
-                  Authorization: `Bearer ${localStorage.getItem("access_token")}`,
-                },
-              })
+          .post(this.$API_URL + this.$API_VERSION + "partner/update/"+this.id, contractForm, {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+              "Content-Type": "multipart/form-data",
+            },
+          })
           .then((response) => {
             console.log(response);
             this.$toast.open({
-              message: "Успешно создано",
+              message: response.data.message,
               type: "success",
               position: "bottom",
               duration: 4000,
@@ -241,8 +262,10 @@ export default {
             });
 
             this.newsModal = false;
-
+            this.type = 0;
+            this.$refs.form.reset();
             this.fetch();
+
           })
           .catch((error) => {
             if (error.response && error.response.status == 422) {

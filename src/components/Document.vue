@@ -33,6 +33,8 @@
 
             <p class="mb-2">{{ item.name }}</p>
 
+             <p class="mb-2">{{ item.subname }}</p>
+
 
             <a  class="mb-7" v-for="file in item.files" :key="file.id" :href="'https://api.kazaerospace.crocos.kz/'+file.document_path" target="_blank" download>{{ file.document_path.split('/')[file.document_path.split('/').length-1] }} </a>
 
@@ -91,7 +93,19 @@
                         :rules="nameRules"
                     ></v-text-field>
                 </div>
+                
 
+
+                <div class="item__column">
+                    <v-text-field
+                        v-model="subtitle"
+                        label="Наименование"
+                        required
+                        outlined
+                        class="input"
+                        :rules="nameRules"
+                    ></v-text-field>
+                </div>
 
                 <div>
                      <v-file-input
@@ -149,7 +163,8 @@ export default {
         type: 0,
         newsId:'',
         me: null,
-        uploadedFiles: []
+        uploadedFiles: [],
+        subtitle: null
     };
   },
   methods: {
@@ -212,7 +227,7 @@ export default {
             }
 
             contractForm.append("title", this.title);
-            contractForm.append("description", this.description);
+            contractForm.append("subname", this.subname);
 
             this.$axios
                 .post(this.$API_URL + this.$API_VERSION + "document", contractForm, {
@@ -297,7 +312,7 @@ export default {
                 .put(this.$API_URL + this.$API_VERSION + "document/"+this.newsId,
                 {
                     title: this.title,
-                    description: this.description
+                    subname: this.subtitle
                 }, {
                 headers: {
                     Authorization: `Bearer ${localStorage.getItem("access_token")}`,
