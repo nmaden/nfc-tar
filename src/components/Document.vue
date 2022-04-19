@@ -227,7 +227,7 @@ export default {
             }
 
             contractForm.append("title", this.title);
-            contractForm.append("subname", this.subname);
+            contractForm.append("subname", this.subtitle);
 
             this.$axios
                 .post(this.$API_URL + this.$API_VERSION + "document", contractForm, {
