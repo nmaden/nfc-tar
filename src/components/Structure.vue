@@ -1,10 +1,6 @@
 <template>
-
   <div>
-
     <div class="item__row item__ac">
-
-
       <h2>Структура</h2>
       <v-btn
           small
@@ -27,7 +23,7 @@
     <div class="item__column  pa-4 mb-2 news__list" v-for="item in items" :key="item.id">
 
       <div  class="item__row item__ac">
-        <img  :src="'https://api.kazaerospace.crocos.kz/'+item.image" />
+        <img v-if="item.image"  :src="'https://api.kazaerospace.crocos.kz/'+item.image" />
       </div>
       <p class="mb-2">ФИО:{{ item.name }}</p>
       <p>Должность : {{ item.responsible }}</p>
@@ -41,7 +37,7 @@
             fab
             dark
             color="indigo"
-            @click="show(item.id)"
+            @click="show(item)"
         >
           <v-icon dark>
             mdi-pencil
@@ -122,6 +118,8 @@
             ></v-text-field>
           </div>
 
+
+
           
           <div class="item__column">
             <v-textarea
@@ -157,6 +155,13 @@
                 truncate-length="15"
                 v-model="files"
             ></v-file-input>
+          </div>
+
+            <div class="item__column">
+              <div  class="item__row item__ac pointer mb-3" v-if="uploadedFiles">
+                  <p class="mr-2 mb-0">{{uploadedFiles}}</p>
+                  <i class="mdi mdi-trash-can-outline" @click="removeFile(idItem)"></i>
+              </div>
           </div>
 
        
@@ -220,9 +225,36 @@ export default {
         page: 1
       },
       priority: 0,
+      uploadedFiles: []
     };
   },
   methods: {
+    removeFile(fileId) {
+            this.$axios({
+                method: "delete",
+                url:
+                this.$API_URL +
+                this.$API_VERSION +
+                "structure/file/"+fileId,
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+                },
+            })
+          .then((response) => {
+              this.$toast.open({
+                  message: response.data.message,
+                  type: "success",
+                  position: "bottom",
+                  duration: 4000,
+                  queue: true,
+              });
+              this.fetch();
+              this.newsModal = false;
+          })
+          .catch((error) => {
+              console.warn(error);
+          });
+      },
     formatDate(date) {
       let d = date.split('T')[0].split('-');
       let time = date.split('T')[1].split(':');
@@ -308,32 +340,16 @@ export default {
             }
           });
     },
-    show(id) {
-      this.idItem = id;
-      this.$axios({
-        method: "get",
-        url:
-            this.$API_URL +
-            this.$API_VERSION +
-            "show/structure/"+id,
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("access_token")}`,
-        },
-      })
-          .then((response) => {
+    show(item) {
+      console.log(item);
+      this.idItem = item.id;
+      this.uploadedFiles = item.image;
+      this.newsModal = true;
+      this.title = item.name;
+      this.responsible = item.responsible;
+      this.priority = item.priority;
+      this.description = item.about;
 
-            this.newsModal = true;
-            this.title = response.data.name;
-            this.responsible = response.data.responsible;
-            this.priority = response.data.priority;
-            this.description = response.data.about;
-            // this.created_at = this.formatDateSecond(response.data.created_at);
-            // this.picker = this.created_at.split(' ')[1];
-            // this.date = this.created_at.split(' ')[0];
-          })
-          .catch((error) => {
-            console.log(error);
-          });
     },
     openDeleteModal(item) {
       this.destroyModal = true;

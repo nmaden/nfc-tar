@@ -41,7 +41,7 @@
             fab
             dark
             color="indigo"
-            @click="show(item.id)"
+            @click="show(item)"
         >
           <v-icon dark>
             mdi-pencil
@@ -120,6 +120,7 @@
             ></v-textarea>
           </div>
 
+       
           <div>
             <v-file-input
                 chips
@@ -130,6 +131,13 @@
                 truncate-length="15"
                 v-model="files"
             ></v-file-input>
+          </div>
+
+          <div class="item__column">
+              <div v-for="file in uploadedFiles" :key="file.id" class="item__row item__ac pointer mb-3">
+                  <p class="mr-2 mb-0">{{file.path.split('/')[file.path.split('/').length-1]}}</p>
+                  <i class="mdi mdi-trash-can-outline" @click="removeFile(file.id)"></i>
+              </div>
           </div>
 
           <v-btn
@@ -180,9 +188,36 @@ export default {
       idItem:'',
       me: null,
       selectedUser: null,
+      uploadedFiles: []
     };
   },
   methods: {
+      removeFile(fileId) {
+            this.$axios({
+                method: "delete",
+                url:
+                this.$API_URL +
+                this.$API_VERSION +
+                "team/file/"+fileId,
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+                },
+            })
+            .then((response) => {
+                this.$toast.open({
+                    message: response.data.message,
+                    type: "success",
+                    position: "bottom",
+                    duration: 4000,
+                    queue: true,
+                });
+                this.fetch();
+                this.newsModal = false;
+            })
+            .catch((error) => {
+                console.warn(error);
+            });
+    },
     getUser() {
       this.$axios({
         method: "get",
@@ -258,27 +293,14 @@ export default {
             }
           });
     },
-    show(id) {
-      this.idItem = id;
-      this.$axios({
-        method: "get",
-        url:
-            this.$API_URL +
-            this.$API_VERSION +
-            "show/team/"+id,
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("access_token")}`,
-        },
-      })
-          .then((response) => {
+    show(item) {
+      this.idItem = item.id;
+      this.newsModal = true;
+      this.title = item.name;
+      this.description = item.responsible;
+      this.newsModal = true;
 
-            this.newsModal = true;
-            this.title = response.data.name;
-            this.description = response.data.responsible;
-          })
-          .catch((error) => {
-            console.log(error);
-          });
+      this.uploadedFiles = item.images;
     },
     openDeleteModal(item) {
       this.destroyModal = true;

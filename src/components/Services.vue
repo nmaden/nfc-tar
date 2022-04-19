@@ -106,7 +106,15 @@
                         small-chips
                         truncate-length="15"
                         v-model="files"
+                        label="svg"
                     ></v-file-input>
+                </div>
+
+                <div class="item__column">
+                    <div v-for="file in uploadedFiles" :key="file.id" class="item__row item__ac pointer mb-3">
+                        <p class="mr-2 mb-0">{{file.path.split('/')[file.path.split('/').length-1]}}</p>
+                        <i class="mdi mdi-trash-can-outline" @click="removeFile(file.id)"></i>
+                    </div>
                 </div>
                  <v-btn
                     type="submit"
@@ -144,10 +152,37 @@ export default {
         newsId:'',
         me: null,
         id: null,
-        priority: 0
+        priority: 0,
+        uploadedFiles: []
     };
   },
   methods: {
+        removeFile(fileId) {
+            this.$axios({
+                method: "delete",
+                url:
+                this.$API_URL +
+                this.$API_VERSION +
+                "services/file/"+fileId,
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+                },
+            })
+            .then((response) => {
+                this.$toast.open({
+                    message: response.data.message,
+                    type: "success",
+                    position: "bottom",
+                    duration: 4000,
+                    queue: true,
+                });
+                this.fetch();
+                this.newsModal = false;
+            })
+            .catch((error) => {
+                console.warn(error);
+            });
+        },
         getUser() {
             this.$axios({
                 method: "get",
@@ -217,10 +252,14 @@ export default {
             });
         },
         show(item) {
+            console.log("there files: ");
+            console.log(item);
             this.newsModal = true;
             this.title = item.name;
             this.priority = item.priority;
             this.id = item.id;
+
+            this.uploadedFiles = item.images;
         },
         deleteItem(id) {
             this.$axios({
