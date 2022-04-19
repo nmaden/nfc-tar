@@ -289,6 +289,49 @@ export default {
                 }
             });
         },
+        uploadFiles() {
+            let contractForm = new FormData();
+            for (var i = 0; i < this.files.length; i++) {
+                contractForm.append("images[]", this.files[i]);
+            }
+            this.$axios
+                .post(this.$API_URL + this.$API_VERSION + "news/files/"+this.newsId, contractForm, {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+                    "Content-Type": "multipart/form-data",
+                },
+            })
+            .then((response) => {
+                this.title =null;
+                this.description = null;
+                console.log(response);
+                this.$toast.open({
+                    message: "Успешно создано",
+                    type: "success",
+                    position: "bottom",
+                    duration: 4000,
+                    queue: true,
+                });
+
+                this.newsModal = false;
+                this.type = 0;
+                this.$refs.form.reset();
+                this.fetch();
+
+            })
+            .catch((error) => {
+                if (error.response && error.response.status == 422) {
+                    this.$toast.open({
+                    message: "Заполните все поля",
+                    type: "error",
+                    position: "bottom",
+                    duration: 4000,
+                    queue: true,
+                    });
+
+                }
+            });
+        },
         show(item) {
             this.newsId = item.id;
             this.newsModal = true;
@@ -334,6 +377,8 @@ export default {
                 },
             })
             .then((response) => {
+
+                this.uploadFiles();
                 this.title =null;
                 this.description = null;
                 console.log(response);
