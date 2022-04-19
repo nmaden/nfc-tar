@@ -25,7 +25,7 @@
 
             <div  class="item__row item__ac">
                 <div v-for="image in item.images"  :key="image.id" >
-                    <img  :src="'http://127.0.0.1:8000/'+image.path" />
+                    <img  :src="'https://api.kazaerospace.crocos.kz/'+image.path" />
                 </div>  
             </div>
             <p class="mb-2">{{ item.name }}</p>

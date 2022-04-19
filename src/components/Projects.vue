@@ -279,8 +279,6 @@ export default {
             });
         },
         show(item) {
-
-            console.log(item);
             this.newsModal = true;
             this.title = item.title;
             this.description = item.description;

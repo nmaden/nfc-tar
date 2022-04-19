@@ -290,6 +290,7 @@ export default {
             });
         },
         show(item) {
+            this.newsId = item.id;
             this.newsModal = true;
             this.title = item.title;
             this.description =  item.description;

@@ -46,7 +46,7 @@
                     fab
                     dark
                     color="indigo"
-                    @click="show(item.id)"
+                    @click="show(item)"
                     >
                     <v-icon dark>
                         mdi-pencil
@@ -266,28 +266,12 @@ export default {
                 }
             });
         },
-        show(id) {
-            this.newsId = id;
-            this.$axios({
-            method: "get",
-            url:
-                this.$API_URL +
-                this.$API_VERSION +
-                "document/"+id,
-                headers: {
-                    Authorization: `Bearer ${localStorage.getItem("access_token")}`,
-                },
-            })
-            .then((response) => {
-                this.newsModal = true;
-                this.title = response.data.name;
-                
-                this.uploadedFiles = response.data.files;
-                
-            })
-            .catch((error) => {
-            console.log(error);
-            });
+        show(item) {
+            this.newsId = item.id;
+            this.newsModal = true;
+            this.title = item.name;
+            this.subtitle = item.subname;
+            this.uploadedFiles = item.files;
         },
         deleteItem(id) {
             this.$axios({
