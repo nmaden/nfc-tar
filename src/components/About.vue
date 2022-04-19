@@ -231,6 +231,10 @@ export default {
               queue: true,
             });
 
+            this.files = [];
+            this.title = null;
+            this.description = null;
+
             this.newsModal = false;
             this.type = 0;
             this.$refs.form.reset();
@@ -274,7 +278,9 @@ export default {
               duration: 4000,
               queue: true,
             });
-
+            this.files = [];
+            this.title = null;
+            this.description = null;
             this.newsModal = false;
 
             this.fetch();

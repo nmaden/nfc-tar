@@ -506,6 +506,11 @@ export default {
                     queue: true,
                 });
 
+                this.name = '';
+                this.email = '';
+                this.password = '';
+                this.role = '';
+
                 this.newsModal = false;
 
                 this.fetch();

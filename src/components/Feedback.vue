@@ -139,6 +139,7 @@ export default {
             },
           })
           .then((response) => {
+            this.description = null;
             console.log(response);
             this.$toast.open({
               message: response.data.message,

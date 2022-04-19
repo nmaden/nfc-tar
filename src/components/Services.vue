@@ -187,6 +187,10 @@ export default {
                 },
             })
             .then((response) => {
+
+                this.title = null;
+                this.priority = null;
+                 this.files = [];
                 console.log(response);
                 this.$toast.open({
                     message: "Успешно создано",
@@ -195,7 +199,7 @@ export default {
                     duration: 4000,
                     queue: true,
                 });
-                this.files = [];
+               
                 this.newsModal = false;
                 this.type = 0;
                 this.fetch();

@@ -237,6 +237,8 @@ export default {
                 },
             })
             .then((response) => {
+                this.title = null;
+                this.subtitle = null;
                 console.log(response);
                 this.$toast.open({
                     message: "Успешно создано",
@@ -319,6 +321,8 @@ export default {
                 },
             })
             .then((response) => {
+                this.title = null;
+                this.subtitle = null;
                 console.log(response);
                 this.$toast.open({
                     message: "Успешно создано",

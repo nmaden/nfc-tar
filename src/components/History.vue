@@ -212,6 +212,9 @@ export default {
             },
           })
           .then((response) => {
+            this.title =null;
+            this.description = null;
+            this.priority = null;
             console.log(response);
             this.$toast.open({
               message: "Успешно создано",
@@ -245,13 +248,17 @@ export default {
           .put(this.$API_URL + this.$API_VERSION + "history/show/"+this.idItem,
               {
                 year: this.title,
-                description: this.description
+                description: this.description,
+                priority: this.priority
               }, {
                 headers: {
                   Authorization: `Bearer ${localStorage.getItem("access_token")}`,
                 },
               })
           .then((response) => {
+            this.title =null;
+            this.description = null;
+            this.priority = null;
             console.log(response);
             this.$toast.open({
               message: "Успешно обновлено",

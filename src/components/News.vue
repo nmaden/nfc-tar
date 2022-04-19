@@ -26,7 +26,6 @@
             <div  class="item__row item__ac">
 
                 <div v-for="image in item.images"  :key="image.id" >
-
                     <img  :src="'https://api.kazaerospace.crocos.kz/'+image.img_path" />
                 </div>
 
@@ -260,6 +259,8 @@ export default {
                 },
             })
             .then((response) => {
+                this.title =null;
+                this.description = null;
                 console.log(response);
                 this.$toast.open({
                     message: "Успешно создано",
@@ -332,6 +333,8 @@ export default {
                 },
             })
             .then((response) => {
+                this.title =null;
+                this.description = null;
                 console.log(response);
                 this.$toast.open({
                     message: "Успешно создано",

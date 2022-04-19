@@ -210,6 +210,8 @@ export default {
             },
           })
           .then((response) => {
+            this.files = [];
+            this.title = null;
             console.log(response);
             this.$toast.open({
               message: "Успешно создано",
@@ -252,6 +254,9 @@ export default {
             },
           })
           .then((response) => {
+            this.files = [];
+            this.title = null;
+
             console.log(response);
             this.$toast.open({
               message: response.data.message,
