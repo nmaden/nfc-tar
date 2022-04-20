@@ -1,6 +1,46 @@
 <template>
       <div>
 
+          <div class="item__row item__ac">
+
+            <h2>Feedback</h2>
+
+            <v-btn
+                small
+                class="mx-2"
+                fab
+                dark
+                color="indigo"
+                @click="chooseTypeFunction(1)"
+                >
+                <v-icon dark>
+                    mdi-plus
+                </v-icon>
+            </v-btn>
+
+        </div>
+
+
+            <v-data-table
+                  :headers="headers"
+                  :items="feeds"
+                  :page="page"
+                  :loading="loading"
+                  :options.sync="options"
+                  :server-items-length="totalPage"
+              >
+              <template v-slot:item.id="{ item,index  }">
+                  {{index+1}}
+              </template>
+              <template v-slot:item.created_at="{ item  }">
+                  {{formatDate(item.created_at)}}
+              </template>
+              <template v-slot:item.updated_at="{ item  }">
+                  {{formatDate(item.updated_at)}}
+              </template>
+            </v-data-table>
+
+<!-- 
           <div  v-for="(feed,index) in feeds" :key="index">
 
               <p>{{feed.name}} <v-btn
@@ -38,7 +78,7 @@
               </div>
 
               <v-divider></v-divider>
-          </div>
+          </div> -->
 
         <v-dialog v-model="sendModal" width="500">
           <v-card class="pa-6">
@@ -94,6 +134,26 @@ export default {
       sendModal: false,
       description:'',
       id:'',
+      loading: false,
+      numberOfPages: null,
+      totalPage: null,
+      page: 0,
+      options: {
+          itemsPerPage: 10,
+          page: 1,
+      },
+      headers: [
+            {
+            text: "№",
+            align: "start",
+            sortable: false,
+            value: "id",
+            },
+            { text: "ФИО", value: "name" },
+            { text: "Email", value: "email" },
+            { text: "Дата создание", value: "created_at" },
+            { text: "Дата редактирование", value: "updated_at" },
+      ],
     };
   },
   methods: {
@@ -111,22 +171,26 @@ export default {
       this.create();
     },
     fetch() {
-            this.$axios({
-            method: "get",
-            url:
-                this.$API_URL +
-                this.$API_VERSION +
-                "feedback",
-                headers: {
-                    Authorization: `Bearer ${localStorage.getItem("access_token")}`,
-                },
-            })
-            .then((response) => {
-                this.feeds = response.data.data;
-            })
-            .catch((error) => {
-            console.log(error);
-            });
+        this.loading = true;
+        this.$axios({
+        method: "get",
+        url:
+            this.$API_URL +
+            this.$API_VERSION +
+            "feedback?per_page="+this.options.itemsPerPage+'&page='+this.options.page,
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+            },
+        })
+        .then((response) => {
+            this.feeds = response.data.data;
+            this.loading = false;
+            this.numberOfPages = response.data.total;
+            this.totalPage = response.data.total;
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     },
     create() {
       this.$axios
@@ -174,6 +238,20 @@ export default {
   beforeMount() {
 
   },
-  watch: {},
+  watch: {
+    options: {
+      handler(val) {
+        if (val.itemsPerPage < 0) {
+          val.itemsPerPage = this.totalPage;
+          this.fetch();
+        } else {
+          this.fetch();
+        }
+      },
+    },
+
+    deep: true,
+
+  },
 };
 </script>

@@ -32,12 +32,15 @@
 
 
             <p class="mb-2">{{ item.name }}</p>
-
-             <p class="mb-2">{{ item.subname }}</p>
+            <p class="mb-2">{{ item.subname }}</p>
+            <p class="mb-2">{{ item.name_kaz }}</p>
+            <p class="mb-2">{{ item.subname_kaz }}</p>
+            <p class="mb-2">{{ item.name_eng }}</p>
+            <p class="mb-2">{{ item.subname_eng }}</p>
 
 
             <a  class="mb-7" v-for="file in item.files" :key="file.id" :href="'https://api.kazaerospace.crocos.kz/'+file.document_path" target="_blank" download>{{ file.document_path.split('/')[file.document_path.split('/').length-1] }} </a>
-
+    
 
             <div class="item__row item__ac">
                 <v-btn
@@ -93,13 +96,56 @@
                         :rules="nameRules"
                     ></v-text-field>
                 </div>
-                
-
-
+        
                 <div class="item__column">
                     <v-text-field
                         v-model="subtitle"
                         label="Наименование"
+                        required
+                        outlined
+                        class="input"
+                        :rules="nameRules"
+                    ></v-text-field>
+                </div>
+
+
+                <div class="item__column">
+                    <v-text-field
+                        v-model="title_eng"
+                        label="Название английском"
+                        required
+                        outlined
+                        class="input"
+                        :rules="nameRules"
+                    ></v-text-field>
+                </div>
+        
+                <div class="item__column">
+                    <v-text-field
+                        v-model="subtitle_eng"
+                        label="Наименование английском"
+                        required
+                        outlined
+                        class="input"
+                        :rules="nameRules"
+                    ></v-text-field>
+                </div>
+
+                <div class="item__column">
+                    <v-text-field
+                        v-model="title_kaz"
+                        label="Название на казахском"
+                        required
+                        outlined
+                        class="input"
+                        :rules="nameRules"
+                    ></v-text-field>
+                </div>
+        
+                <div class="item__column">
+                    <v-text-field
+                        v-model="subtitle_kaz"
+                        label="Наименование казахском"
                         required
                         outlined
                         class="input"
@@ -164,7 +210,12 @@ export default {
         newsId:'',
         me: null,
         uploadedFiles: [],
-        subtitle: null
+        subtitle: null,
+
+        title_kaz: null,
+        subtitle_kaz: null,
+        title_eng: null,
+        subtitle_eng: null
     };
   },
   methods: {
@@ -228,6 +279,10 @@ export default {
 
             contractForm.append("title", this.title);
             contractForm.append("subname", this.subtitle);
+            contractForm.append("title_kaz", this.title_kaz);
+            contractForm.append("subname_kaz", this.subtitle_kaz);
+            contractForm.append("title_eng", this.title_eng);
+            contractForm.append("subname_eng", this.subtitle_eng);
 
             this.$axios
                 .post(this.$API_URL + this.$API_VERSION + "document", contractForm, {
@@ -272,6 +327,12 @@ export default {
             this.title = item.name;
             this.subtitle = item.subname;
             this.uploadedFiles = item.files;
+
+            this.subtitle_kaz = item.subname_kaz;
+            this.title_kaz = item.name_kaz;
+
+            this.subtitle_eng = item.subname_eng;
+            this.title_eng = item.name_eng;
         },
         deleteItem(id) {
             this.$axios({
@@ -298,7 +359,11 @@ export default {
                 .put(this.$API_URL + this.$API_VERSION + "document/"+this.newsId,
                 {
                     title: this.title,
-                    subname: this.subtitle
+                    subname: this.subtitle,
+                    title_kaz: this.title_kaz,
+                    subname_kaz: this.subtitle_kaz,
+                    title_eng: this.title_eng,
+                    subname_eng: this.subtitle_eng
                 }, {
                 headers: {
                     Authorization: `Bearer ${localStorage.getItem("access_token")}`,

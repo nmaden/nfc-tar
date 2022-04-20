@@ -34,6 +34,13 @@
             </div>
             <p class="mb-2">{{ item.title }}</p>
             <p class="mb-2">{{ item.description }}</p>
+
+            <p class="mb-2">{{ item.title_kaz }}</p>
+            <p class="mb-2">{{ item.description_kaz }}</p>
+
+             <p class="mb-2">{{ item.title_eng }}</p>
+            <p class="mb-2">{{ item.description_eng }}</p>
+
             <p class="mb-2">{{ item.priority }}</p>
 
 
@@ -93,16 +100,6 @@
                 </div>
 
                 <div class="item__column">
-                    <v-text-field
-                        v-model="priority"
-                        label="Приоритет"
-                        required
-                        outlined
-                        class="input"
-                        :rules="nameRules"
-                    ></v-text-field>
-                </div>
-                <div class="item__column">
                      <v-textarea
                          v-model="description"
                         filled
@@ -113,6 +110,64 @@
                         
                     ></v-textarea>
                 </div>
+
+                <div class="item__column">
+                    <v-text-field
+                        v-model="title_kaz"
+                        label="Название"
+                        required
+                        outlined
+                        class="input"
+                        :rules="nameRules"
+                    ></v-text-field>
+                </div>
+
+                <div class="item__column">
+                     <v-textarea
+                         v-model="description_kaz"
+                        filled
+                        name="input-7-4"
+                        label="Описание"
+
+                        :rules="descriptionRules"
+                        
+                    ></v-textarea>
+                </div>
+
+                <div class="item__column">
+                    <v-text-field
+                        v-model="title_eng"
+                        label="Название"
+                        required
+                        outlined
+                        class="input"
+                        :rules="nameRules"
+                    ></v-text-field>
+                </div>
+
+                <div class="item__column">
+                     <v-textarea
+                         v-model="description_eng"
+                        filled
+                        name="input-7-4"
+                        label="Описание"
+
+                        :rules="descriptionRules"
+                        
+                    ></v-textarea>
+                </div>
+
+                <div class="item__column">
+                    <v-text-field
+                        v-model="priority"
+                        label="Приоритет"
+                        required
+                        outlined
+                        class="input"
+                        :rules="nameRules"
+                    ></v-text-field>
+                </div>
+               
 
                 <div>
                      <v-file-input
@@ -178,7 +233,11 @@ export default {
         newsId:'',
         me: null,
         id: null,
-        priority: 0
+        priority: 0,
+        title_eng: null,
+        title_kaz: null,
+        description_eng: null,
+        description_kaz: null
     };
   },
   methods: {
@@ -240,6 +299,12 @@ export default {
             }
             contractForm.append("title", this.title);
             contractForm.append("description", this.description);
+
+            contractForm.append("title_kaz", this.title_kaz);
+            contractForm.append("description_kaz", this.description_kaz);
+
+            contractForm.append("title_eng", this.title_eng);
+            contractForm.append("description_eng", this.description_eng);
 
             contractForm.append("priority", this.priority);
             this.$axios.post(this.$API_URL + this.$API_VERSION + "projects", contractForm, {
@@ -315,6 +380,13 @@ export default {
             }
             contractForm.append("title", this.title);
             contractForm.append("description", this.description);
+
+            contractForm.append("title_kaz", this.title_kaz);
+            contractForm.append("description_kaz", this.description_kaz);
+
+            contractForm.append("title_eng", this.title_eng);
+            contractForm.append("description_eng", this.description_eng);
+
             contractForm.append("priority", this.priority);
 
 

@@ -35,7 +35,6 @@
 
             {{index+1}}
 
-            
         </template>
 
         <template v-slot:item.role="{ item  }">

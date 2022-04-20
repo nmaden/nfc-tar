@@ -157,8 +157,8 @@
             ></v-file-input>
           </div>
 
-            <div class="item__column">
-              <div  class="item__row item__ac pointer mb-3" v-if="uploadedFiles">
+            <div class="item__column" v-if="uploadedFiles.length>0">
+              <div  class="item__row item__ac pointer mb-3">
                   <p class="mr-2 mb-0">{{uploadedFiles}}</p>
                   <i class="mdi mdi-trash-can-outline" @click="removeFile(idItem)"></i>
               </div>

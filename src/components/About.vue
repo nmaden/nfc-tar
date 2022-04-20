@@ -23,9 +23,7 @@
 
     <div class="item__column  pa-4 mb-2 news__list" v-for="item in items" :key="item.id">
       <div  class="item__row item__ac">
-          <img  :src="'https://api.kazaerospace.crocos.kz/'+item.path" />
-
-
+          <img  v-if="item.path" :src="'https://api.kazaerospace.crocos.kz/'+item.path" />
       </div>
       <p class="mb-2">Название : {{ item.title }}</p>
       <p>Описание : {{ item.description }}</p>
@@ -38,7 +36,7 @@
             fab
             dark
             color="indigo"
-            @click="show(item.id)"
+            @click="show(item)"
         >
           <v-icon dark>
             mdi-pencil
@@ -89,7 +87,6 @@
             ref="form"
             class="sign__page__block"
         >
-
           <h3 class="mb-4" v-if="type==1">Создать </h3>
           <h3 class="mb-4" v-else>Редактировать </h3>
           <div class="item__column">
@@ -113,7 +110,8 @@
 
             ></v-textarea>
           </div>
-
+          
+         
           <div>
             <v-file-input
                 chips
@@ -124,6 +122,11 @@
                 truncate-length="15"
                 v-model="files"
             ></v-file-input>
+          </div>
+
+          <div class="item__row item__ac mb-2" v-if="image">
+              <p class="mr-2 mb-0" >{{image.split('/')[image.split('/').length-1]}}</p>
+              <i class="mdi mdi-trash-can-outline pointer" @click="removeFile()"></i>
           </div>
 
           <v-btn
@@ -174,26 +177,53 @@ export default {
       newsId:'',
       me: null,
       selectedUser: null,
+      image: null
     };
   },
   methods: {
+    removeFile() {
+        this.$axios({
+            method: "delete",
+            url:
+            this.$API_URL +
+            this.$API_VERSION +
+            "about/file/"+this.idItem,
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+            },
+        })
+        .then((response) => {
+
+
+            this.$toast.open({
+              message: response.data.message,
+              type: "success",
+              position: "bottom",
+              duration: 4000,
+              queue: true,
+            });
+        })
+        .catch((error) => {
+          console.warn(error);
+        });
+    },
     getUser() {
-      this.$axios({
-        method: "get",
-        url:
+        this.$axios({
+            method: "get",
+            url:
             this.$API_URL +
             this.$API_VERSION +
             "me",
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("access_token")}`,
-        },
-      })
-          .then((response) => {
-            this.me = response.data;
-          })
-          .catch((error) => {
-            console.warn(error);
-          });
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+            },
+        })
+        .then((response) => {
+          this.me = response.data;
+        })
+        .catch((error) => {
+          console.warn(error);
+        });
     },
     chooseTypeFunction(type) {
       this.type = type;
@@ -318,27 +348,12 @@ export default {
           });
     },
 
-    show(id) {
-      this.idItem = id;
-      this.$axios({
-        method: "get",
-        url:
-            this.$API_URL +
-            this.$API_VERSION +
-            "about/show/"+id,
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("access_token")}`,
-        },
-      })
-          .then((response) => {
-
-            this.newsModal = true;
-            this.title = response.data.title;
-            this.description = response.data.description;
-          })
-          .catch((error) => {
-            console.log(error);
-          });
+    show(item) {
+      this.newsModal = true;
+      this.idItem = item.id;
+      this.title = item.title;
+      this.description = item.description;
+      this.image = item.path;
     },
     deleteItem() {
       this.$axios({

@@ -32,7 +32,11 @@
 
             </div>
             <p class="mb-2">{{ item.title }}</p>
-                <p>{{ item.description }}</p>
+            <p class="mb-2">{{ item.description }}</p>
+            <p class="mb-2">{{ item.title_kaz }}</p>
+            <p class="mb-2">{{ item.description_kaz }}</p>
+            <p class="mb-2">{{ item.title_eng }}</p>
+            <p class="mb-2">{{ item.description_eng }}</p>
             <div class="item__row item__ac">
                 <v-btn
                     small
@@ -118,6 +122,52 @@
 
                     ></v-textarea>
                 </div>
+
+                <div class="item__column">
+                    <v-text-field
+                        v-model="title_eng"
+                        label="Название английском"
+                        required
+                        outlined
+                        class="input"
+                        :rules="nameRules"
+                    ></v-text-field>
+                </div>
+                <div class="item__column">
+                     <v-textarea
+                         v-model="description_eng"
+                        filled
+                        name="input-7-4"
+                        label="Описание английском"
+
+                        :rules="descriptionRules"
+
+                    ></v-textarea>
+                </div>
+
+                <div class="item__column">
+                    <v-text-field
+                        v-model="title_kaz"
+                        label="Название казахском"
+                        required
+                        outlined
+                        class="input"
+                        :rules="nameRules"
+                    ></v-text-field>
+                </div>
+                <div class="item__column">
+                     <v-textarea
+                         v-model="description_kaz"
+                        filled
+                        name="input-7-4"
+                        label="Описание казахском"
+
+                        :rules="descriptionRules"
+
+                    ></v-textarea>
+                </div>
+
+
 
                 <div>
                      <v-file-input
@@ -251,6 +301,10 @@ export default {
 
             contractForm.append("title", this.title);
             contractForm.append("description", this.description);
+            contractForm.append("title_eng", this.title_eng);
+            contractForm.append("description_eng", this.description_eng);
+            contractForm.append("title_kaz", this.title_kaz);
+            contractForm.append("description_kaz", this.description_kaz);
             this.$axios
                 .post(this.$API_URL + this.$API_VERSION + "news", contractForm, {
                 headers: {
@@ -338,6 +392,12 @@ export default {
             this.title = item.title;
             this.description =  item.description;
 
+            this.title_eng = item.title_eng;
+            this.title_kaz = item.title_kaz;
+
+            this.decription_eng = item.description_eng;
+            this.description_kaz = item.description_kaz;
+
             this.uploadedFiles = item.images;
         },
         openDeleteModal(item) {
@@ -370,7 +430,11 @@ export default {
                 .put(this.$API_URL + this.$API_VERSION + "news/"+this.newsId,
                 {
                     title: this.title,
-                    description: this.description
+                    description: this.description,
+                    title_kaz: this.title_kaz,
+                    description_kaz: this.description_kaz,
+                    title_eng: this.title_kaz,
+                    description_eng: this.description_eng,
                 }, {
                 headers: {
                     Authorization: `Bearer ${localStorage.getItem("access_token")}`,

@@ -33,7 +33,11 @@
 
       </div>
       <p class="mb-2">{{ item.name }}</p>
-      <p>{{ item.responsible }}</p>
+      <p class="mb-2">{{ item.responsible }}</p>
+      <p class="mb-2">{{ item.name_kaz }}</p>
+      <p class="mb-2">{{ item.responsible_kaz }}</p>
+      <p class="mb-2">{{ item.name_eng }}</p>
+      <p class="mb-2">{{ item.responsible_eng }}</p>
       <div class="item__row item__ac">
         <v-btn
             small
@@ -120,6 +124,49 @@
             ></v-textarea>
           </div>
 
+          <div class="item__column">
+            <v-text-field
+                v-model="title_kaz"
+                label="ФИО на казахском"
+                required
+                outlined
+                class="input"
+                :rules="nameRules"
+            ></v-text-field>
+          </div>
+          <div class="item__column">
+            <v-textarea
+                v-model="description_kaz"
+                filled
+                name="input-7-4"
+                label="Должность на казахском"
+
+                :rules="descriptionRules"
+
+            ></v-textarea>
+          </div>
+          <div class="item__column">
+            <v-text-field
+                v-model="title_eng"
+                label="ФИО английском"
+                required
+                outlined
+                class="input"
+                :rules="nameRules"
+            ></v-text-field>
+          </div>
+          <div class="item__column">
+            <v-textarea
+                v-model="description_eng"
+                filled
+                name="input-7-4"
+                label="Должность английском"
+
+                :rules="descriptionRules"
+
+            ></v-textarea>
+          </div>
+
        
           <div>
             <v-file-input
@@ -177,6 +224,10 @@ export default {
       destroyModal: false,
       title: '',
       description: '',
+      title_kaz: '',
+      description_kaz: '',
+      title_eng: '',
+      description_eng: '',
       nameRules: [
         v => !!v || 'Заполните поле'
       ],
@@ -251,6 +302,12 @@ export default {
 
       contractForm.append("name", this.title);
       contractForm.append("responsible", this.description);
+      contractForm.append("name_eng", this.title_eng);
+      contractForm.append("responsible_eng", this.description_eng);
+      contractForm.append("name_kaz", this.title_kaz);
+      contractForm.append("responsible_kaz", this.description_kaz);
+
+
       this.$axios
           .post(this.$API_URL + this.$API_VERSION + "team/store", contractForm, {
             headers: {
@@ -298,6 +355,10 @@ export default {
       this.newsModal = true;
       this.title = item.name;
       this.description = item.responsible;
+      this.title_kaz = item.name_kaz;
+      this.description_kaz = item.responsible_kaz;
+      this.title_eng = item.name_eng;
+      this.description_eng = item.responsible_eng;
       this.newsModal = true;
 
       this.uploadedFiles = item.images;
@@ -335,6 +396,12 @@ export default {
 
       contractForm.append("name", this.title);
       contractForm.append("responsible", this.description);
+      contractForm.append("name_kaz", this.title_kaz);
+      contractForm.append("responsible_kaz", this.description_kaz);
+      contractForm.append("name_eng", this.title_eng);
+      contractForm.append("responsible_eng", this.description_eng);
+
+
       this.$axios
           .post(this.$API_URL + this.$API_VERSION + "show/team/" + this.idItem, contractForm, {
             headers: {
