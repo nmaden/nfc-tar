@@ -22,21 +22,18 @@
         </div>
 
         <div class="item__column  pa-4 mb-2 news__list" v-for="item in items" :key="item.id">
-
+            <p v-if="JSON.parse(item.data)">{{JSON.parse(item.data)['title']}}</p>
             <div  class="item__row item__ac">
-
                 <div v-for="image in item.images"  :key="image.id" >
                     <img  :src="'https://api.kazaerospace.crocos.kz/'+image.img_path" />
                 </div>
-
-
             </div>
-            <p class="mb-2">{{ item.title }}</p>
+            <!-- <p class="mb-2">{{ item.title }}</p>
             <p class="mb-2">{{ item.description }}</p>
             <p class="mb-2">{{ item.title_kaz }}</p>
             <p class="mb-2">{{ item.description_kaz }}</p>
             <p class="mb-2">{{ item.title_eng }}</p>
-            <p class="mb-2">{{ item.description_eng }}</p>
+            <p class="mb-2">{{ item.description_eng }}</p> -->
             <div class="item__row item__ac">
                 <v-btn
                     small
@@ -206,12 +203,8 @@
                   Отмена
                 </v-btn>
                 </v-form>
-
-
-
             </v-card>
         </v-dialog>
-
       </div>
 
 </template>
@@ -238,7 +231,11 @@ export default {
         newsId:'',
         me: null,
         selectedUser: null,
-        uploadedFiles: []
+        uploadedFiles: [],
+        title_eng: null,
+        title_kaz: null,
+        description_eng: null,
+        description_kaz: null
     };
   },
   methods: {
@@ -294,28 +291,39 @@ export default {
           this.type==1?this.create():this.update();
       },
       create() {
+            let obj = [{
+                title: this.title,
+                description: this.description,
+                title_eng: this.title_eng,
+                description_eng: this.description_eng,
+                title_kaz: this.title_kaz,
+                description_kaz: this.description_kaz
+            }];
             let contractForm = new FormData();
+            contractForm.append("data", JSON.stringify(obj));
+            contractForm.append("type", 'news');
+
             for (var i = 0; i < this.files.length; i++) {
                 contractForm.append("images[]", this.files[i]);
-            }
-
-            contractForm.append("title", this.title);
-            contractForm.append("description", this.description);
-            contractForm.append("title_eng", this.title_eng);
-            contractForm.append("description_eng", this.description_eng);
-            contractForm.append("title_kaz", this.title_kaz);
-            contractForm.append("description_kaz", this.description_kaz);
+            }  
             this.$axios
-                .post(this.$API_URL + this.$API_VERSION + "news", contractForm, {
+                .post(this.$API_URL + this.$API_VERSION + "page", contractForm, {
                 headers: {
                     Authorization: `Bearer ${localStorage.getItem("access_token")}`,
                     "Content-Type": "multipart/form-data",
                 },
             })
             .then((response) => {
-                this.title =null;
-                this.description = null;
+
                 console.log(response);
+                obj = {
+                    title: null,
+                    description: null,
+                    title_eng: this.title_eng,
+                    description_eng: this.description_eng,
+                    title_kaz: this.title_kaz,
+                    description_kaz: this.description_kaz
+                };
                 this.$toast.open({
                     message: "Успешно создано",
                     type: "success",
@@ -325,7 +333,6 @@ export default {
                 });
 
                 this.newsModal = false;
-                this.type = 0;
                 this.$refs.form.reset();
                 this.fetch();
 
@@ -475,7 +482,7 @@ export default {
           url:
             this.$API_URL +
             this.$API_VERSION +
-            "news",
+            "page?type=news",
             headers: {
                 Authorization: `Bearer ${localStorage.getItem("access_token")}`,
             },

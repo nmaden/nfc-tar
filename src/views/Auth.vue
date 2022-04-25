@@ -26,6 +26,7 @@
                 required
                 outlined
                 class="input"
+                type="password"
             ></v-text-field>
 
             <v-btn

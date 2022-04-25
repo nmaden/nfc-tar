@@ -7,7 +7,7 @@
                 >
                 <!-- <v-app-bar-nav-icon></v-app-bar-nav-icon> -->
 
-                <v-toolbar-title>KazAeroSpace</v-toolbar-title>
+                <v-toolbar-title>Библиотека</v-toolbar-title>
 
                 <v-spacer></v-spacer>
 
@@ -38,95 +38,14 @@
                             <p class="pointer mb-0" @click="$router.push('/users')">Пользователи</p>
                         </div>
 
-                        <div class="mb-2 item__row item__ac" v-bind:class="{'active':$route.path=='/admin'}">
+                        <div class="mb-2 item__row item__ac" v-bind:class="{'active':$route.path=='/news'}">
                             <i class="mdi mdi-label-variant mr-2"></i>
-                            <p class="pointer mb-0" @click="$router.push('/admin')">Новости</p>
+                            <p class="pointer mb-0" @click="$router.push('/news')">Новости</p>
                         </div>
-
-                        <div class="mb-2 item__row item__ac" v-bind:class="{'active':$route.path=='/feedback'}">
+                        <div class="mb-2 item__row item__ac" v-bind:class="{'active':$route.path=='/books'}">
                             <i class="mdi mdi-label-variant mr-2"></i>
-                            <p class="pointer mb-0" @click="$router.push('/feedback')">Feedback</p>
-
-
+                            <p class="pointer mb-0" @click="$router.push('/books')">Книги</p>
                         </div>
-
-                        <div class="mb-2 item__row item__ac" v-bind:class="{'active':$route.path=='/document'}">
-                            <i class="mdi mdi-label-variant mr-2"></i>
-                            <p class="pointer mb-0" @click="$router.push('/document')">Документы</p>
-
-                        </div>
-
-                        <div class="mb-2 item__row item__ac" v-bind:class="{'active':$route.path=='/projects'}">
-                            <i class="mdi mdi-label-variant mr-2"></i>
-                            <p class="pointer mb-0" @click="$router.push('/projects')">Наши проекты</p>
-                        </div>
-
-
-                        <div class="mb-2 item__row item__ac" v-bind:class="{'active':$route.path=='/team'}">
-                            <i class="mdi mdi-label-variant mr-2"></i>
-                            <p class="pointer mb-0" @click="$router.push('/team')">Наша команда</p>
-                        </div>
-
-                        <div class="mb-2 item__row item__ac" v-bind:class="{'active':$route.path=='/partners'}">
-                            <i class="mdi mdi-label-variant mr-2"></i>
-                            <p class="pointer mb-0" @click="$router.push('/partners')">Партнеры</p>
-                        </div>
-
-
-                        <div class="mb-2 item__row item__ac" v-bind:class="{'active':$route.path=='/gallery'}">
-                            <i class="mdi mdi-label-variant mr-2"></i>
-                            <p class="pointer mb-0" @click="$router.push('/gallery')">Галерея</p>
-                        </div>
-
-                        <div class="mb-2 item__row item__ac" v-bind:class="{'active':$route.path=='/about'}">
-                            <i class="mdi mdi-label-variant mr-2"></i>
-                            <p class="pointer mb-0" @click="$router.push('/about')">О компании</p>
-                        </div>
-
-                       <div class="mb-2 item__row item__ac" v-bind:class="{'active':$route.path=='/history'}">
-                         <i class="mdi mdi-label-variant mr-2"></i>
-                         <p class="pointer mb-0" @click="$router.push('/history')">История</p>
-                       </div>
-
-                     <div class="mb-2 item__row item__ac" v-bind:class="{'active':$route.path=='/structure'}">
-                       <i class="mdi mdi-label-variant mr-2"></i>
-                       <p class="pointer mb-0" @click="$router.push('/structure')">Структура</p>
-                     </div>
-
-                     <div class="mb-2 item__row item__ac" v-bind:class="{'active':$route.path=='/tur'}">
-                       <i class="mdi mdi-label-variant mr-2"></i>
-                       <p class="pointer mb-0" @click="$router.push('/tur')">Тур 360</p>
-                     </div>
-
-                     <div class="mb-2 item__row item__ac" v-bind:class="{'active':$route.path=='/contacts'}">
-                       <i class="mdi mdi-label-variant mr-2"></i>
-                       <p class="pointer mb-0" @click="$router.push('/contacts')">Контакты</p>
-                     </div>
-
-                     <div class="mb-2 item__row item__ac" v-bind:class="{'active':$route.path=='/address'}">
-                       <i class="mdi mdi-label-variant mr-2"></i>
-                       <p class="pointer mb-0" @click="$router.push('/address')">Адрес</p>
-                     </div>
-
-                     <div class="mb-2 item__row item__ac" v-bind:class="{'active':$route.path=='/services'}">
-                            <i class="mdi mdi-label-variant mr-2"></i>
-                            <p class="pointer mb-0" @click="$router.push('/services')">Услуги</p>
-                    </div>
-                        <!--
-                        <div class="mb-2 item__row item__ac" v-bind:class="{'active':$route.path=='/contacts'}">
-                            <i class="mdi mdi-label-variant mr-2"></i>
-                            <p class="pointer mb-0" @click="$router.push('/contacts')">Контакты</p>
-                        </div> -->
-
-
-
-                        <div class="mb-2 item__row item__ac" v-bind:class="{'active':$route.path=='/logs'}">
-                            <i class="mdi mdi-label-variant mr-2"></i>
-                            <p class="pointer mb-0" @click="$router.push('/logs')">Журналирования событий</p>
-                        </div>
-
-
-
                     </v-card>
               </v-col>
 
