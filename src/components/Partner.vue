@@ -20,75 +20,12 @@
             </v-btn>
 
         </div>
-
-
-
-        <v-data-table
-            :headers="headers"
-            :items="items"
-            :page="page"
-            :loading="loading"
-            :options.sync="options"
-            :server-items-length="totalPage"
-        >  
-
-         
-        <template v-slot:item.data="{ item  }">
-       
-            <p class="mb-2" v-if="JSON.parse(item.data)">На каз: {{JSON.parse(item.data).title_kaz}}</p>
-            <p class="mb-2" v-if="JSON.parse(item.data)">На рус: {{JSON.parse(item.data).title}}</p>
-            <p class="mb-6" v-if="JSON.parse(item.data)">На анг: {{JSON.parse(item.data).title_eng}}</p>
-
-            <p class="mb-2" v-if="JSON.parse(item.data)">На каз: {{JSON.parse(item.data).description_kaz}}</p>
-            <p class="mb-2" v-if="JSON.parse(item.data)">На рус: {{JSON.parse(item.data).description}}</p>
-            <p class="mb-2" v-if="JSON.parse(item.data)">На анг: {{JSON.parse(item.data).description_eng}}</p>
-        </template>
-        <template v-slot:item.created_at="{ item  }">
-             {{formatDate(item.created_at)}}
-        </template>
-        <template v-slot:item.updated_at="{ item  }">
-            {{formatDate(item.updated_at)}}
-        </template>
-          <template v-slot:item.action="{ item  }" >
-
-                <v-tooltip bottom>
-                  <template v-slot:activator="{ on, attrs }">
-                    <i
-
-                      class="mdi mdi-pencil "
-                      @click="show(item.id,JSON.parse(item.data),item.files)"
-                      v-bind="attrs"
-                      v-on="on"
-                    ></i>
-                  </template>
-                  <span>Редактировать</span>
-                </v-tooltip>
-
-                 <v-tooltip bottom>
-                  <template v-slot:activator="{ on, attrs }">
-                    <i
-                        style="margin: 10px;"
-                      class="mdi mdi-trash-can-outline"
-                      @click="openDeleteModal(item.id)"
-                      v-bind="attrs"
-                      v-on="on"
-                    ></i>
-                  </template>
-                  <span>Удалить</span>
-                </v-tooltip>
-
-              </template>
-        </v-data-table>
-
    
-        <!-- <div class="item__column  pa-4 mb-2 news__list" v-for="item in items" :key="item.id">
-            <p class="mb-2" v-if="JSON.parse(item.data)">На каз: {{JSON.parse(item.data).title_kaz}}</p>
-            <p class="mb-2" v-if="JSON.parse(item.data)">На рус: {{JSON.parse(item.data).title}}</p>
-            <p class="mb-6" v-if="JSON.parse(item.data)">На анг: {{JSON.parse(item.data).title_eng}}</p>
+        <div class="item__column  pa-4 mb-2 news__list" v-for="item in items" :key="item.id">
+            <p class="mb-2" v-if="JSON.parse(item.data)">На каз: {{JSON.parse(item.data).link_kaz}}</p>
+            <p class="mb-2" v-if="JSON.parse(item.data)">На рус: {{JSON.parse(item.data).link}}</p>
+            <p class="mb-6" v-if="JSON.parse(item.data)">На анг: {{JSON.parse(item.data).link_eng}}</p>
 
-            <p class="mb-2" v-if="JSON.parse(item.data)">На каз: {{JSON.parse(item.data).description_kaz}}</p>
-            <p class="mb-2" v-if="JSON.parse(item.data)">На рус: {{JSON.parse(item.data).description}}</p>
-            <p class="mb-2" v-if="JSON.parse(item.data)">На анг: {{JSON.parse(item.data).description_eng}}</p>
             <div  class="item__row item__ac">
                 <div v-for="image in item.files"  :key="image.id" >
                     <img  :src="'http://127.0.0.1:8000/'+image.path" />
@@ -125,9 +62,8 @@
             </div>
 
             <v-divider></v-divider>
-        </div> -->
 
-
+        </div>
         <v-dialog v-model="destroyModal" width="500">
           <v-card class="pa-6">
             <h3 class="mb-4">Удалить запись</h3>
@@ -160,71 +96,43 @@
 
                 <h3 class="mb-4" v-if="type==1">Создать </h3>
                 <h3 class="mb-4" v-else>Редактировать </h3>
+
                 <div class="item__column">
                     <v-text-field
-                        v-model="title"
-                        label="Название"
+                        v-model="link_kaz"
+                        label="Ссылка казахском"
                         required
                         outlined
                         class="input"
                         :rules="nameRules"
                     ></v-text-field>
                 </div>
-                <div class="item__column">
-                     <v-textarea
-                         v-model="description"
-                        filled
-                        name="input-7-4"
-                        label="Описание"
-
-                        :rules="descriptionRules"
-
-                    ></v-textarea>
-                </div>
 
                 <div class="item__column">
                     <v-text-field
-                        v-model="title_eng"
-                        label="Название английском"
+                        v-model="link"
+                        label="Ссылка на русском"
                         required
                         outlined
                         class="input"
                         :rules="nameRules"
                     ></v-text-field>
                 </div>
-                <div class="item__column">
-                     <v-textarea
-                         v-model="description_eng"
-                        filled
-                        name="input-7-4"
-                        label="Описание английском"
-
-                        :rules="descriptionRules"
-
-                    ></v-textarea>
-                </div>
-
+         
                 <div class="item__column">
                     <v-text-field
-                        v-model="title_kaz"
-                        label="Название казахском"
+                        v-model="link_eng"
+                        label="Ссылка английском"
                         required
                         outlined
                         class="input"
                         :rules="nameRules"
                     ></v-text-field>
                 </div>
-                <div class="item__column">
-                     <v-textarea
-                         v-model="description_kaz"
-                        filled
-                        name="input-7-4"
-                        label="Описание казахском"
+               
 
-                        :rules="descriptionRules"
-
-                    ></v-textarea>
-                </div>
+                
+            
 
 
 
@@ -277,14 +185,6 @@ export default {
   name: "News",
   data() {
     return {
-        numberOfPages:null,
-        totalPage : null,
-        loading: true,
-        page: 0,
-        options: {
-            itemsPerPage: 5,
-            page: 1,
-        },
          items: [],
          newsModal: false,
          destroyModal: false,
@@ -301,34 +201,12 @@ export default {
         me: null,
         selectedUser: null,
         uploadedFiles: [],
-        title: null,
-        description: null,
-        title_eng: null,
-        title_kaz: null,
-        description_eng: null,
-        description_kaz: null,
-        headers: [
-            {
-            text: "№",
-            align: "start",
-            sortable: false,
-            value: "id",
-            },
-            { text: "Данные", value: "data" },
-            { text: "Дата создание", value: "created_at" },
-            { text: "Дата редактирование", value: "updated_at" },
-            { text: 'Действие', value: 'action' },
-        ],
+        link: null,
+        link_eng: null,
+        link_kaz: null,
     };
   },
   methods: {
-          formatDate(date) {
-                if(date) {
-                    let d = date.split('T')[0].split('-');
-                    let time = date.split('T')[1].split(':');
-                    return d[2]+'-'+d[1]+'-'+d[0]+' '+time[0]+':'+time[1];
-                }
-            },
         removeFile(fileId) {
             this.$axios({
                 method: "delete",
@@ -382,12 +260,9 @@ export default {
       },
       create() {
             let obj = {
-                title: this.title,
-                description: this.description,
-                title_eng: this.title_eng,
-                description_eng: this.description_eng,
-                title_kaz: this.title_kaz,
-                description_kaz: this.description_kaz,
+                link: this.link,
+                link_eng: this.link_eng,
+                link_kaz: this.link_kaz,
                 type: this.$route.query.type
             };
             this.$refs.form.validate();
@@ -401,10 +276,10 @@ export default {
             console.log(item.description_eng);
             this.id = id;
             this.newsModal = true;
-            this.title = item.title;
+            this.link = item.link;
             this.description =  item.description;
-            this.title_eng = item.title_eng;
-            this.title_kaz = item.title_kaz;
+            this.link_eng = item.link_eng;
+            this.link_kaz = item.link_kaz;
             this.description_eng = item.description_eng;
             this.description_kaz = item.description_kaz;
             this.uploadedFiles = files;
@@ -430,7 +305,7 @@ export default {
                 },
             })
             .then((response) => {
-                this.title = response.data.title;
+                this.link = response.data.link;
                 this.description = response.data.description;
                 this.fetch();
                 this.destroyModal = false
@@ -441,19 +316,15 @@ export default {
         },
       update() {
             let obj = {
-                title: this.title,
-                description: this.description,
-                title_eng: this.title_eng,
-                description_eng: this.description_eng,
-                title_kaz: this.title_kaz,
-                description_kaz: this.description_kaz,
+                link: this.link,
+                link_eng: this.link_eng,
+                link_kaz: this.link_kaz,
                 type: this.$route.query.type
             };
             this.$emit('callUpdate',obj,this.files,this.id);
             this.fetch();
       },
       fetch() {
-        this.loading = true;
         this.$axios({
           method: "get",
           url:
@@ -466,10 +337,6 @@ export default {
         })
         .then((response) => {
             this.items = response.data.data;
-            this.loading = false;
-            this.numberOfPages = response.data.total;
-            this.totalPage = response.data.total;
-
         })
         .catch((error) => {
           console.log(error);
@@ -483,21 +350,7 @@ export default {
   beforeMount() {
 
   },
-  watch: {
-    options: {
-      handler(val) {
-        if (val.itemsPerPage < 0) {
-          val.itemsPerPage = this.totalPage;
-          this.fetch();
-        } else {
-          this.fetch();
-        }
-      },
-    },
-
-    deep: true,
-
-  },
+  watch: {},
 };
 </script>
 
