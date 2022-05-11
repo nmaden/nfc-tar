@@ -58,6 +58,22 @@
                             <i class="mdi mdi-label-variant mr-2"></i>
                             <p class="pointer mb-0" @click="$router.push('/partner?type=partner&name=Партнеры')">Партнеры</p>
                         </div>
+                        <div class="mb-2 item__row item__ac" v-bind:class="{'active':$route.path=='/contacts'}">
+                            <i class="mdi mdi-label-variant mr-2"></i>
+                            <p class="pointer mb-0" @click="$router.push('/contacts?type=contacts&name=Контакты')">Контакты</p>
+                        </div>
+                        <div class="mb-2 item__row item__ac" v-bind:class="{'active':$route.path=='/visitors'}">
+                            <i class="mdi mdi-label-variant mr-2"></i>
+                            <p class="pointer mb-0" @click="$router.push('/visitors?type=visitors&name=Посетителям')">Посетителям</p>
+                        </div>
+                        <div class="mb-2 item__row item__ac" v-bind:class="{'active':$route.path=='/gallery'}">
+                            <i class="mdi mdi-label-variant mr-2"></i>
+                            <p class="pointer mb-0" @click="$router.push('/gallery?type=gallery&name=Фотогалерея')">Фотогалерея</p>
+                        </div>
+                        <div class="mb-2 item__row item__ac" v-bind:class="{'active':$route.path=='/about'}">
+                            <i class="mdi mdi-label-variant mr-2"></i>
+                            <p class="pointer mb-0" @click="$router.push('/about?type=about&name=О библиотеке')">О библиотеке</p>
+                        </div>
                     </v-card>
               </v-col>
 
@@ -68,7 +84,25 @@
                     outlined
                     tile
                     >
-                        <router-view  @callCreate="createData" @callUpdate="updateData" @callFormatDate="formatDate"></router-view>
+              
+
+                        <router-view 
+                            :items="items"
+                            :loading="loading"
+                            :numberOfPages="numberOfPages"
+                            :totalPage="totalPage"
+                            :showModal="showModal" 
+
+
+                            @callCreate="createData" 
+                            @callUpdate="updateData" 
+                            @callFormatDate="formatDate"
+
+                            @fetchData="fetch"
+                        
+                        >
+                        
+                        </router-view>
 
                     </v-card>
               </v-col>
@@ -84,10 +118,40 @@
 export default {
   data() {
     return {
-        me: ''
+        me: '',
+        showModal: false,
+        items: [],
+        loading:null,
+        numberOfPages: null,
+        totalPage: null
     };
   },
   methods: {
+    fetch(options=null) {
+        this.loading = true;
+        let url = "page?type="+this.$route.query.type;
+        if(options)
+            url = "page?type="+this.$route.query.type+'&per_page='+options.itemsPerPage+'&page='+options.page;
+        this.$axios({
+          method: "get",
+          url:
+            this.$API_URL +
+            this.$API_VERSION +
+            url,
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+            },
+        })
+        .then((response) => {
+            this.items = response.data.data;
+            this.loading = false;
+            this.numberOfPages = response.data.total;
+            this.totalPage = response.data.total;
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    },
     formatDate(date) {
         if(date) {
             let d = date.split('T')[0].split('-');
@@ -95,14 +159,15 @@ export default {
             return d[2]+'-'+d[1]+'-'+d[0]+' '+time[0]+':'+time[1];
         }
     },
-    createData(obj,files) {
+    createData(obj,files=null) {
             let contractForm = new FormData();
             contractForm.append("data", JSON.stringify(obj));
-            contractForm.append("type", obj.type);
-
-            for (var i = 0; i < files.length; i++) {
-                contractForm.append("files[]", files[i]);
-            }  
+            contractForm.append("type", this.$route.query.type);
+    
+            if(files)
+                for (var i = 0; i < files.length; i++) {
+                    contractForm.append("files[]", files[i]);
+                }  
             this.$axios
                 .post(this.$API_URL + this.$API_VERSION + "page", contractForm, {
                 headers: {
@@ -111,6 +176,7 @@ export default {
                 },
             })
             .then((response) => {
+                this.showModal = false;
                 this.$toast.open({
                     message: response.data.message,
                     type: "success",
@@ -132,10 +198,11 @@ export default {
             });
     },
     updateData(obj,files,id) {
+
             this.$axios.put(this.$API_URL + this.$API_VERSION + "page/"+id,
                 {
                     data: JSON.stringify(obj),
-                    type: obj.type
+                    type: this.$route.query.type
                 }, {
                 headers: {
                     Authorization: `Bearer ${localStorage.getItem("access_token")}`,
@@ -152,6 +219,8 @@ export default {
 
                 if(files.length>0)
                     this.uploadFiles(files,id);
+
+                 this.showModal = false;
             })
             .catch((error) => {
                 if (error.response && error.response.status == 422) {
@@ -193,7 +262,7 @@ export default {
                 this.newsModal = false;
                 this.type = 0;
                 this.$refs.form.reset();
-                this.fetch();
+            
 
             })
             .catch((error) => {
@@ -209,24 +278,6 @@ export default {
                 }
             });
     },
-    getUser() {
-           this.$axios({
-            method: "get",
-            url:
-            this.$API_URL +
-            this.$API_VERSION +
-            "me",
-            headers: {
-            Authorization: `Bearer ${localStorage.getItem("access_token")}`,
-            },
-        })
-        .then((response) => {
-            this.me = response.data;
-        })
-        .catch((error) => {
-        console.warn(error);
-        });
-    },
     logout() {
         localStorage.clear();
         this.$router.push('/');
@@ -234,7 +285,6 @@ export default {
 
   },
   mounted() {
-      this.getUser();
   },
   beforeMount() {
 
@@ -254,6 +304,15 @@ export default {
 .header__user {
     p {
         font-size: 12px;
+    }
+}
+
+.images {
+    img {
+        width: 70px;
+        height: 70px;
+        object-fit: cover;
+        border-radius: 10px;
     }
 }
 

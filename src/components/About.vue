@@ -39,9 +39,9 @@
             <p class="mb-2" v-if="JSON.parse(item.data)">На рус: {{JSON.parse(item.data).title}}</p>
             <p class="mb-6" v-if="JSON.parse(item.data)">На анг: {{JSON.parse(item.data).title_eng}}</p>
 
-            <p class="mb-2" v-if="JSON.parse(item.data)">На каз: {{JSON.parse(item.data).description_kaz}}</p>
-            <p class="mb-2" v-if="JSON.parse(item.data)">На рус: {{JSON.parse(item.data).description}}</p>
-            <p class="mb-2" v-if="JSON.parse(item.data)">На анг: {{JSON.parse(item.data).description_eng}}</p>
+            <p class="mb-2" v-if="JSON.parse(item.data)">На каз: <span v-html="JSON.parse(item.data).description_kaz"></span></p>
+            <p class="mb-2" v-if="JSON.parse(item.data)">На рус: <span v-html="JSON.parse(item.data).description"></span></p>
+            <p class="mb-2" v-if="JSON.parse(item.data)">На анг: <span v-html="JSON.parse(item.data).description_eng"></span></p>
         </template>
         <template v-slot:item.created_at="{ item  }">
              {{formatDate(item.created_at)}}
@@ -150,7 +150,7 @@
           </v-card>
         </v-dialog>
 
-        <v-dialog v-model="showModal" width="500">
+        <v-dialog v-model="openModal" width="500">
             <v-card class="pa-6">
                 <v-form
                     @submit.prevent="callFunction()"
@@ -171,15 +171,9 @@
                     ></v-text-field>
                 </div>
                 <div class="item__column">
-                     <v-textarea
-                         v-model="description"
-                        filled
-                        name="input-7-4"
-                        label="Описание"
 
-                        :rules="descriptionRules"
-
-                    ></v-textarea>
+                     <vue-editor v-model="description" class="mb-4" />
+              
                 </div>
 
                 <div class="item__column">
@@ -193,15 +187,7 @@
                     ></v-text-field>
                 </div>
                 <div class="item__column">
-                     <v-textarea
-                         v-model="description_eng"
-                        filled
-                        name="input-7-4"
-                        label="Описание английском"
-
-                        :rules="descriptionRules"
-
-                    ></v-textarea>
+                    <vue-editor v-model="description_eng" class="mb-4"/>
                 </div>
 
                 <div class="item__column">
@@ -215,15 +201,7 @@
                     ></v-text-field>
                 </div>
                 <div class="item__column">
-                     <v-textarea
-                         v-model="description_kaz"
-                        filled
-                        name="input-7-4"
-                        label="Описание казахском"
-
-                        :rules="descriptionRules"
-
-                    ></v-textarea>
+                    <vue-editor v-model="description_kaz" class="mb-4" />
                 </div>
 
 
@@ -242,10 +220,8 @@
 
 
                 <div class="item__column">
-              
                     <div v-for="file in uploadedFiles" :key="file.id" class="item__row item__ac pointer mb-3 images">
                         <!-- <p class="mr-2 mb-0">{{file.path.split('/')[file.path.split('/').length-1]}}</p> -->
-
                         <img class="mr-2" :src='"http://127.0.0.1:8000/"+file.path' />
                         <i class="mdi mdi-trash-can-outline" @click="removeFile(file.id)"></i>
                     </div>
@@ -263,7 +239,7 @@
                 <v-btn
                     depressed
                     color="default"
-                    @click="showModal=false"
+                    @click="openModal=false"
                 >
                   Отмена
                 </v-btn>
@@ -275,23 +251,24 @@
 </template>
 
 <script>
-
 export default {
-  props: ['showModal'],
+   props: [
+      'showModal',
+      'items',
+      'loading',
+      'numberOfPages',
+      'totalPage'
+  ],
   name: "News",
   data() {
     return {
-        numberOfPages:null,
-        totalPage : null,
-        loading: true,
+        openModal: this.showModal,
         page: 0,
         options: {
             itemsPerPage: 5,
             page: 1,
         },
-         items: [],
-         destroyModal: false,
-     
+        destroyModal: false,
             nameRules: [
                 v => !!v || 'Заполните поле'
             ],
@@ -351,8 +328,8 @@ export default {
                     duration: 4000,
                     queue: true,
                 });
-                this.fetch();
-                this.showModal = false;
+                  this.$emit('fetchData',this.options);
+                this.openModal = false;
             })
             .catch((error) => {
                 console.warn(error);
@@ -378,7 +355,7 @@ export default {
         },
       chooseTypeFunction(type) {
           this.type = type;
-          this.showModal = true;
+          this.openModal = true;
       },
       callFunction() {
           this.type==1?this.create():this.update();
@@ -395,13 +372,13 @@ export default {
             };
             this.$refs.form.validate();
             this.$emit('callCreate',obj,this.files);
-            this.fetch();
-            this.type = 0;
+            this.$emit('fetchData',this.options);
             this.$refs.form.reset();
+            this.openModal = false;
         },
         show(id,item,files) {
             this.id = id;
-            this.showModal = true;
+            this.openModal = true;
             this.title = item.title;
             this.description =  item.description;
             this.title_eng = item.title_eng;
@@ -433,8 +410,9 @@ export default {
             .then((response) => {
                 this.title = response.data.title;
                 this.description = response.data.description;
-                this.fetch();
+                this.$emit('fetchData',this.options);
                 this.destroyModal = false
+                this.openModal = false;
             })
             .catch((error) => {
             console.log(error);
@@ -451,47 +429,24 @@ export default {
                 type: this.$route.query.type
             };
             this.$emit('callUpdate',obj,this.files,this.id);
-            this.fetch();
-      },
-      fetch() {
-        this.loading = true;
-        this.$axios({
-          method: "get",
-          url:
-            this.$API_URL +
-            this.$API_VERSION +
-            "page?type="+this.$route.query.type,
-            headers: {
-                Authorization: `Bearer ${localStorage.getItem("access_token")}`,
-            },
-        })
-        .then((response) => {
-            this.items = response.data.data;
-            this.loading = false;
-            this.numberOfPages = response.data.total;
-            this.totalPage = response.data.total;
-
-        })
-        .catch((error) => {
-          console.log(error);
-        });
+            this.$emit('fetchData',this.options);
+            this.openModal = false;
       }
   },
   mounted() {
-      this.fetch();
+      this.$emit('fetchData',this.options);
       this.getUser();
   },
   beforeMount() {
-
   },
   watch: {
     options: {
       handler(val) {
         if (val.itemsPerPage < 0) {
           val.itemsPerPage = this.totalPage;
-          this.fetch();
+            this.$emit('fetchData',this.options);
         } else {
-          this.fetch();
+            this.$emit('fetchData',this.options);
         }
       },
     },

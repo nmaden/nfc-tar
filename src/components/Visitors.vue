@@ -22,9 +22,9 @@
         </div>
    
         <div class="item__column  pa-4 mb-2 news__list" v-for="item in items" :key="item.id">
-            <p class="mb-2" v-if="JSON.parse(item.data)">На каз: {{JSON.parse(item.data).link_kaz}}</p>
-            <p class="mb-2" v-if="JSON.parse(item.data)">На рус: {{JSON.parse(item.data).link}}</p>
-            <p class="mb-6" v-if="JSON.parse(item.data)">На анг: {{JSON.parse(item.data).link_eng}}</p>
+            <p class="mb-2" v-if="JSON.parse(item.data)">На каз: <span v-html="JSON.parse(item.data).graph_work_kaz"></span></p>
+            <p class="mb-2" v-if="JSON.parse(item.data)">На рус: <span v-html="JSON.parse(item.data).graph_work"></span></p>
+            <p class="mb-6" v-if="JSON.parse(item.data)">На анг: <span v-html="JSON.parse(item.data).graph_work_eng"></span></p>
 
             <div  class="item__row item__ac">
                 <div v-for="image in item.files"  :key="image.id" >
@@ -39,7 +39,7 @@
                     fab
                     dark
                     color="indigo"
-                    @click="show(item.id,JSON.parse(item.data),item.files)"
+                    @click="show(item.id,JSON.parse(item.data))"
                     >
                     <v-icon dark>
                         mdi-pencil
@@ -86,7 +86,7 @@
           </v-card>
         </v-dialog>
 
-        <v-dialog v-model="showModal" width="500">
+        <v-dialog v-model="openModal" width="500">
             <v-card class="pa-6">
                 <v-form
                     @submit.prevent="callFunction()"
@@ -97,66 +97,33 @@
                 <h3 class="mb-4" v-if="type==1">Создать </h3>
                 <h3 class="mb-4" v-else>Редактировать </h3>
 
-                <div class="item__column">
-                    <v-text-field
-                        v-model="link_kaz"
-                        label="Ссылка казахском"
-                        required
-                        outlined
-                        class="input"
-                        :rules="nameRules"
-                    ></v-text-field>
+                <div class="item__column mb-2">
+                    <p >График работы на казахском</p>
+                    <vue-editor v-model="graph_work_kaz" />
                 </div>
-
-                <div class="item__column">
-                    <v-text-field
-                        v-model="link"
-                        label="Ссылка на русском"
-                        required
-                        outlined
-                        class="input"
-                        :rules="nameRules"
-                    ></v-text-field>
+                <div class="item__column mb-2">
+                    <p >График работы на русском</p>
+                    <vue-editor v-model="graph_work" />
                 </div>
-         
-                <div class="item__column">
-                    <v-text-field
-                        v-model="link_eng"
-                        label="Ссылка английском"
-                        required
-                        outlined
-                        class="input"
-                        :rules="nameRules"
-                    ></v-text-field>
-                </div>
-               
-
-                
-            
-
-
-
-                <div>
-                     <v-file-input
-                        chips
-                        counter
-                        multiple
-                        show-size
-                        small-chips
-                        truncate-length="15"
-                        v-model="files"
-                    ></v-file-input>
+                <div class="item__column mb-2">
+                    <p >График работы на английском</p>
+                    <vue-editor v-model="graph_work_eng" />
                 </div>
 
 
-                <div class="item__column">
-                    <div v-for="file in uploadedFiles" :key="file.id" class="item__row item__ac pointer mb-3">
-                        <p class="mr-2 mb-0">{{file.path.split('/')[file.path.split('/').length-1]}}</p>
-                        <i class="mdi mdi-trash-can-outline" @click="removeFile(file.id)"></i>
-                    </div>
-                </div> 
-
-
+                <div class="item__column mb-2">
+                    <p >ГРАФИК ЭКСКУРСИЙ на казахском</p>
+                    <vue-editor v-model="graph_trip_kaz" />
+                </div>
+                <div class="item__column mb-2">
+                    <p >ГРАФИК ЭКСКУРСИЙ на русском</p>
+                    <vue-editor v-model="graph_trip" />
+                </div>
+                <div class="item__column mb-2">
+                    <p >ГРАФИК ЭКСКУРСИЙ на английском</p>
+                    <vue-editor v-model="graph_trip_eng" />
+                </div>
+    
                  <v-btn
                     type="submit"
                     depressed
@@ -168,7 +135,7 @@
                 <v-btn
                     depressed
                     color="default"
-                    @click="showModal=false"
+                    @click="openModal=false"
                 >
                   Отмена
                 </v-btn>
@@ -182,28 +149,31 @@
 <script>
 
 export default {
-  props: ['showModal'],
+  props: [
+      'showModal',
+      'items',
+      'loading',
+      'numberOfPages',
+      'totalPage'
+  ],
   name: "News",
   data() {
     return {
-         items: [],
-         destroyModal: false,
-     
-            nameRules: [
-                v => !!v || 'Заполните поле'
-            ],
-            descriptionRules: [
-                v => !!v || 'Заполните поле'
-            ],
-        files: [],
+        openModal: this.showModal,
+        destroyModal: false,
+        nameRules: [
+            v => !!v || 'Заполните поле'
+        ],
+        descriptionRules: [
+            v => !!v || 'Заполните поле'
+        ],
         type: 0,
-        newsId:'',
-        me: null,
-        selectedUser: null,
-        uploadedFiles: [],
-        link: null,
-        link_eng: null,
-        link_kaz: null,
+        graph_work: null,
+        graph_work_kaz: null,
+        graph_work_eng: null,
+        graph_trip: null,
+        graph_trip_kaz: null,
+        graph_trip_eng: null
     };
   },
   methods: {
@@ -226,26 +196,8 @@ export default {
                     duration: 4000,
                     queue: true,
                 });
-                this.fetch();
-                this.showModal = false;
-            })
-            .catch((error) => {
-                console.warn(error);
-            });
-        },
-        getUser() {
-            this.$axios({
-                method: "get",
-                url:
-                this.$API_URL +
-                this.$API_VERSION +
-                "me",
-                headers: {
-                Authorization: `Bearer ${localStorage.getItem("access_token")}`,
-                },
-            })
-            .then((response) => {
-                this.me = response.data;
+                this.$emit('fetchData',null);
+                this.openModal = false;
             })
             .catch((error) => {
                 console.warn(error);
@@ -253,31 +205,37 @@ export default {
         },
       chooseTypeFunction(type) {
           this.type = type;
-          this.showModal = true;
+          this.openModal = true;
       },
       callFunction() {
           this.type==1?this.create():this.update();
       },
       create() {
             let obj = {
-                link: this.link,
-                link_eng: this.link_eng,
-                link_kaz: this.link_kaz,
+                graph_work: this.graph_work,
+                graph_work_kaz: this.graph_work_kaz,
+                graph_work_eng: this.graph_work_eng,
+                graph_trip: this.graph_trip,
+                graph_trip_kaz: this.graph_trip_kaz,
+                graph_trip_eng: this.graph_trip_eng,
                 type: this.$route.query.type
             };
             this.$refs.form.validate();
             this.$emit('callCreate',obj,this.files);
-            this.fetch();
+              this.$emit('fetchData',null);
             this.type = 0;
             this.$refs.form.reset();
         },
-        show(id,item,files) {
+        show(id,item) {
             this.id = id;
-            this.showModal = true;
-            this.link = item.link;
-            this.link_eng = item.link_eng;
-            this.link_kaz = item.link_kaz;
-            this.uploadedFiles = files;
+            this.openModal = true;
+
+            this.graph_work = item.graph_work;
+            this.graph_work_kaz = item.graph_work_kaz;
+            this.graph_work_eng = item.graph_work_eng;
+            this.graph_trip = item.graph_trip;
+            this.graph_trip_kaz = item.graph_trip_kaz;
+            this.graph_trip_eng = item.graph_trip_eng;
     
         },
         makeJson(item) {
@@ -302,7 +260,7 @@ export default {
             .then((response) => {
                 this.link = response.data.link;
                 this.description = response.data.description;
-                this.fetch();
+                this.$emit('fetchData',null);
                 this.destroyModal = false
             })
             .catch((error) => {
@@ -311,41 +269,37 @@ export default {
         },
       update() {
             let obj = {
-                link: this.link,
-                link_eng: this.link_eng,
-                link_kaz: this.link_kaz,
+                graph_work: this.graph_work,
+                graph_work_kaz: this.graph_work_kaz,
+                graph_work_eng: this.graph_work_eng,
+                graph_trip: this.graph_trip,
+                graph_trip_kaz: this.graph_trip_kaz,
+                graph_trip_eng: this.graph_trip_eng,
                 type: this.$route.query.type
             };
             this.$emit('callUpdate',obj,this.files,this.id);
-            this.fetch();
+            this.$emit('fetchData',null);
       },
-      fetch() {
-        this.$axios({
-          method: "get",
-          url:
-            this.$API_URL +
-            this.$API_VERSION +
-            "page?type="+this.$route.query.type,
-            headers: {
-                Authorization: `Bearer ${localStorage.getItem("access_token")}`,
-            },
-        })
-        .then((response) => {
-            this.items = response.data.data;
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-      }
   },
   mounted() {
-      this.fetch();
-      this.getUser();
+    this.$emit('fetchData',null);
   },
   beforeMount() {
 
   },
-  watch: {},
+  watch: {
+      openModal(val) {
+          if(val==false) {
+            this.graph_work = null;
+            this.graph_work_kaz = null;
+            this.graph_work_eng = null;
+            this.graph_trip = null;
+            this.graph_trip_kaz = null;
+            this.graph_trip_eng = null;
+          }
+      }
+
+  },
 };
 </script>
 

@@ -1,5 +1,5 @@
 export const routes = [{
-        path: '/sign',
+        path: '/',
         name: "Login",
         component: () =>
             import ('../views/Auth.vue'),
@@ -35,6 +35,26 @@ export const routes = [{
                 path: "/users",
                 component: () =>
                     import ("../components/User.vue"),
+            },
+            {
+                path: "/contacts",
+                component: () =>
+                    import ("../components/Contacts.vue"),
+            },
+            {
+                path: "/visitors",
+                component: () =>
+                    import ("../components/Visitors.vue"),
+            },
+            {
+                path: "/gallery",
+                component: () =>
+                    import ("../components/Gallery.vue"),
+            },
+            {
+                path: "/about",
+                component: () =>
+                    import ("../components/About.vue"),
             },
 
 

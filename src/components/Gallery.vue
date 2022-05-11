@@ -30,18 +30,9 @@
             :loading="loading"
             :options.sync="options"
             :server-items-length="totalPage"
-        >  
-
-         
+        > 
         <template v-slot:item.data="{ item  }">
-       
-            <p class="mb-2" v-if="JSON.parse(item.data)">На каз: {{JSON.parse(item.data).title_kaz}}</p>
-            <p class="mb-2" v-if="JSON.parse(item.data)">На рус: {{JSON.parse(item.data).title}}</p>
-            <p class="mb-6" v-if="JSON.parse(item.data)">На анг: {{JSON.parse(item.data).title_eng}}</p>
-
-            <p class="mb-2" v-if="JSON.parse(item.data)">На каз: {{JSON.parse(item.data).description_kaz}}</p>
-            <p class="mb-2" v-if="JSON.parse(item.data)">На рус: {{JSON.parse(item.data).description}}</p>
-            <p class="mb-2" v-if="JSON.parse(item.data)">На анг: {{JSON.parse(item.data).description_eng}}</p>
+                {{item.files}}
         </template>
         <template v-slot:item.created_at="{ item  }">
              {{formatDate(item.created_at)}}
@@ -79,55 +70,6 @@
 
               </template>
         </v-data-table>
-
-   
-        <!-- <div class="item__column  pa-4 mb-2 news__list" v-for="item in items" :key="item.id">
-            <p class="mb-2" v-if="JSON.parse(item.data)">На каз: {{JSON.parse(item.data).title_kaz}}</p>
-            <p class="mb-2" v-if="JSON.parse(item.data)">На рус: {{JSON.parse(item.data).title}}</p>
-            <p class="mb-6" v-if="JSON.parse(item.data)">На анг: {{JSON.parse(item.data).title_eng}}</p>
-
-            <p class="mb-2" v-if="JSON.parse(item.data)">На каз: {{JSON.parse(item.data).description_kaz}}</p>
-            <p class="mb-2" v-if="JSON.parse(item.data)">На рус: {{JSON.parse(item.data).description}}</p>
-            <p class="mb-2" v-if="JSON.parse(item.data)">На анг: {{JSON.parse(item.data).description_eng}}</p>
-            <div  class="item__row item__ac">
-                <div v-for="image in item.files"  :key="image.id" >
-                    <img  :src="'http://127.0.0.1:8000/'+image.path" />
-                </div>
-            </div>
-           
-            <div class="item__row item__ac">
-                <v-btn
-                    small
-                    class="mx-2 mr-2"
-                    fab
-                    dark
-                    color="indigo"
-                    @click="show(item.id,JSON.parse(item.data),item.files)"
-                    >
-                    <v-icon dark>
-                        mdi-pencil
-                    </v-icon>
-                </v-btn>
-
-                <v-btn
-                   
-                    small
-                    class="mx-2 mr-2"
-                    fab
-                    dark
-                    @click="openDeleteModal(item.id)"
-                    color="indigo"
-                    >
-                    <v-icon dark>
-                        mdi-trash-can-outline
-                    </v-icon>
-                </v-btn>
-            </div>
-
-            <v-divider></v-divider>
-        </div> -->
-
-
         <v-dialog v-model="destroyModal" width="500">
           <v-card class="pa-6">
             <h3 class="mb-4">Удалить запись</h3>
@@ -150,7 +92,7 @@
           </v-card>
         </v-dialog>
 
-        <v-dialog v-model="showModal" width="500">
+        <v-dialog v-model="openModal" width="500">
             <v-card class="pa-6">
                 <v-form
                     @submit.prevent="callFunction()"
@@ -160,72 +102,6 @@
 
                 <h3 class="mb-4" v-if="type==1">Создать </h3>
                 <h3 class="mb-4" v-else>Редактировать </h3>
-                <div class="item__column">
-                    <v-text-field
-                        v-model="title"
-                        label="Название"
-                        required
-                        outlined
-                        class="input"
-                        :rules="nameRules"
-                    ></v-text-field>
-                </div>
-                <div class="item__column">
-                     <v-textarea
-                         v-model="description"
-                        filled
-                        name="input-7-4"
-                        label="Описание"
-
-                        :rules="descriptionRules"
-
-                    ></v-textarea>
-                </div>
-
-                <div class="item__column">
-                    <v-text-field
-                        v-model="title_eng"
-                        label="Название английском"
-                        required
-                        outlined
-                        class="input"
-                        :rules="nameRules"
-                    ></v-text-field>
-                </div>
-                <div class="item__column">
-                     <v-textarea
-                         v-model="description_eng"
-                        filled
-                        name="input-7-4"
-                        label="Описание английском"
-
-                        :rules="descriptionRules"
-
-                    ></v-textarea>
-                </div>
-
-                <div class="item__column">
-                    <v-text-field
-                        v-model="title_kaz"
-                        label="Название казахском"
-                        required
-                        outlined
-                        class="input"
-                        :rules="nameRules"
-                    ></v-text-field>
-                </div>
-                <div class="item__column">
-                     <v-textarea
-                         v-model="description_kaz"
-                        filled
-                        name="input-7-4"
-                        label="Описание казахском"
-
-                        :rules="descriptionRules"
-
-                    ></v-textarea>
-                </div>
-
 
 
                 <div>
@@ -242,10 +118,8 @@
 
 
                 <div class="item__column">
-              
                     <div v-for="file in uploadedFiles" :key="file.id" class="item__row item__ac pointer mb-3 images">
                         <!-- <p class="mr-2 mb-0">{{file.path.split('/')[file.path.split('/').length-1]}}</p> -->
-
                         <img class="mr-2" :src='"http://127.0.0.1:8000/"+file.path' />
                         <i class="mdi mdi-trash-can-outline" @click="removeFile(file.id)"></i>
                     </div>
@@ -263,7 +137,7 @@
                 <v-btn
                     depressed
                     color="default"
-                    @click="showModal=false"
+                    @click="openModal=false"
                 >
                   Отмена
                 </v-btn>
@@ -275,23 +149,24 @@
 </template>
 
 <script>
-
 export default {
-  props: ['showModal'],
+  props: [
+      'showModal',
+      'items',
+      'loading',
+      'numberOfPages',
+      'totalPage'
+  ],
   name: "News",
   data() {
     return {
-        numberOfPages:null,
-        totalPage : null,
-        loading: true,
+        openModal: this.showModal,
         page: 0,
         options: {
             itemsPerPage: 5,
             page: 1,
         },
-         items: [],
-         destroyModal: false,
-     
+        destroyModal: false,
             nameRules: [
                 v => !!v || 'Заполните поле'
             ],
@@ -317,7 +192,6 @@ export default {
             sortable: false,
             value: "id",
             },
-            { text: "Данные", value: "data" },
             { text: "Дата создание", value: "created_at" },
             { text: "Дата редактирование", value: "updated_at" },
             { text: 'Действие', value: 'action' },
@@ -325,13 +199,13 @@ export default {
     };
   },
   methods: {
-          formatDate(date) {
+        formatDate(date) {
                 if(date) {
                     let d = date.split('T')[0].split('-');
                     let time = date.split('T')[1].split(':');
                     return d[2]+'-'+d[1]+'-'+d[0]+' '+time[0]+':'+time[1];
                 }
-            },
+        },
         removeFile(fileId) {
             this.$axios({
                 method: "delete",
@@ -351,26 +225,8 @@ export default {
                     duration: 4000,
                     queue: true,
                 });
-                this.fetch();
-                this.showModal = false;
-            })
-            .catch((error) => {
-                console.warn(error);
-            });
-        },
-        getUser() {
-            this.$axios({
-                method: "get",
-                url:
-                this.$API_URL +
-                this.$API_VERSION +
-                "me",
-                headers: {
-                Authorization: `Bearer ${localStorage.getItem("access_token")}`,
-                },
-            })
-            .then((response) => {
-                this.me = response.data;
+                this.$emit('fetchData',this.options);
+                this.openModal = false;
             })
             .catch((error) => {
                 console.warn(error);
@@ -378,7 +234,7 @@ export default {
         },
       chooseTypeFunction(type) {
           this.type = type;
-          this.showModal = true;
+          this.openModal = true;
       },
       callFunction() {
           this.type==1?this.create():this.update();
@@ -395,21 +251,14 @@ export default {
             };
             this.$refs.form.validate();
             this.$emit('callCreate',obj,this.files);
-            this.fetch();
-            this.type = 0;
             this.$refs.form.reset();
+            this.openModal = false;
+            this.$emit('fetchData',this.options);
         },
         show(id,item,files) {
             this.id = id;
-            this.showModal = true;
-            this.title = item.title;
-            this.description =  item.description;
-            this.title_eng = item.title_eng;
-            this.title_kaz = item.title_kaz;
-            this.description_eng = item.description_eng;
-            this.description_kaz = item.description_kaz;
+            this.openModal = true;
             this.uploadedFiles = files;
-    
         },
         makeJson(item) {
             if(item)
@@ -433,7 +282,7 @@ export default {
             .then((response) => {
                 this.title = response.data.title;
                 this.description = response.data.description;
-                this.fetch();
+                this.$emit('fetchData',this.options);
                 this.destroyModal = false
             })
             .catch((error) => {
@@ -451,35 +300,12 @@ export default {
                 type: this.$route.query.type
             };
             this.$emit('callUpdate',obj,this.files,this.id);
-            this.fetch();
+            this.$emit('fetchData',this.options);
+            this.openModal = false;
       },
-      fetch() {
-        this.loading = true;
-        this.$axios({
-          method: "get",
-          url:
-            this.$API_URL +
-            this.$API_VERSION +
-            "page?type="+this.$route.query.type,
-            headers: {
-                Authorization: `Bearer ${localStorage.getItem("access_token")}`,
-            },
-        })
-        .then((response) => {
-            this.items = response.data.data;
-            this.loading = false;
-            this.numberOfPages = response.data.total;
-            this.totalPage = response.data.total;
-
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-      }
   },
   mounted() {
-      this.fetch();
-      this.getUser();
+      this.$emit('fetchData',this.options);
   },
   beforeMount() {
 
@@ -489,9 +315,9 @@ export default {
       handler(val) {
         if (val.itemsPerPage < 0) {
           val.itemsPerPage = this.totalPage;
-          this.fetch();
+            this.$emit('fetchData',this.options);
         } else {
-          this.fetch();
+            this.$emit('fetchData',this.options);
         }
       },
     },

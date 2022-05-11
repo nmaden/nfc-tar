@@ -3,7 +3,7 @@
       <div>
 
         <div class="item__row item__ac">
-
+       
             <h2>{{$route.query.name}}</h2>
 
             <v-btn
@@ -35,13 +35,10 @@
          
         <template v-slot:item.data="{ item  }">
        
-            <p class="mb-2" v-if="JSON.parse(item.data)">На каз: {{JSON.parse(item.data).title_kaz}}</p>
-            <p class="mb-2" v-if="JSON.parse(item.data)">На рус: {{JSON.parse(item.data).title}}</p>
-            <p class="mb-6" v-if="JSON.parse(item.data)">На анг: {{JSON.parse(item.data).title_eng}}</p>
+            <p class="mb-2" v-if="JSON.parse(item.data)">Адрес: {{JSON.parse(item.data).address}}</p>
+            <p class="mb-2" v-if="JSON.parse(item.data)">Телефон: {{JSON.parse(item.data).phone}}</p>
+            <p class="mb-6" v-if="JSON.parse(item.data)">Почта: {{JSON.parse(item.data).email}}</p>
 
-            <p class="mb-2" v-if="JSON.parse(item.data)">На каз: {{JSON.parse(item.data).description_kaz}}</p>
-            <p class="mb-2" v-if="JSON.parse(item.data)">На рус: {{JSON.parse(item.data).description}}</p>
-            <p class="mb-2" v-if="JSON.parse(item.data)">На анг: {{JSON.parse(item.data).description_eng}}</p>
         </template>
         <template v-slot:item.created_at="{ item  }">
              {{formatDate(item.created_at)}}
@@ -80,54 +77,6 @@
               </template>
         </v-data-table>
 
-   
-        <!-- <div class="item__column  pa-4 mb-2 news__list" v-for="item in items" :key="item.id">
-            <p class="mb-2" v-if="JSON.parse(item.data)">На каз: {{JSON.parse(item.data).title_kaz}}</p>
-            <p class="mb-2" v-if="JSON.parse(item.data)">На рус: {{JSON.parse(item.data).title}}</p>
-            <p class="mb-6" v-if="JSON.parse(item.data)">На анг: {{JSON.parse(item.data).title_eng}}</p>
-
-            <p class="mb-2" v-if="JSON.parse(item.data)">На каз: {{JSON.parse(item.data).description_kaz}}</p>
-            <p class="mb-2" v-if="JSON.parse(item.data)">На рус: {{JSON.parse(item.data).description}}</p>
-            <p class="mb-2" v-if="JSON.parse(item.data)">На анг: {{JSON.parse(item.data).description_eng}}</p>
-            <div  class="item__row item__ac">
-                <div v-for="image in item.files"  :key="image.id" >
-                    <img  :src="'http://127.0.0.1:8000/'+image.path" />
-                </div>
-            </div>
-           
-            <div class="item__row item__ac">
-                <v-btn
-                    small
-                    class="mx-2 mr-2"
-                    fab
-                    dark
-                    color="indigo"
-                    @click="show(item.id,JSON.parse(item.data),item.files)"
-                    >
-                    <v-icon dark>
-                        mdi-pencil
-                    </v-icon>
-                </v-btn>
-
-                <v-btn
-                   
-                    small
-                    class="mx-2 mr-2"
-                    fab
-                    dark
-                    @click="openDeleteModal(item.id)"
-                    color="indigo"
-                    >
-                    <v-icon dark>
-                        mdi-trash-can-outline
-                    </v-icon>
-                </v-btn>
-            </div>
-
-            <v-divider></v-divider>
-        </div> -->
-
-
         <v-dialog v-model="destroyModal" width="500">
           <v-card class="pa-6">
             <h3 class="mb-4">Удалить запись</h3>
@@ -162,8 +111,8 @@
                 <h3 class="mb-4" v-else>Редактировать </h3>
                 <div class="item__column">
                     <v-text-field
-                        v-model="title"
-                        label="Название"
+                        v-model="phone"
+                        label="Телефон"
                         required
                         outlined
                         class="input"
@@ -171,74 +120,26 @@
                     ></v-text-field>
                 </div>
                 <div class="item__column">
-                     <v-textarea
-                         v-model="description"
+                     <v-text-field
+                         v-model="email"
                         filled
                         name="input-7-4"
-                        label="Описание"
-
+                        label="Почта"
                         :rules="descriptionRules"
-
-                    ></v-textarea>
+                    ></v-text-field>
                 </div>
 
                 <div class="item__column">
                     <v-text-field
-                        v-model="title_eng"
-                        label="Название английском"
+                        v-model="address"
+                        label="Адрес"
                         required
                         outlined
                         class="input"
                         :rules="nameRules"
                     ></v-text-field>
                 </div>
-                <div class="item__column">
-                     <v-textarea
-                         v-model="description_eng"
-                        filled
-                        name="input-7-4"
-                        label="Описание английском"
-
-                        :rules="descriptionRules"
-
-                    ></v-textarea>
-                </div>
-
-                <div class="item__column">
-                    <v-text-field
-                        v-model="title_kaz"
-                        label="Название казахском"
-                        required
-                        outlined
-                        class="input"
-                        :rules="nameRules"
-                    ></v-text-field>
-                </div>
-                <div class="item__column">
-                     <v-textarea
-                         v-model="description_kaz"
-                        filled
-                        name="input-7-4"
-                        label="Описание казахском"
-
-                        :rules="descriptionRules"
-
-                    ></v-textarea>
-                </div>
-
-
-
-                <div>
-                     <v-file-input
-                        chips
-                        counter
-                        multiple
-                        show-size
-                        small-chips
-                        truncate-length="15"
-                        v-model="files"
-                    ></v-file-input>
-                </div>
+               
 
 
                 <div class="item__column">
@@ -290,6 +191,7 @@ export default {
             page: 1,
         },
          items: [],
+         newsModal: false,
          destroyModal: false,
      
             nameRules: [
@@ -304,12 +206,9 @@ export default {
         me: null,
         selectedUser: null,
         uploadedFiles: [],
-        title: null,
-        description: null,
-        title_eng: null,
-        title_kaz: null,
-        description_eng: null,
-        description_kaz: null,
+        address: null,
+        email: null,
+        phone: null,
         headers: [
             {
             text: "№",
@@ -352,7 +251,7 @@ export default {
                     queue: true,
                 });
                 this.fetch();
-                this.showModal = false;
+                this.newsModal = false;
             })
             .catch((error) => {
                 console.warn(error);
@@ -385,13 +284,9 @@ export default {
       },
       create() {
             let obj = {
-                title: this.title,
-                description: this.description,
-                title_eng: this.title_eng,
-                description_eng: this.description_eng,
-                title_kaz: this.title_kaz,
-                description_kaz: this.description_kaz,
-                type: this.$route.query.type
+                phone: this.phone,
+                address: this.address,
+                email: this.email
             };
             this.$refs.form.validate();
             this.$emit('callCreate',obj,this.files);
@@ -402,14 +297,10 @@ export default {
         show(id,item,files) {
             this.id = id;
             this.showModal = true;
-            this.title = item.title;
-            this.description =  item.description;
-            this.title_eng = item.title_eng;
-            this.title_kaz = item.title_kaz;
-            this.description_eng = item.description_eng;
-            this.description_kaz = item.description_kaz;
+            this.address = item.address;
+            this.phone =  item.phone;
+            this.email = item.email;
             this.uploadedFiles = files;
-    
         },
         makeJson(item) {
             if(item)
@@ -441,14 +332,10 @@ export default {
             });
         },
       update() {
-            let obj = {
-                title: this.title,
-                description: this.description,
-                title_eng: this.title_eng,
-                description_eng: this.description_eng,
-                title_kaz: this.title_kaz,
-                description_kaz: this.description_kaz,
-                type: this.$route.query.type
+             let obj = {
+                phone: this.phone,
+                address: this.address,
+                email: this.email
             };
             this.$emit('callUpdate',obj,this.files,this.id);
             this.fetch();
