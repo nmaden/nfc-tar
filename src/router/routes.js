@@ -56,6 +56,11 @@ export const routes = [{
                 component: () =>
                     import ("../components/About.vue"),
             },
+            {
+                path: "/feedback",
+                component: () =>
+                    import ("../components/Feedback.vue"),
+            },
 
 
         ]

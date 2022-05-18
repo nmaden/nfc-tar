@@ -304,8 +304,8 @@ export default {
   methods: {
           formatDate(date) {
                 if(date) {
-                    let d = date.split('T')[0].split('-');
-                    let time = date.split('T')[1].split(':');
+                    let d = date.split(' ')[0].split('-');
+                    let time = date.split(' ')[1].split(':');
                     return d[2]+'-'+d[1]+'-'+d[0]+' '+time[0]+':'+time[1];
                 }
             },

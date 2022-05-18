@@ -74,6 +74,11 @@
                             <i class="mdi mdi-label-variant mr-2"></i>
                             <p class="pointer mb-0" @click="$router.push('/about?type=about&name=О библиотеке')">О библиотеке</p>
                         </div>
+
+                         <div class="mb-2 item__row item__ac" v-bind:class="{'active':$route.path=='/feedback'}">
+                            <i class="mdi mdi-label-variant mr-2"></i>
+                            <p class="pointer mb-0" @click="$router.push('/feedback?type=feedback&name=Заявки')">Заявки</p>
+                        </div>
                     </v-card>
               </v-col>
 
@@ -144,9 +149,11 @@ export default {
         })
         .then((response) => {
             this.items = response.data.data;
+           
             this.loading = false;
             this.numberOfPages = response.data.total;
             this.totalPage = response.data.total;
+
         })
         .catch((error) => {
           console.log(error);
@@ -154,8 +161,8 @@ export default {
     },
     formatDate(date) {
         if(date) {
-            let d = date.split('T')[0].split('-');
-            let time = date.split('T')[1].split(':');
+            let d = date.split(' ')[0].split('-');
+            let time = date.split(' ')[1].split(':');
             return d[2]+'-'+d[1]+'-'+d[0]+' '+time[0]+':'+time[1];
         }
     },
