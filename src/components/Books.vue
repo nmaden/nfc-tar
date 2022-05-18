@@ -91,7 +91,7 @@
             <p class="mb-2" v-if="JSON.parse(item.data)">На анг: {{JSON.parse(item.data).description_eng}}</p>
             <div  class="item__row item__ac">
                 <div v-for="image in item.files"  :key="image.id" >
-                    <img  :src="'http://127.0.0.1:8000/'+image.path" />
+                    <img  :src="'https://api.library.crocos.kz/'+image.path" />
                 </div>
             </div>
            
@@ -246,7 +246,7 @@
                     <div v-for="file in uploadedFiles" :key="file.id" class="item__row item__ac pointer mb-3 images">
                         <!-- <p class="mr-2 mb-0">{{file.path.split('/')[file.path.split('/').length-1]}}</p> -->
 
-                        <img class="mr-2" :src='"http://127.0.0.1:8000/"+file.path' />
+                        <img class="mr-2" :src='"https://api.library.crocos.kz/"+file.path' />
                         <i class="mdi mdi-trash-can-outline" @click="removeFile(file.id)"></i>
                     </div>
                 </div> 
