@@ -2,7 +2,7 @@
 <template>
         <div class="sign__page item__column item__ac">
 
-
+        <p class="sign__page__title">Библиотека имени А.C Пушкина</p>
         <p class="sign__page__title">Вход</p>
         <v-form
             @submit.prevent="login_sign"
@@ -31,8 +31,9 @@
 
             <v-btn
             type="submit"
-            color="success"
+            color="#003E74"
             class="mb-4 button"
+            style="color:white"
             >
             Вход
             </v-btn>
@@ -102,7 +103,14 @@
                 this.$router.push('/admin');
             })
             .catch((error) => {
-                console.log(error);
+                console.log(error)
+                this.$toast.open({
+                    message: "Не правильный логин или пароль",
+                    type: "warning",
+                    position: "bottom",
+                    duration: 4000,
+                    queue: true,
+                });
             });
         },
         get_profile() {
@@ -150,13 +158,16 @@
         margin-bottom: 20px;
         color: #333;
           @media only screen and (max-width: 900px) {
-             font-size: 26px;
+             font-size: 18px;
           }
       }
       .sign__page__block {
         display: flex;
         flex-direction: column;
-        width: 30%;
+        width: 400px;
+        @media only screen and (max-width: 900px) {
+             width: 90%;
+        }
         input {
           width: 100px;
           padding: 20px;
