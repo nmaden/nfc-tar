@@ -80,54 +80,6 @@
               </template>
         </v-data-table>
 
-   
-        <!-- <div class="item__column  pa-4 mb-2 news__list" v-for="item in items" :key="item.id">
-            <p class="mb-2" v-if="JSON.parse(item.data)">На каз: {{JSON.parse(item.data).title_kaz}}</p>
-            <p class="mb-2" v-if="JSON.parse(item.data)">На рус: {{JSON.parse(item.data).title}}</p>
-            <p class="mb-6" v-if="JSON.parse(item.data)">На анг: {{JSON.parse(item.data).title_eng}}</p>
-
-            <p class="mb-2" v-if="JSON.parse(item.data)">На каз: {{JSON.parse(item.data).description_kaz}}</p>
-            <p class="mb-2" v-if="JSON.parse(item.data)">На рус: {{JSON.parse(item.data).description}}</p>
-            <p class="mb-2" v-if="JSON.parse(item.data)">На анг: {{JSON.parse(item.data).description_eng}}</p>
-            <div  class="item__row item__ac">
-                <div v-for="image in item.files"  :key="image.id" >
-                    <img  :src="'https://api.library.crocos.kz/'+image.path" />
-                </div>
-            </div>
-           
-            <div class="item__row item__ac">
-                <v-btn
-                    small
-                    class="mx-2 mr-2"
-                    fab
-                    dark
-                    color="indigo"
-                    @click="show(item.id,JSON.parse(item.data),item.files)"
-                    >
-                    <v-icon dark>
-                        mdi-pencil
-                    </v-icon>
-                </v-btn>
-
-                <v-btn
-                   
-                    small
-                    class="mx-2 mr-2"
-                    fab
-                    dark
-                    @click="openDeleteModal(item.id)"
-                    color="indigo"
-                    >
-                    <v-icon dark>
-                        mdi-trash-can-outline
-                    </v-icon>
-                </v-btn>
-            </div>
-
-            <v-divider></v-divider>
-        </div> -->
-
-
         <v-dialog v-model="destroyModal" width="500">
           <v-card class="pa-6">
             <h3 class="mb-4">Удалить запись</h3>
