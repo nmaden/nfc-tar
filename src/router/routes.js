@@ -25,7 +25,6 @@ export const routes = [{
                 component: () =>
                     import ("../components/Science.vue"),
             },
-
             {
                 path: "/users",
                 component: () =>

@@ -35,9 +35,26 @@
             <p class="mb-2" v-if="JSON.parse(item.data)">На каз: {{JSON.parse(item.data).title_kaz}}</p>
             <p class="mb-6" v-if="JSON.parse(item.data)">На анг: {{JSON.parse(item.data).title_eng}}</p>
 
-            <p class="mb-2" v-if="JSON.parse(item.data)">На рус: {{JSON.parse(item.data).description}}</p>
+            <!-- <p class="mb-2" v-if="JSON.parse(item.data)">На рус: {{JSON.parse(item.data).description}}</p>
             <p class="mb-2" v-if="JSON.parse(item.data)">На каз: {{JSON.parse(item.data).description_kaz}}</p>
-            <p class="mb-2" v-if="JSON.parse(item.data)">На анг: {{JSON.parse(item.data).description_eng}}</p>
+            <p class="mb-2" v-if="JSON.parse(item.data)">На анг: {{JSON.parse(item.data).description_eng}}</p> -->
+
+
+            <div class="item__row item__ac">
+                <p class="mr-2">Описание на рус: </p>
+                <p class="mb-0" v-html="JSON.parse(item.data).description"></p>
+            </div>
+
+             <div class="item__row item__ac">
+                <p class="mr-2">Описание на каз: </p>
+                <p class="mb-0" v-html="JSON.parse(item.data).description_kaz"></p>
+            </div>
+
+             <div class="item__row item__ac">
+                <p class="mr-2">Описание на анг: </p>
+                <p class="mb-0" v-html="JSON.parse(item.data).description_eng"></p>
+            </div>
+
         </template>
         <template v-slot:item.created_at="{ item  }">
              {{formatDate(item.created_at)}}
