@@ -1,11 +1,8 @@
 <template>
 
       <div>
-
         <div class="item__row item__ac">
-
             <h2>{{$route.query.name}}</h2>
-
             <v-btn
                 small
                 class="mx-2"
@@ -34,14 +31,13 @@
 
          
         <template v-slot:item.data="{ item  }">
-       
+            <p class="mb-2" v-if="JSON.parse(item.data)">На рус: {{JSON.parse(item.data).title}}</p>       
             <p class="mb-2" v-if="JSON.parse(item.data)">На каз: {{JSON.parse(item.data).title_kaz}}</p>
-            <p class="mb-2" v-if="JSON.parse(item.data)">На рус: {{JSON.parse(item.data).title}}</p>
             <p class="mb-6" v-if="JSON.parse(item.data)">На анг: {{JSON.parse(item.data).title_eng}}</p>
 
-            <p class="mb-2" v-if="JSON.parse(item.data)">На каз: <span v-html="JSON.parse(item.data).description_kaz"></span></p>
-            <p class="mb-2" v-if="JSON.parse(item.data)">На рус: <span v-html="JSON.parse(item.data).description"></span></p>
-            <p class="mb-2" v-if="JSON.parse(item.data)">На анг: <span v-html="JSON.parse(item.data).description_eng"></span></p>
+            <p class="mb-2" v-if="JSON.parse(item.data)">На рус: {{JSON.parse(item.data).description}}</p>
+            <p class="mb-2" v-if="JSON.parse(item.data)">На каз: {{JSON.parse(item.data).description_kaz}}</p>
+            <p class="mb-2" v-if="JSON.parse(item.data)">На анг: {{JSON.parse(item.data).description_eng}}</p>
         </template>
         <template v-slot:item.created_at="{ item  }">
              {{formatDate(item.created_at)}}
@@ -80,58 +76,11 @@
               </template>
         </v-data-table>
 
-   
-        <!-- <div class="item__column  pa-4 mb-2 news__list" v-for="item in items" :key="item.id">
-            <p class="mb-2" v-if="JSON.parse(item.data)">На каз: {{JSON.parse(item.data).title_kaz}}</p>
-            <p class="mb-2" v-if="JSON.parse(item.data)">На рус: {{JSON.parse(item.data).title}}</p>
-            <p class="mb-6" v-if="JSON.parse(item.data)">На анг: {{JSON.parse(item.data).title_eng}}</p>
-
-            <p class="mb-2" v-if="JSON.parse(item.data)">На каз: {{JSON.parse(item.data).description_kaz}}</p>
-            <p class="mb-2" v-if="JSON.parse(item.data)">На рус: {{JSON.parse(item.data).description}}</p>
-            <p class="mb-2" v-if="JSON.parse(item.data)">На анг: {{JSON.parse(item.data).description_eng}}</p>
-            <div  class="item__row item__ac">
-                <div v-for="image in item.files"  :key="image.id" >
-                    <img  :src="'https://api.library.crocos.kz/'+image.path" />
-                </div>
-            </div>
-           
-            <div class="item__row item__ac">
-                <v-btn
-                    small
-                    class="mx-2 mr-2"
-                    fab
-                    dark
-                    color="indigo"
-                    @click="show(item.id,JSON.parse(item.data),item.files)"
-                    >
-                    <v-icon dark>
-                        mdi-pencil
-                    </v-icon>
-                </v-btn>
-
-                <v-btn
-                   
-                    small
-                    class="mx-2 mr-2"
-                    fab
-                    dark
-                    @click="openDeleteModal(item.id)"
-                    color="indigo"
-                    >
-                    <v-icon dark>
-                        mdi-trash-can-outline
-                    </v-icon>
-                </v-btn>
-            </div>
-
-            <v-divider></v-divider>
-        </div> -->
-
-
-        <v-dialog v-model="destroyModal" width="500">
+        <v-dialog v-model="destroyModal" width="800">
           <v-card class="pa-6">
             <h3 class="mb-4">Удалить запись</h3>
             <v-btn
+                class="mr-4"
                 type="submit"
                 depressed
                 color="primary"
@@ -150,7 +99,7 @@
           </v-card>
         </v-dialog>
 
-        <v-dialog v-model="openModal" width="500">
+        <v-dialog v-model="openModal" width="800">
             <v-card class="pa-6">
                 <v-form
                     @submit.prevent="callFunction()"
@@ -170,11 +119,12 @@
                         :rules="nameRules"
                     ></v-text-field>
                 </div>
-                <div class="item__column">
+                
 
-                     <vue-editor v-model="description" class="mb-4" />
+                <p class="mb-2">Описание на русском</p>
+                <vue-editor v-model="description"  :rules="descriptionRules" class="mb-4" />
               
-                </div>
+             
 
                 <div class="item__column">
                     <v-text-field
@@ -186,9 +136,12 @@
                         :rules="nameRules"
                     ></v-text-field>
                 </div>
+
                 <div class="item__column">
-                    <vue-editor v-model="description_eng" class="mb-4"/>
+                    <p class="mb-2">Описание на английском</p>
+                    <vue-editor v-model="description_eng"  :rules="descriptionRules" class="mb-4" />
                 </div>
+             
 
                 <div class="item__column">
                     <v-text-field
@@ -200,8 +153,10 @@
                         :rules="nameRules"
                     ></v-text-field>
                 </div>
+
                 <div class="item__column">
-                    <vue-editor v-model="description_kaz" class="mb-4" />
+                    <p class="mb-2">Описание на казахском</p>
+                    <vue-editor v-model="description_kaz"  :rules="descriptionRules" class="mb-4" />
                 </div>
 
 
@@ -219,10 +174,10 @@
                 </div>
 
 
-                <div class="item__column">
-                    <div v-for="file in uploadedFiles" :key="file.id" class="item__row item__ac pointer mb-3 images">
+                <div class="item__row">
+                    <div v-for="file in uploadedFiles" :key="file.id" class="item__row item__ac pointer mr-8 mb-6 images">
                         <!-- <p class="mr-2 mb-0">{{file.path.split('/')[file.path.split('/').length-1]}}</p> -->
-                        <img class="mr-2" :src='"https://api.library.crocos.kz/"+file.path' />
+                        <img class="mr-2" :src='"http://127.0.0.1:8000/"+file.path' />
                         <i class="mdi mdi-trash-can-outline" @click="removeFile(file.id)"></i>
                     </div>
                 </div> 
@@ -232,6 +187,7 @@
                     type="submit"
                     depressed
                     color="primary"
+                    class="mr-4"
                     >
                    Сохранить изменения
                 </v-btn>
@@ -252,17 +208,16 @@
 
 <script>
 export default {
-   props: [
-      'showModal',
-      'items',
-      'loading',
-      'numberOfPages',
-      'totalPage'
+  props: [
   ],
   name: "News",
   data() {
     return {
-        openModal: this.showModal,
+        totalPage: null,
+        numberOfPages: null,
+        loading: false,
+        items: [],
+        openModal: false,
         page: 0,
         options: {
             itemsPerPage: 5,
@@ -328,7 +283,7 @@ export default {
                     duration: 4000,
                     queue: true,
                 });
-                  this.$emit('fetchData',this.options);
+                this.fetch();
                 this.openModal = false;
             })
             .catch((error) => {
@@ -356,6 +311,7 @@ export default {
       chooseTypeFunction(type) {
           this.type = type;
           this.openModal = true;
+          this.uploadedFiles = [];
       },
       callFunction() {
           this.type==1?this.create():this.update();
@@ -371,11 +327,65 @@ export default {
                 type: this.$route.query.type
             };
             this.$refs.form.validate();
-            this.$emit('callCreate',obj,this.files);
-            this.$emit('fetchData',this.options);
+            this.createData(obj,this.files);
             this.$refs.form.reset();
             this.openModal = false;
         },
+        fetch() {
+            this.loading = true;
+            // let url = "page?type="+this.$route.query.type;
+            // if(options)
+            let link = "page?type="+this.$route.query.type+'&per_page='+this.options.itemsPerPage+'&page='+this.options.page;
+            this.$axios({
+            method: "get",
+            url:
+                this.$API_URL +
+                this.$API_VERSION +
+                link,
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+                },
+            })
+            .then((response) => {
+                this.items = response.data.data;
+                this.loading = false;
+                this.numberOfPages = response.data.total;
+                this.totalPage = response.data.total;
+                this.openModal = false;
+                this.type = 0;
+            })
+            .catch((error) => {
+            console.log(error);
+            });
+        },
+        createData(obj,files) {
+            let contractForm = new FormData();
+            contractForm.append("data", JSON.stringify(obj));
+            contractForm.append("type", this.$route.query.type);
+    
+            if(files)
+                for (var i = 0; i < files.length; i++) {
+                    contractForm.append("files[]", files[i]);
+                }  
+            this.$axios
+                .post(this.$API_URL + this.$API_VERSION + "page", contractForm, {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+                    "Content-Type": "multipart/form-data",
+                },
+            })
+            .then((response) => {
+                this.openModal = false;
+                this.showMessage('success',response.data.message);
+                this.fetch(this.options);
+            })
+            .catch((error) => {
+                if (error.response && error.response.status == 422) {
+                   this.showMessage('error',"Не правильно заполнено");
+                }
+            });
+        },
+
         show(id,item,files) {
             this.id = id;
             this.openModal = true;
@@ -386,7 +396,6 @@ export default {
             this.description_eng = item.description_eng;
             this.description_kaz = item.description_kaz;
             this.uploadedFiles = files;
-    
         },
         makeJson(item) {
             if(item)
@@ -410,32 +419,84 @@ export default {
             .then((response) => {
                 this.title = response.data.title;
                 this.description = response.data.description;
-                this.$emit('fetchData',this.options);
-                this.destroyModal = false
-                this.openModal = false;
+                this.fetch();
+                this.destroyModal = false;
             })
             .catch((error) => {
             console.log(error);
             });
         },
-      update() {
-            let obj = {
-                title: this.title,
-                description: this.description,
-                title_eng: this.title_eng,
-                description_eng: this.description_eng,
-                title_kaz: this.title_kaz,
-                description_kaz: this.description_kaz,
-                type: this.$route.query.type
-            };
-            this.$emit('callUpdate',obj,this.files,this.id);
-            this.$emit('fetchData',this.options);
-            this.openModal = false;
-      }
+        update() {
+                let obj = {
+                    title: this.title,
+                    description: this.description,
+                    title_eng: this.title_eng,
+                    description_eng: this.description_eng,
+                    title_kaz: this.title_kaz,
+                    description_kaz: this.description_kaz,
+                    type: this.$route.query.type
+                };
+                this.$axios.put(this.$API_URL + this.$API_VERSION + "page/"+this.id,
+                    {
+                        data: JSON.stringify(obj),
+                        type: this.$route.query.type
+                    }, {
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+                    },
+                })
+                .then((response) => {
+                    this.showMessage('success',response.data.message);
+                    if(this.files.length>0) {
+                        this.uploadFiles(this.files,this.id);
+                    }else {
+                        this.fetch();
+
+                    }
+                        
+            
+                })
+                .catch((error) => {
+                    if (error.response && error.response.status == 422) {
+                       this.showMessage('error',"Не правильно заполнено");
+                    }
+                });   
+        },
+        uploadFiles(files,id) {
+            let contractForm = new FormData();
+            for (var i = 0; i < files.length; i++) {
+                contractForm.append("files[]", files[i]);
+            }
+            this.$axios
+                .post(this.$API_URL + this.$API_VERSION + "page/files/"+ id, contractForm, {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+                    "Content-Type": "multipart/form-data",
+                },
+            })
+            .then((response) => {
+                this.showMessage('success',response.data.message);
+                this.fetch();
+            })
+            .catch((error) => {
+                if (error.response && error.response.status == 422) {
+                    this.showMessage('error',"Не правильно заполнено");
+                }
+            });
+        },
+
+        showMessage(type,text) {
+             this.$toast.open({
+                message: text,
+                type: type,
+                position: "bottom",
+                duration: 4000,
+                queue: true,
+            });
+        }
   },
   mounted() {
-      this.$emit('fetchData',this.options);
-      this.getUser();
+      this.fetch();
   },
   beforeMount() {
   },
@@ -449,6 +510,17 @@ export default {
             this.$emit('fetchData',this.options);
         }
       },
+    },
+
+    openModal(val) {
+        if(!val) {
+            this.title = '';
+            this.description = '';
+            this.title_eng = '';
+            this.description_eng = '';
+            this.title_kaz = '';
+            this.description_kaz = '';
+        }
     },
 
     deep: true,

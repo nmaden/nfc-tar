@@ -22,6 +22,11 @@ export default {
 
 <style lang="scss">
 
+
+i {
+  font-size: 24px;
+  cursor: pointer;
+}
 .news__list {
   .item__row {
     margin-bottom: 20px;

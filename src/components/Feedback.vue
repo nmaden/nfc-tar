@@ -26,7 +26,7 @@
             </v-data-table>
 
 
-        <v-dialog v-model="sendModal" width="500">
+        <v-dialog v-model="sendModal" width="800">
           <v-card class="pa-6">
             <v-form
                 @submit.prevent="callFunction()"

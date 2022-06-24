@@ -1,14 +1,18 @@
 <template>
       <v-container>
             <v-toolbar
-                color="#003E74"
+                color="white"
                 dark
                 class="mb-4"
                 >
                 <!-- <v-app-bar-nav-icon></v-app-bar-nav-icon> -->
 
                 <v-toolbar-title>
-                     <img style="width: 30%" src="../assets/logo-farab.svg" />
+                    <div class="toolbar__logo item__row item__ac">
+                         <img style="width: 80%" src="../assets/logo-turkic.svg" />
+                         <p class="mb-0 ml-4">TURKIC INSCRIPTIONS</p>
+                    </div>
+                     
                 </v-toolbar-title>
 
                 <v-spacer></v-spacer>
@@ -27,7 +31,7 @@
 
           <v-row>
 
-              <v-col class="" sm="3">
+              <v-col class="menu" sm="3">
 
                    <v-card
                     class="pa-5"
@@ -35,50 +39,31 @@
                     tile
                     >
 
-                        <!-- <div class="mb-2 item__row item__ac" v-bind:class="{'active':$route.path=='/users'}">
-                            <i class="mdi mdi-label-variant mr-2"></i>
-                            <p class="pointer mb-0" @click="$router.push('/users')">Пользователи</p>
-                        </div> -->
-
-                        <div class="mb-2 item__row item__ac" v-bind:class="{'active':$route.path=='/admin'}">
+                 
+                        <div class="mb-2 item__row item__ac menu__label" v-bind:class="{'active':$route.path=='/admin'}">
                             <i class="mdi mdi-label-variant mr-2"></i>
                             <p class="pointer mb-0" @click="$router.push('/admin?type=news&name=Новости')">Новости</p>
                         </div>
-                        <div class="mb-2 item__row item__ac" v-bind:class="{'active':$route.path=='/books'}">
+                        <div class="mb-2 item__row item__ac menu__label" v-bind:class="{'active':$route.path=='/artefacts'}">
                             <i class="mdi mdi-label-variant mr-2"></i>
-                            <p class="pointer mb-0" @click="$router.push('/books?type=books&name=Книги')">Книги</p>
+                            <p class="pointer mb-0" @click="$router.push('/artefacts?type=artefact&name=Артефакты')">Артефакты</p>
                         </div>
 
-                        <div class="mb-2 item__row item__ac" v-bind:class="{'active':$route.path=='/announcements'}">
+                        <div class="mb-2 item__row item__ac menu__label" v-bind:class="{'active':$route.path=='/science'}">
                             <i class="mdi mdi-label-variant mr-2"></i>
-                            <p class="pointer mb-0" @click="$router.push('/announcements?type=announcement&name=Анонсы')">Анонсы</p>
+                            <p class="pointer mb-0" @click="$router.push('/science?type=science&name=Научная деятельность')">Научная деятельность</p>
                         </div>
 
-                        <div class="mb-2 item__row item__ac" v-bind:class="{'active':$route.path=='/partner'}">
-                            <i class="mdi mdi-label-variant mr-2"></i>
-                            <p class="pointer mb-0" @click="$router.push('/partner?type=partner&name=Партнеры')">Партнеры</p>
-                        </div>
-                        <div class="mb-2 item__row item__ac" v-bind:class="{'active':$route.path=='/contacts'}">
+                        <div class="mb-2 item__row item__ac menu__label" v-bind:class="{'active':$route.path=='/contacts'}">
                             <i class="mdi mdi-label-variant mr-2"></i>
                             <p class="pointer mb-0" @click="$router.push('/contacts?type=contacts&name=Контакты')">Контакты</p>
                         </div>
-                        <div class="mb-2 item__row item__ac" v-bind:class="{'active':$route.path=='/visitors'}">
+                   
+                        <div class="mb-2 item__row item__ac menu__label" v-bind:class="{'active':$route.path=='/about'}">
                             <i class="mdi mdi-label-variant mr-2"></i>
-                            <p class="pointer mb-0" @click="$router.push('/visitors?type=visitors&name=Посетителям')">Посетителям</p>
-                        </div>
-                        <div class="mb-2 item__row item__ac" v-bind:class="{'active':$route.path=='/gallery'}">
-                            <i class="mdi mdi-label-variant mr-2"></i>
-                            <p class="pointer mb-0" @click="$router.push('/gallery?type=gallery&name=Фотогалерея')">Фотогалерея</p>
-                        </div>
-                        <div class="mb-2 item__row item__ac" v-bind:class="{'active':$route.path=='/about'}">
-                            <i class="mdi mdi-label-variant mr-2"></i>
-                            <p class="pointer mb-0" @click="$router.push('/about?type=about&name=О библиотеке')">О библиотеке</p>
+                            <p class="pointer mb-0" @click="$router.push('/about?type=about&name=О проекте')">О проекте</p>
                         </div>
 
-                         <div class="mb-2 item__row item__ac" v-bind:class="{'active':$route.path=='/feedback'}">
-                            <i class="mdi mdi-label-variant mr-2"></i>
-                            <p class="pointer mb-0" @click="$router.push('/feedback?type=feedback&name=Заявки')">Заявки</p>
-                        </div>
                     </v-card>
               </v-col>
 
@@ -89,8 +74,7 @@
                     outlined
                     tile
                     >
-              
-
+            
                         <router-view 
                             :items="items"
                             :loading="loading"
@@ -242,49 +226,6 @@ export default {
                 }
             });     
     },
-    uploadFiles(files,id) {
-            let contractForm = new FormData();
-            for (var i = 0; i < files.length; i++) {
-                contractForm.append("files[]", files[i]);
-            }
-            this.$axios
-                .post(this.$API_URL + this.$API_VERSION + "page/files/"+ id, contractForm, {
-                headers: {
-                    Authorization: `Bearer ${localStorage.getItem("access_token")}`,
-                    "Content-Type": "multipart/form-data",
-                },
-            })
-            .then((response) => {
-                this.title =null;
-                this.description = null;
-                console.log(response);
-                this.$toast.open({
-                    message: "Успешно создано",
-                    type: "success",
-                    position: "bottom",
-                    duration: 4000,
-                    queue: true,
-                });
-
-                this.newsModal = false;
-                this.type = 0;
-                this.$refs.form.reset();
-            
-
-            })
-            .catch((error) => {
-                if (error.response && error.response.status == 422) {
-                    this.$toast.open({
-                    message: "Заполните все поля",
-                    type: "error",
-                    position: "bottom",
-                    duration: 4000,
-                    queue: true,
-                    });
-
-                }
-            });
-    },
     logout() {
         localStorage.clear();
         this.$router.push('/');
@@ -322,5 +263,20 @@ export default {
         border-radius: 10px;
     }
 }
-
+.toolbar__logo {
+    p {
+        color: black;
+    }
+}
+.menu {
+    .menu__label {
+        margin-bottom: 40px;
+    }
+    p {
+        font-size: 19px;
+    }
+    i {
+        font-size: 26px;
+    }
+}
 </style>

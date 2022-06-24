@@ -15,22 +15,17 @@ export const routes = [{
                     import ("../components/News.vue"),
                 name: "Admin",
             },
+            {
+                path: "/artefacts",
+                component: () =>
+                    import ("../components/Artefacts.vue"),
+            },
+            {
+                path: "/science",
+                component: () =>
+                    import ("../components/Science.vue"),
+            },
 
-            {
-                path: "/books",
-                component: () =>
-                    import ("../components/Books.vue"),
-            },
-            {
-                path: "/announcements",
-                component: () =>
-                    import ("../components/Announcements.vue"),
-            },
-            {
-                path: "/partner",
-                component: () =>
-                    import ("../components/Partner.vue"),
-            },
             {
                 path: "/users",
                 component: () =>
@@ -41,16 +36,7 @@ export const routes = [{
                 component: () =>
                     import ("../components/Contacts.vue"),
             },
-            {
-                path: "/visitors",
-                component: () =>
-                    import ("../components/Visitors.vue"),
-            },
-            {
-                path: "/gallery",
-                component: () =>
-                    import ("../components/Gallery.vue"),
-            },
+
             {
                 path: "/about",
                 component: () =>

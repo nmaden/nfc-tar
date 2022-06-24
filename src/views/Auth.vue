@@ -1,8 +1,6 @@
 <!-- template -->
 <template>
         <div class="sign__page item__column item__ac">
-
-        <p class="sign__page__title">Библиотека имени А.C Пушкина</p>
         <p class="sign__page__title">Вход</p>
         <v-form
             @submit.prevent="login_sign"
