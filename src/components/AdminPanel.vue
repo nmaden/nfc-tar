@@ -9,18 +9,21 @@
 
                 <v-toolbar-title>
                     <div class="toolbar__logo item__row item__ac">
-                         <img style="width: 80%" src="../assets/logo-turkic.svg" />
-                         <p class="mb-0 ml-4">TURKIC INSCRIPTIONS</p>
+                         <!-- <img style="width: 80%" src="../assets/logo-turkic.svg" /> -->
+                         <p class="mb-0 ml-4">RENT OFFICE</p>
                     </div>
-                     
+
+                  
                 </v-toolbar-title>
 
                 <v-spacer></v-spacer>
 
-                <div class="item__column header__user">
-                    <h3 class="mb-0">{{me.name}}</h3>
-                    <p class="mb-0" v-if="me.role">{{me.role.name_rus}}</p>
+                <div class="item__row item__ac langs">
+                    <p class="mr-2" @click="activeLang=1" v-bind:class="{'active__lang':activeLang==1}">RU</p>
+                    <p class="mr-2" @click="activeLang=2" v-bind:class="{'active__lang':activeLang==2}">EN</p>
                 </div>
+                    
+                <p style="color: black; margin-bottom: 0; cursor: pointer" @click="$router.push('/')">Выйти</p>
 
 
                 <v-btn icon @click="logout()">
@@ -42,27 +45,10 @@
                  
                         <div class="mb-2 item__row item__ac menu__label" v-bind:class="{'active':$route.path=='/admin'}">
                             <i class="mdi mdi-label-variant mr-2"></i>
-                            <p class="pointer mb-0" @click="$router.push('/admin?type=news&name=Новости')">Новости</p>
+                            <p class="pointer mb-0" @click="$router.push('/profile?type=news&name='+content.content.offices)">{{content.content.offices}}</p>
                         </div>
-                        <div class="mb-2 item__row item__ac menu__label" v-bind:class="{'active':$route.path=='/artefacts'}">
-                            <i class="mdi mdi-label-variant mr-2"></i>
-                            <p class="pointer mb-0" @click="$router.push('/artefacts?type=artefact&name=Артефакты')">Артефакты</p>
-                        </div>
+                     
 
-                        <div class="mb-2 item__row item__ac menu__label" v-bind:class="{'active':$route.path=='/science'}">
-                            <i class="mdi mdi-label-variant mr-2"></i>
-                            <p class="pointer mb-0" @click="$router.push('/science?type=science&name=Научная деятельность')">Научная деятельность</p>
-                        </div>
-
-                        <div class="mb-2 item__row item__ac menu__label" v-bind:class="{'active':$route.path=='/contacts'}">
-                            <i class="mdi mdi-label-variant mr-2"></i>
-                            <p class="pointer mb-0" @click="$router.push('/contacts?type=contacts&name=Контакты')">Контакты</p>
-                        </div>
-                   
-                        <div class="mb-2 item__row item__ac menu__label" v-bind:class="{'active':$route.path=='/about'}">
-                            <i class="mdi mdi-label-variant mr-2"></i>
-                            <p class="pointer mb-0" @click="$router.push('/about?type=about&name=О проекте')">О проекте</p>
-                        </div>
 
                     </v-card>
               </v-col>
@@ -76,6 +62,7 @@
                     >
             
                         <router-view 
+                            :lang="content"
                             :items="items"
                             :loading="loading"
                             :numberOfPages="numberOfPages"
@@ -107,12 +94,14 @@
 export default {
   data() {
     return {
+        content: '',
         me: '',
         showModal: false,
         items: [],
         loading:null,
         numberOfPages: null,
-        totalPage: null
+        totalPage: null,
+        activeLang: 1
     };
   },
   methods: {
@@ -230,18 +219,63 @@ export default {
         localStorage.clear();
         this.$router.push('/');
     },
+    getContentWord(val) {
+            this.loading = true;
+            let link = 'lang'
+            this.$axios({
+            method: "get",
+            url:
+                this.$API_URL +
+                link,
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+                    'Accept-Language': val==1?'ru':'en'
+                },
+                data: {
+                    date: this.date
+                }
+            })
+            .then((response) => {
+                this.content = response.data;
+            })
+            .catch((error) => {
+                console.log(error);
+            });
+        }, 
 
   },
   mounted() {
+    if(localStorage.getItem('lang')) {
+        this.activeLang = localStorage.getItem('lang');
+        this.getContentWord(localStorage.getItem('lang'));
+    }else {
+        this.getContentWord(1);
+    }
+    
   },
   beforeMount() {
 
   },
-  watch: {},
+  watch: {
+    activeLang(val) {
+        localStorage.setItem('lang',val);
+        this.getContentWord(val);
+    }
+  },
 };
 </script>
 
 <style lang="scss">
+.langs {
+    p {
+        color: black;
+        margin-bottom: 0;
+        cursor: pointer;
+    }
+}
+.active__lang {
+    color: blue !important;
+}
 .pointer {
     cursor:point;
 }

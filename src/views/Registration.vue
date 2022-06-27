@@ -3,20 +3,22 @@
         <div class="sign__page item__column item__ac">
         <p class="sign__page__title">Вход</p>
         <v-form
-            @submit.prevent="sign"
+            @submit.prevent="login_sign"
             ref="form"
             class="sign__page__block"
         >
+
+
             <v-text-field
                 v-model="login"
-                label="Логин"
+                label="Email"
                 required
                 outlined
                 class="input"
                 :rules="loginRules"
-
             ></v-text-field>
 
+    
             <v-text-field
                 :rules="passwordRules"
                 v-model="password"
@@ -35,22 +37,12 @@
             >
             Вход
             </v-btn>
-             <v-btn
-            type="submit"
-            color="#003E74"
-            class="mb-4 button"
-            style="color:white"
-            >
-            Регистрация
-            </v-btn>
 
 
 
         </v-form>
         </div>
 </template>
-
-<!-- scripts -->
 <script>
     export default {
       data() {
@@ -71,49 +63,26 @@
           }
       },
       mounted() {
-     
+          if(localStorage.getItem('access_token')) {
+              this.get_profile();
+          }
       },
-      methods: {
-        sign() {
+      methods: { 
+        registration() {
             let obj = {
                 email: this.login,
                 password: this.password,
             }
-
             this.$axios({
                 method: 'post',
-                url: this.$API_URL   + 'login',
+                url: this.$API_URL + this.$API_VERSION + 'registration',
                 data: obj
             })
             .then((response) => {
-                localStorage.setItem('access_token',response.data.token)
-                this.$router.push('/profile');
+                localStorage.setItem('access_token',response.data.access_token);
+                this.$router.push('/user');
             })
-            .catch((error) => {
-                console.log(error)
-                this.$toast.open({
-                    message: "Не правильный логин или пароль",
-                    type: "warning",
-                    position: "bottom",
-                    duration: 4000,
-                    queue: true,
-                });
-            });
-        },
-        get_profile() {
-            this.$axios({
-                method: 'post',
-                url: this.$API_URL + this.$API_VERSION + 'get/user/me',
-                headers: {
-                    'Authorization': `Bearer `+localStorage.getItem('access_token')
-                }
-            })
-            .then((response) => {
-                if(response.data) {
-                    this.$router.push('/main');
-                }
-            })
-            .catch((error) => {
+            .catch((error) => { 
                 console.log(error);
             });
       }

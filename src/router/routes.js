@@ -9,43 +9,27 @@ export const routes = [{
         component: () =>
             import ('../components/AdminPanel.vue'),
 
-        children: [{
-                path: "/",
-                component: () =>
-                    import ("../components/News.vue"),
-                name: "Admin",
-            },
-            {
-                path: "/artefacts",
-                component: () =>
-                    import ("../components/Artefacts.vue"),
-            },
-            {
-                path: "/science",
-                component: () =>
-                    import ("../components/Science.vue"),
-            },
-            {
-                path: "/users",
-                component: () =>
-                    import ("../components/User.vue"),
-            },
-            {
-                path: "/contacts",
-                component: () =>
-                    import ("../components/Contacts.vue"),
-            },
+        children: [
 
             {
-                path: "/about",
+                path: "/",
                 component: () =>
-                    import ("../components/About.vue"),
+                    import ("../views/Auth.vue"),
+                name: "Sign",
             },
             {
-                path: "/feedback",
+                path: "/registration",
                 component: () =>
-                    import ("../components/Feedback.vue"),
+                    import ("../views/Registration.vue"),
+                name: "Registration",
             },
+            {
+                path: "/profile",
+                component: () =>
+                    import ("../components/Profile.vue"),
+                name: "Registration",
+            },
+
 
 
         ]

@@ -1,8 +1,7 @@
 <template>
   <div>
     <Header />
-    <!-- <TopInfo v-if="GET_USER_DATA.admin == false && $router.currentRoute.path == '/'" /> -->
-
+ 
     <transition name="fade" mode="out-in">
       <router-view></router-view>
     </transition>
