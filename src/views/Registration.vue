@@ -1,28 +1,29 @@
 <!-- template -->
 <template>
         <div class="sign__page item__column item__ac">
-        <p class="sign__page__title">Вход</p>
+        
+        <div class="item__row item__ac langs">
+            <p class="mr-2" @click="activeLang=1" v-bind:class="{'active__lang':activeLang==1}">RU</p>
+            <p class="mr-2" @click="activeLang=2" v-bind:class="{'active__lang':activeLang==2}">EN</p>
+        </div>
+        <p class="sign__page__title">{{content.content.registration}}</p>
         <v-form
-            @submit.prevent="login_sign"
+            @submit.prevent="registration"
             ref="form"
             class="sign__page__block"
         >
-
-
             <v-text-field
                 v-model="login"
                 label="Email"
                 required
                 outlined
                 class="input"
-                :rules="loginRules"
             ></v-text-field>
 
     
             <v-text-field
-                :rules="passwordRules"
                 v-model="password"
-                label="Пароль"
+                :label="content.content.password"
                 required
                 outlined
                 class="input"
@@ -35,7 +36,7 @@
             class="mb-4 button"
             style="color:white"
             >
-            Вход
+              {{content.content.registration}}
             </v-btn>
 
 
@@ -47,27 +48,76 @@
     export default {
       data() {
           return {
+            activeLang: 1,
             loginRules: [
                 v => !!v || 'Заполните поле',
                 v => /.+@.+\..+/.test(v) || 'Не правильный Email',
+            ],
+            loginEngRules: [
+                v => !!v || 'Fill line',
+                v => /.+@.+\..+/.test(v) || 'Incorrect email',
             ],
             email: '',
             passwordRules: [
                 v => !!v ||  'Заполните поле'
             ],
+            passwordEngRules: [
+                v => !!v ||  'Fill line'
+            ],
             login: '',
             password: '',
             user: {
                 role: ''
+            },
+            content:  {
+              content: ''
             }
           }
       },
       mounted() {
-          if(localStorage.getItem('access_token')) {
-              this.get_profile();
-          }
+        if(localStorage.getItem('lang')) {
+            this.activeLang = localStorage.getItem('lang');
+            this.getContentWord(localStorage.getItem('lang'));
+        }else {
+            this.getContentWord(1);
+        }
+
+
+        this.role = localStorage.getItem('role');
       },
-      methods: { 
+      watch: {
+        activeLang(val) {
+            localStorage.setItem('lang',val);
+            this.getContentWord(val);
+        }
+      },
+      methods: {
+        getLoginRule() {
+            return this.activeLang ==1? this.loginRules:this.loginEngRules;
+        },
+        getPasswordRule() {
+          return this.activeLang ==1? this.passwordRules:this.passwordEngRules;
+        },
+         getContentWord(val) {
+            this.loading = true;
+            let link = 'lang'
+            this.$axios({
+            method: "get",
+            url:
+                this.$API_URL +
+                link,
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+                    'Accept-Language': val==1?'ru':'en'
+                },
+            })
+            .then((response) => {
+                this.content = response.data;
+            })
+            .catch((error) => {
+                console.log(error);
+            });
+        },  
         registration() {
             let obj = {
                 email: this.login,
@@ -75,15 +125,29 @@
             }
             this.$axios({
                 method: 'post',
-                url: this.$API_URL + this.$API_VERSION + 'registration',
-                data: obj
+                url: this.$API_URL  + 'registration',
+                data: obj,
+                headers: {
+                    'Accept-Language': localStorage.getItem('lang')==1?'ru':'en'
+                },
             })
             .then((response) => {
-                localStorage.setItem('access_token',response.data.access_token);
-                this.$router.push('/user');
+                localStorage.setItem('access_token',response.data.token)
+                response.data.role!=1?this.$router.push('/profile'):this.$router.push('/orders');
+                localStorage.setItem('role',response.data.role);
             })
             .catch((error) => { 
-                console.log(error);
+                let errors = error.response.data.errors;
+                for (let variable in errors) {
+                    this.$toast.open({
+                        message: errors[variable][0],
+                        type: "warning",
+                        position: "bottom",
+                        duration: 4000,
+                        queue: true,
+                    });
+                    continue;
+                }
             });
       }
     }
@@ -160,5 +224,9 @@
         }
       }
 
+    }
+
+    .active__lang {
+      color: blue;
     }
 </style>

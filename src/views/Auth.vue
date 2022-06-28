@@ -1,7 +1,13 @@
 <!-- template -->
 <template>
         <div class="sign__page item__column item__ac">
-        <p class="sign__page__title">Вход</p>
+
+        <div class="item__row item__ac langs">
+            <p class="mr-2" @click="activeLang=1" v-bind:class="{'active__lang':activeLang==1}">RU</p>
+            <p class="mr-2" @click="activeLang=2" v-bind:class="{'active__lang':activeLang==2}">EN</p>
+        </div>
+            
+        <p class="sign__page__title">{{content.content.sign}}</p>
         <v-form
             @submit.prevent="sign"
             ref="form"
@@ -9,7 +15,7 @@
         >
             <v-text-field
                 v-model="login"
-                label="Логин"
+                label="Email"
                 required
                 outlined
                 class="input"
@@ -20,7 +26,7 @@
             <v-text-field
                 :rules="passwordRules"
                 v-model="password"
-                label="Пароль"
+                :label="content.content.password"
                 required
                 outlined
                 class="input"
@@ -33,15 +39,15 @@
             class="mb-4 button"
             style="color:white"
             >
-            Вход
+            {{content.content.sign}}
             </v-btn>
-             <v-btn
-            type="submit"
-            color="#003E74"
-            class="mb-4 button"
-            style="color:white"
+            <v-btn
+              @click="$router.push('/registration')"
+              color="#003E74"
+              class="mb-4 button"
+              style="color:white"
             >
-            Регистрация
+            {{content.content.registration}}
             </v-btn>
 
 
@@ -55,6 +61,7 @@
     export default {
       data() {
           return {
+            activeLang: 1,
             loginRules: [
                 v => !!v || 'Заполните поле',
                 v => /.+@.+\..+/.test(v) || 'Не правильный Email',
@@ -67,13 +74,62 @@
             password: '',
             user: {
                 role: ''
-            }
+            },
+            content: ''
           }
       },
       mounted() {
-     
+        if(localStorage.getItem('lang')) {
+            this.activeLang = localStorage.getItem('lang');
+            this.getContentWord(localStorage.getItem('lang'));
+        }else {
+            this.getContentWord(1);
+        }
+
+
+        this.role = localStorage.getItem('role');
+      },
+      
+      watch: {
+        activeLang(val) {
+            localStorage.setItem('lang',val);
+            this.getContentWord(val);
+        }
       },
       methods: {
+        getContentWord(val) {
+            this.loading = true;
+            let link = 'lang'
+            this.$axios({
+            method: "get",
+            url:
+                this.$API_URL +
+                link,
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+                    'Accept-Language': val==1?'ru':'en'
+                },
+                data: {
+                    date: this.date
+                }
+            })
+            .then((response) => {
+                this.content = response.data;
+            })
+            .catch((error) => {
+                    let errors = error.response.data.errors;
+                for (let variable in errors) {
+                    this.$toast.open({
+                        message: errors[variable][0],
+                        type: "warning",
+                        position: "bottom",
+                        duration: 4000,
+                        queue: true,
+                    });
+                    continue;
+                }
+            });
+        }, 
         sign() {
             let obj = {
                 email: this.login,
@@ -87,36 +143,24 @@
             })
             .then((response) => {
                 localStorage.setItem('access_token',response.data.token)
-                this.$router.push('/profile');
+                response.data.role!=1?this.$router.push('/profile'):this.$router.push('/orders');
+                localStorage.setItem('role',response.data.role);
             })
             .catch((error) => {
-                console.log(error)
-                this.$toast.open({
-                    message: "Не правильный логин или пароль",
-                    type: "warning",
-                    position: "bottom",
-                    duration: 4000,
-                    queue: true,
-                });
+                let errors = error.response.data.errors;
+                for (let variable in errors) {
+                    this.$toast.open({
+                        message: errors[variable][0],
+                        type: "warning",
+                        position: "bottom",
+                        duration: 4000,
+                        queue: true,
+                    });
+                    continue;
+                }
             });
         },
-        get_profile() {
-            this.$axios({
-                method: 'post',
-                url: this.$API_URL + this.$API_VERSION + 'get/user/me',
-                headers: {
-                    'Authorization': `Bearer `+localStorage.getItem('access_token')
-                }
-            })
-            .then((response) => {
-                if(response.data) {
-                    this.$router.push('/main');
-                }
-            })
-            .catch((error) => {
-                console.log(error);
-            });
-      }
+
     }
     }
 </script>
@@ -190,6 +234,8 @@
           background-color: #285bb6;
         }
       }
-
+    }
+    .active__lang {
+      color :blue;
     }
 </style>

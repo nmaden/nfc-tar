@@ -5,23 +5,29 @@ export const routes = [{
             import ('../views/Auth.vue'),
     },
     {
+        path: "/registration",
+        component: () =>
+            import ("../views/Registration.vue"),
+        name: "Registration",
+    },
+    {
         path: '/admin',
         component: () =>
             import ('../components/AdminPanel.vue'),
 
-        children: [
 
-            {
+        children: [{
                 path: "/",
                 component: () =>
                     import ("../views/Auth.vue"),
                 name: "Sign",
             },
+
             {
-                path: "/registration",
+                path: "/orders",
                 component: () =>
-                    import ("../views/Registration.vue"),
-                name: "Registration",
+                    import ("../components/Orders.vue"),
+                name: "Orders",
             },
             {
                 path: "/profile",

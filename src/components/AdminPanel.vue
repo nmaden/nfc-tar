@@ -43,13 +43,18 @@
                     >
 
                  
-                        <div class="mb-2 item__row item__ac menu__label" v-bind:class="{'active':$route.path=='/admin'}">
+                        <div class="mb-2 item__row item__ac menu__label"  v-if="role!=1" v-bind:class="{'active':$route.path=='/admin'}">
                             <i class="mdi mdi-label-variant mr-2"></i>
                             <p class="pointer mb-0" @click="$router.push('/profile?type=news&name='+content.content.offices)">{{content.content.offices}}</p>
                         </div>
-                     
 
+                        <div class="mb-2 item__row item__ac menu__label" v-if="role==1"  v-bind:class="{'active':$route.path=='/orders'}">
+                            <i class="mdi mdi-label-variant mr-2"></i>
+                            <p class="pointer mb-0" @click="$router.push('/orders?type=news&name=')">Заказы</p>
+                        </div>
 
+                        
+                    
                     </v-card>
               </v-col>
 
@@ -94,14 +99,19 @@
 export default {
   data() {
     return {
-        content: '',
+        content: {
+            content: {
+                offices: ''
+            }
+        },
         me: '',
         showModal: false,
         items: [],
         loading:null,
         numberOfPages: null,
         totalPage: null,
-        activeLang: 1
+        activeLang: 1,
+        role: ''
     };
   },
   methods: {
@@ -241,7 +251,7 @@ export default {
             .catch((error) => {
                 console.log(error);
             });
-        }, 
+    }, 
 
   },
   mounted() {
@@ -251,6 +261,9 @@ export default {
     }else {
         this.getContentWord(1);
     }
+
+
+    this.role = localStorage.getItem('role');
     
   },
   beforeMount() {

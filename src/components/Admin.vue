@@ -3,17 +3,9 @@
       <div>
         <div class="item__column">
             <h2>{{$route.query.name}}</h2>
+
+            <p @click="addOffice()">Добавить заказ</p>
             
-            <a  class="mb-2" @click="editModal=true">{{lang.content.edit_data}}</a>
-
-            <p>{{lang.content.place_work}}: {{user.place_work}}</p>
-
-            <p>{{lang.content.name}}: {{user.name}}</p>
-
-            <p>Email: {{user.email}} </p>
-
-
-
             <div class="item__row item__ac"> 
                 <v-text-field
                     v-model="filter.name"
@@ -91,7 +83,6 @@
 
                         <p>{{item.price}}</p>
 
-
                         <div class="item__row">
                             <p class="mr-2">{{lang.content.city}}:</p>
                             <p>{{item.city.name_ru}}</p>
@@ -111,12 +102,7 @@
                             <p class="mr-2"  v-if="item.tv">TV</p>
                         </div>
 
-                        <p v-if="item.comments"><b>Комментарий: </b></p>
-
-                        <p v-for="comment in item.comments" :key="comment.id">{{comment.comment}}</p>
-
-                        <v-btn @click="openOrderModal(item.id)" class="mb-4 primary">{{lang.content.btn_book_text}}</v-btn>
-                        <v-btn @click="openCommentModal(item.id)" class="primary">Добавить Комментарий</v-btn>
+                        <v-btn @click="openOrderModal(item.id)" class="primary">{{lang.content.btn_book_text}}</v-btn>
                     </div>
             </div>
         </div>
@@ -134,68 +120,8 @@
                     ref="form"
                     class=""
                 >
+                
 
-                    <p class="date__value" @click="dateModal=true">{{lang.content.select_date}}</p>
-                    
-                    <p>{{date}}</p>
-
-                    <v-btn type="submit" class="primary">{{lang.content.btn_book_text}}</v-btn>
-                </v-form>
-
-            </v-card>
-        </v-dialog>
-
-        <v-dialog v-model="editModal" width="800">
-            <v-card class="pa-6">
-                <v-form
-                    @submit.prevent="editOwnData()"
-                    ref="formEdit"
-                    class=""
-                >
-                    <div class="item__column">
-                        <v-text-field
-                            v-model="user.name"
-                            :label="lang.content.name"
-                            required
-                            outlined
-                            class="input"
-                        ></v-text-field>
-                    </div>
-
-                    <div class="item__column">
-                        <v-text-field
-                            v-model="user.place_work"
-                            :label="lang.content.place_work"
-                            required
-                            outlined
-                            class="input"
-                        ></v-text-field>
-                    </div>
-                    <v-btn type="submit" class="primary">{{lang.content.edit_data}}</v-btn>
-                </v-form>
-
-            </v-card>
-        </v-dialog>
-
-
-         <v-dialog v-model="commentModal" width="800">
-            <v-card class="pa-6">
-                <v-form
-                    @submit.prevent="addComment()"
-                    ref="formEdit"
-                    class=""
-                >
-                    <div class="item__column">
-                        <v-text-field
-                            v-model="user.comment"
-                            label="Комментарий"
-                            required
-                            outlined
-                            class="input"
-                        ></v-text-field>
-                    </div>
-
-                    <v-btn type="submit" class="primary">Редактировать</v-btn>
                 </v-form>
 
             </v-card>
@@ -212,21 +138,7 @@ export default {
   name: "Profile",
   data() {
     return {
-        commentModal: false,
-        user: {
-            name: '',
-            email: '',
-            place_work: '',
-            password: ''
-        },
-        editModal: false,
-        content: {
-            content: {
-                place_work: '',
-                name: '',
-
-            }
-        },
+        content: '',
         date: '',
         dateModal: false,
         items: [],
@@ -262,118 +174,8 @@ export default {
     };
   },
   methods: {
-        addComment() {
-            this.$axios({
-            method: "post",
-            url:
-                this.$API_URL +
-                'comment',
-                headers: {
-                    Authorization: `Bearer ${localStorage.getItem("access_token")}`,
-                    'Accept-Language': this.lang.content.search=='Search'?'en':'ru'
-                },
-                data: {
-                    office_id: this.selectedId,
-                    comment: this.user.comment
-                }
-            })
-            .then((response) => {
-                this.$toast.open({
-                    message: response.data.message,
-                    type: "success",
-                    position: "bottom",
-                    duration: 4000,
-                    queue: true,
-                });
-                this.fetch();
-                this.commentModal = false;
-            })
-            .catch((error) => {
-                let errors = error.response.data.errors;
-                for (let variable in errors) {
-                    this.$toast.open({
-                        message: errors[variable][0],
-                        type: "warning",
-                        position: "bottom",
-                        duration: 4000,
-                        queue: true,
-                    });
-                    continue;
-                }
-            });
-        },
-        openCommentModal(id) {
-            this.selectedId = id;
-            this.commentModal = true;
-        },
-        getUser() {
-             this.$axios({
-            method: "get",
-            url:
-                this.$API_URL +
-                'user',
-                headers: {
-                    Authorization: `Bearer ${localStorage.getItem("access_token")}`,
-                    'Accept-Language': this.lang.content.search=='Search'?'en':'ru'
-                },
-            })
-            .then((response) => {
-                this.user.name = response.data.name;
-                this.user.place_work = response.data.place_work;
+        addOffice() {
 
-                this.user.email = response.data.email;
-
-            })
-            .catch((error) => {
-                this.$toast.open({
-                    message: error.response.data.message,
-                    type: "warning",
-                    position: "bottom",
-                    duration: 4000,
-                    queue: true,
-                });
-                this.openModal = false;
-            }); 
-        },
-        editOwnData() {
-            this.$axios({
-            method: "post",
-            url:
-                this.$API_URL +
-                'update/user',
-                headers: {
-                    Authorization: `Bearer ${localStorage.getItem("access_token")}`,
-                    'Accept-Language': this.lang.content.search=='Search'?'en':'ru'
-                },
-                data: {
-                    name: this.user.name,
-                    place_work: this.user.place_work,
-                    password: this.user.password
-                }
-            })
-            .then((response) => {
-                this.$toast.open({
-                    message: response.data.message,
-                    type: "success",
-                    position: "bottom",
-                    duration: 4000,
-                    queue: true,
-                });
-                this.editModal = false;
-            })
-            .catch((error) => {
-                let errors = error.response.data.errors;
-                for (let variable in errors) {
-                    this.$toast.open({
-                        message: errors[variable][0],
-                        type: "warning",
-                        position: "bottom",
-                        duration: 4000,
-                        queue: true,
-                    });
-                    continue;
-                }
-            });
         },
         openOrderModal(id) {
             this.selectedId = id;
@@ -410,19 +212,18 @@ export default {
         },
         order() {
             this.loading = true;
-            let link = 'order'
+            let link = 'rent/office/'+this.selectedId
             this.$axios({
-            method: "post",
+            method: "put",
             url:
                 this.$API_URL +
                 link,
                 headers: {
                     Authorization: `Bearer ${localStorage.getItem("access_token")}`,
-                    'Accept-Language': this.lang.content.search=='Search'?'en':'ru'
+                    'Accept-Language': localStorage.getItem('lang')==1?'ru':'en'
                 },
                 data: {
-                    date: this.date,
-                    office_id: this.selectedId
+                    date: this.date
                 }
             })
             .then((response) => {
@@ -476,7 +277,6 @@ export default {
   mounted() {
       this.fetch();
       this.fetchCities();
-      this.getUser();
   },
   beforeMount() {
   },

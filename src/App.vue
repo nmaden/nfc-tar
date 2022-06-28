@@ -125,4 +125,10 @@ button {
 .comment__circle__active {
   background: #135334;
 }
+
+.langs {
+  p {
+    cursor: pointer;
+  }
+}
 </style>
