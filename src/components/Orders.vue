@@ -38,6 +38,10 @@
                             <p class="mr-2"  v-if="item.office.attributes.tv">TV</p>
                         </div>
 
+                        <p v-if="item.comments"><b>{{lang.content.comment_title}} </b></p>
+
+                        <p v-for="comment in item.comments" :key="comment.id">{{comment.comment}}</p>
+
 
                         <div class="item__row">
                             <p class="mr-2">Email:</p>
