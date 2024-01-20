@@ -1,26 +1,38 @@
 <template>
-  <div>
+  <div class="main">
     <Header />
  
     <transition name="fade" mode="out-in">
       <router-view></router-view>
     </transition>
+
+    <div class="main__bottom">
+
+        <div @click="$router.push('/result')" :class="{ 'active__route': current_route === '/result' }">
+          <i class="mdi mdi-signal-variant"></i>
+        </div>
+
+        <div @click="$router.push('/main')" :class="{ 'active__route': current_route === '/main' }">
+          <i class="mdi mdi-cards" ></i>
+        </div>
+
+        <div @click="$router.push('/settings')" :class="{ 'active__route': current_route === '/settings' }">
+          <i class="mdi mdi-account"></i>
+        </div>
+
+    </div>
   </div>
 </template>
 
 <script>
-import { mapActions } from "vuex";
 import { mapGetters } from "vuex";
-import Header from "../components/Header";
-import TopInfo from "../components/TopInfo";
 export default {
   name: "Main",
   components: {
-    Header,
-    TopInfo,
   },
   data() {
     return {
+      current_route: this.$route.path,
       email: "",
       password: "",
       uploadedFiles: [],
@@ -28,121 +40,54 @@ export default {
       commentTypeId: "",
       attachment: "",
       openDownloader: false,
-    };
-  },
-  methods: {
-    ...mapActions(["SIGN_OUT_USER", "REDIRECT_FALSE", "SIGN_IN_USER"]),
-    getToday() {
-      let today = new Date();
-      let date =
-        today.getDate() + "-" + (today.getMonth() + 1) + "-" + today.getFullYear();
-
-      return date;
-    },
-    downloadAttachment(contract, attachment, id) {
-      let type = this.GET_USER_DATA.admin == true ? "admin" : "user";
-      this.$axios({
-        method: "get",
-        url:
-          this.$API_URL +
-          this.$API_VERSION +
-          type +
-          "/documents/" +
-          contract.type.name +
-          "/attachment/show?id=" +
-          id +
-          "&type=pdf",
-        responseType: "arraybuffer",
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("access_token_kcmr")}`,
-        },
-      })
-        .then((response) => {
-          const url = window.URL.createObjectURL(new Blob([response.data]));
-          const link = document.createElement("a");
-          link.href = url;
-          link.setAttribute(
-            "download",
-            contract.user.name +
-              " - " +
-              attachment.type.title +
-              " - № " +
-              id +
-              this.getToday() +
-              ".pdf"
-          ); //or any other extension
-          document.body.appendChild(link);
-          link.click();
-        })
-        .catch((error) => {
-          console.warn(error);
-        });
-    },
-    downloadContract(contract, id) {
-      console.log(contract);
-      this.$parent.commentType = "contract";
-      this.$parent.commentTypeId = id;
-
-      let type = this.GET_USER_DATA.admin == true ? "admin" : "user";
-      this.$axios({
-        method: "get",
-        url:
-          this.$API_URL +
-          this.$API_VERSION +
-          type +
-          "/documents/" +
-          contract.type.name +
-          "/show?id=" +
-          id +
-          "&type=pdf",
-
-        responseType: "arraybuffer",
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("access_token_kcmr")}`,
-        },
-      })
-        .then((response) => {
-          const url = window.URL.createObjectURL(new Blob([response.data]));
-          const link = document.createElement("a");
-          link.href = url;
-          link.setAttribute(
-            "download",
-
-            contract.user.name +
-              " - " +
-              contract.type.full_name_ru +
-              " - № " +
-              id +
-              this.getToday() +
-              ".pdf"
-          ); //or any other extension
-          document.body.appendChild(link);
-          link.click();
-        })
-        .catch((error) => {
-          console.warn(error);
-        });
-    },
-  },
-  mounted() {
-    if (!this.GET_TOKEN[0]) {
-      this.$router.push("/sign");
     }
   },
-  beforeMount() {
-    // if (this.GET_USER_DATA.admin) {
-    //   if (this.GET_USER_DATA.role.name == "MAIN") {
-    //     this.$router.push("/admin/panel");
-    //   } else {
-    //     this.$router.push("/kcmr");
-    //   }
-    // } else {
-    //   this.$router.push("/");
-    // }
+  methods: {
+
   },
-  watch: {},
+  mounted() {
+
+  },
+  beforeMount() {
+
+  },
+  watch: {
+    $route(to) {
+      this.current_route = to.path;
+    }
+  },
   computed: {
     ...mapGetters(["GET_TOKEN", "GET_USER_DATA"]),
   },
 };
 </script>
+
+<style>
+.main {
+  position: relative;
+}
+
+.active__route {
+  color: rgb(0, 62, 116);
+}
+
+.main__bottom {
+  position: fixed;
+  bottom: 0;
+  padding: 10px;
+  background: white;
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-around;
+  box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+
+  div {
+    padding: 10px;
+    .mdi-settings {
+      color: black;
+    }
+  }
+}
+</style>

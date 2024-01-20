@@ -5,8 +5,11 @@
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint"
+    "lint": "vue-cli-service lint",
+    "open-android-studio": "open platforms/android",
+    "build-android": "cordova build android"
   },
+
   "dependencies": {
     "@vue/composition-api": "^1.4.2",
     "axios": "^0.24.0",
