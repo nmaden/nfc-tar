@@ -1,6 +1,7 @@
 export const routes = [{
     path: '/',
     name: "Login",
+    mode: 'history',
     component: () =>
         import ('../views/Auth.vue'),
 },
